@@ -24,7 +24,8 @@ import pages.sections.GuaranteeDetailsSection
 import play.api.i18n.Messages
 import viewModels.ListItem
 
-class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig) extends AnswersHelper(userAnswers, mode) {
+class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig)
+    extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(GuaranteeDetailsSection) {

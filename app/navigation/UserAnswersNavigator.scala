@@ -43,10 +43,10 @@ trait UserAnswersNavigator extends Navigator {
 object UserAnswersNavigator extends Logging {
 
   def nextPage[T <: JourneyDomainModel](
-                                         userAnswers: UserAnswers,
-                                         mode: Mode,
-                                         stage: Stage = CompletingJourney
-                                       )(implicit userAnswersReader: UserAnswersReader[T], config: FrontendAppConfig): Call = {
+    userAnswers: UserAnswers,
+    mode: Mode,
+    stage: Stage = CompletingJourney
+  )(implicit userAnswersReader: UserAnswersReader[T], config: FrontendAppConfig): Call = {
     lazy val errorCall = Call(GET, config.sessionExpiredUrl)
 
     userAnswersReader.run(userAnswers) match {

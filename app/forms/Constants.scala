@@ -17,7 +17,7 @@
 package forms
 
 object Constants {
-  lazy val maxRefNumberLength: Int              = 24
-  lazy val maxOtherRefLength: Int               = 35
-  lazy val accessCodeLength: Int                = 4
+  lazy val maxRefNumberLength: Int = 24
+  lazy val maxOtherRefLength: Int  = 35
+  lazy val accessCodeLength: Int   = 4
 }

@@ -55,7 +55,7 @@ class AddGuaranteeYesNoController @Inject() (
         .fold(
           formWithErrors => BadRequest(view(formWithErrors, lrn)),
           {
-            case true => Redirect(navigatorProvider.apply(NormalMode).nextPage(request.userAnswers))
+            case true  => Redirect(navigatorProvider.apply(NormalMode).nextPage(request.userAnswers))
             case false => Redirect(config.taskListUrl(lrn))
           }
         )

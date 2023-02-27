@@ -32,6 +32,7 @@ lazy val microservice = Project(appName, file("."))
       "-Wconf:cat=unused-imports&src=html/.*:s",
     ),
     pipelineStages := Seq(gzip),
+    ThisBuild / scalafmtOnCompile := true
   )
   .settings(resolvers += Resolver.jcenterRepo)
   .settings(CodeCoverageSettings.settings: _*)

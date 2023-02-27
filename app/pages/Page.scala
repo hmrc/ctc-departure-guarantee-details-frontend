@@ -16,8 +16,6 @@
 
 package pages
 
-
-
 trait Page
 
 object Page {

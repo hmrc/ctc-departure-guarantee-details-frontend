@@ -56,7 +56,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   def signOutUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/delete-lock"
 
-  lazy val maxGuarantees: Int             = configuration.get[Int]("limits.maxGuarantees")
+  lazy val maxGuarantees: Int = configuration.get[Int]("limits.maxGuarantees")
 
   def taskListUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/task-list"
 

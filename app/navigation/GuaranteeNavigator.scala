@@ -38,7 +38,8 @@ trait GuaranteeNavigatorProvider {
 class GuaranteeNavigator(
   override val mode: Mode,
   index: Index
-)(implicit override val config: FrontendAppConfig) extends UserAnswersNavigator {
+)(implicit override val config: FrontendAppConfig)
+    extends UserAnswersNavigator {
 
   override type T = GuaranteeDomain
 

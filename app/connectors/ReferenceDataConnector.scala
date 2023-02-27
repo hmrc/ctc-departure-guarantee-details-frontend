@@ -25,7 +25,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ReferenceDataConnector @Inject()(config: FrontendAppConfig, http: HttpClient) {
+class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient) {
 
   def getCurrencyCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CurrencyCode]] = {
     val serviceUrl = s"${config.referenceDataUrl}/currency-codes"

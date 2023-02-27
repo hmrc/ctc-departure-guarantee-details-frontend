@@ -35,7 +35,8 @@ class CheckYourAnswersController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: CheckYourAnswersView,
   viewModelProvider: GuaranteeViewModelProvider
-)(implicit config: FrontendAppConfig) extends FrontendBaseController
+)(implicit config: FrontendAppConfig)
+    extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = actions.requireData(lrn) {

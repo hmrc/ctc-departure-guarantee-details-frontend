@@ -24,7 +24,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class SessionRepository @Inject()(
+class SessionRepository @Inject() (
   cacheConnector: CacheConnector
 ) {
 

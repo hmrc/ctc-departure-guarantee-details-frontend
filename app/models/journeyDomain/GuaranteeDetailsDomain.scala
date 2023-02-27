@@ -26,8 +26,8 @@ import pages.sections.GuaranteeDetailsSection
 import play.api.mvc.Call
 
 case class GuaranteeDetailsDomain(
-                                   guarantees: Seq[GuaranteeDomain]
-                                 ) extends JourneyDomainModel {
+  guarantees: Seq[GuaranteeDomain]
+) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     userAnswers.get(DeclarationTypePage) map {

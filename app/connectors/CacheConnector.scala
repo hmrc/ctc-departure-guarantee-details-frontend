@@ -26,7 +26,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorR
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CacheConnector @Inject()(
+class CacheConnector @Inject() (
   config: FrontendAppConfig,
   http: HttpClient
 )(implicit ec: ExecutionContext)

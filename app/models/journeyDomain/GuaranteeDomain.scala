@@ -65,9 +65,9 @@ object GuaranteeDomain {
   // scalastyle:on cyclomatic.complexity
 
   case class GuaranteeOfTypesAB(
-                                 `type`: GuaranteeType
-                               )(override val index: Index)
-    extends GuaranteeDomain {
+    `type`: GuaranteeType
+  )(override val index: Index)
+      extends GuaranteeDomain {
 
     override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
       stage match {
@@ -86,13 +86,13 @@ object GuaranteeDomain {
   }
 
   case class GuaranteeOfTypes01249(
-                                    `type`: GuaranteeType,
-                                    grn: String,
-                                    currencyCode: CurrencyCode,
-                                    liabilityAmount: BigDecimal,
-                                    accessCode: String
-                                  )(override val index: Index)
-    extends GuaranteeDomain
+    `type`: GuaranteeType,
+    grn: String,
+    currencyCode: CurrencyCode,
+    liabilityAmount: BigDecimal,
+    accessCode: String
+  )(override val index: Index)
+      extends GuaranteeDomain
 
   object GuaranteeOfTypes01249 {
 
@@ -103,15 +103,15 @@ object GuaranteeDomain {
         CurrencyPage(index).reader,
         LiabilityAmountPage(index).reader,
         AccessCodePage(index).reader
-        ).tupled.map((GuaranteeOfTypes01249.apply _).tupled).map(_(index))
+      ).tupled.map((GuaranteeOfTypes01249.apply _).tupled).map(_(index))
   }
 
   case class GuaranteeOfType5(
-                               `type`: GuaranteeType,
-                               currencyCode: CurrencyCode,
-                               liabilityAmount: BigDecimal
-                             )(override val index: Index)
-    extends GuaranteeDomain
+    `type`: GuaranteeType,
+    currencyCode: CurrencyCode,
+    liabilityAmount: BigDecimal
+  )(override val index: Index)
+      extends GuaranteeDomain
 
   object GuaranteeOfType5 {
 
@@ -120,16 +120,16 @@ object GuaranteeDomain {
         UserAnswersReader(guaranteeType),
         CurrencyPage(index).reader,
         LiabilityAmountPage(index).reader
-        ).tupled.map((GuaranteeOfType5.apply _).tupled).map(_(index))
+      ).tupled.map((GuaranteeOfType5.apply _).tupled).map(_(index))
   }
 
   case class GuaranteeOfType8(
-                               `type`: GuaranteeType,
-                               otherReference: String,
-                               currencyCode: CurrencyCode,
-                               liabilityAmount: BigDecimal
-                             )(override val index: Index)
-    extends GuaranteeDomain
+    `type`: GuaranteeType,
+    otherReference: String,
+    currencyCode: CurrencyCode,
+    liabilityAmount: BigDecimal
+  )(override val index: Index)
+      extends GuaranteeDomain
 
   object GuaranteeOfType8 {
 
@@ -139,7 +139,7 @@ object GuaranteeDomain {
         OtherReferencePage(index).reader,
         CurrencyPage(index).reader,
         LiabilityAmountPage(index).reader
-        ).tupled.map((GuaranteeOfType8.apply _).tupled).map(_(index))
+      ).tupled.map((GuaranteeOfType8.apply _).tupled).map(_(index))
   }
 
   sealed trait GuaranteeOfType3 extends GuaranteeDomain
@@ -154,12 +154,12 @@ object GuaranteeDomain {
   }
 
   case class GuaranteeOfType3WithReference(
-                                            `type`: GuaranteeType,
-                                            otherReference: String,
-                                            currencyCode: CurrencyCode,
-                                            liabilityAmount: BigDecimal
-                                          )(override val index: Index)
-    extends GuaranteeOfType3
+    `type`: GuaranteeType,
+    otherReference: String,
+    currencyCode: CurrencyCode,
+    liabilityAmount: BigDecimal
+  )(override val index: Index)
+      extends GuaranteeOfType3
 
   object GuaranteeOfType3WithReference {
 
@@ -169,13 +169,13 @@ object GuaranteeDomain {
         OtherReferencePage(index).reader,
         CurrencyPage(index).reader,
         LiabilityAmountPage(index).reader
-        ).tupled.map((GuaranteeOfType3WithReference.apply _).tupled).map(_(index))
+      ).tupled.map((GuaranteeOfType3WithReference.apply _).tupled).map(_(index))
   }
 
   case class GuaranteeOfType3WithoutReference(
-                                               `type`: GuaranteeType
-                                             )(override val index: Index)
-    extends GuaranteeOfType3
+    `type`: GuaranteeType
+  )(override val index: Index)
+      extends GuaranteeOfType3
 
   object GuaranteeOfType3WithoutReference {
 

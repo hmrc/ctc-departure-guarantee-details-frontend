@@ -24,14 +24,14 @@ import java.time.LocalDateTime
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
-                              lrn: LocalReferenceNumber,
-                              eoriNumber: EoriNumber,
-                              data: JsObject = Json.obj(),
-                              tasks: Map[String, TaskStatus] = Map(),
-                              createdAt: LocalDateTime = LocalDateTime.now,
-                              lastUpdated: LocalDateTime = LocalDateTime.now,
-                              id: Id = Id()
-                            ) {
+  lrn: LocalReferenceNumber,
+  eoriNumber: EoriNumber,
+  data: JsObject = Json.obj(),
+  tasks: Map[String, TaskStatus] = Map(),
+  createdAt: LocalDateTime = LocalDateTime.now,
+  lastUpdated: LocalDateTime = LocalDateTime.now,
+  id: Id = Id()
+) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
@@ -80,7 +80,7 @@ object UserAnswers {
         (__ \ "createdAt").read[LocalDateTime] and
         (__ \ "lastUpdated").read[LocalDateTime] and
         (__ \ "_id").read[Id]
-      )(UserAnswers.apply _)
+    )(UserAnswers.apply _)
 
   implicit lazy val writes: Writes[UserAnswers] =
     (
@@ -91,5 +91,5 @@ object UserAnswers {
         (__ \ "createdAt").write[LocalDateTime] and
         (__ \ "lastUpdated").write[LocalDateTime] and
         (__ \ "_id").write[Id]
-      )(unlift(UserAnswers.unapply))
+    )(unlift(UserAnswers.unapply))
 }
