@@ -16,21 +16,14 @@
 
 package models
 
-sealed trait DeclarationType
+trait EnumerableType[T] extends Enumerable.Implicits {
 
-object DeclarationType extends EnumerableType[DeclarationType] {
+  val values: Seq[T]
 
-  case object Option1 extends WithName("T1") with DeclarationType
-  case object Option2 extends WithName("T2") with DeclarationType
-  case object Option3 extends WithName("T2F") with DeclarationType
-  case object Option4 extends WithName("TIR") with DeclarationType
-  case object Option5 extends WithName("T") with DeclarationType
-
-  override val values: Seq[DeclarationType] = Seq(
-    Option1,
-    Option2,
-    Option3,
-    Option4,
-    Option5
-  )
+  implicit def enumerable: Enumerable[T] =
+    Enumerable(
+      values.map(
+        v => v.toString -> v
+      ): _*
+    )
 }

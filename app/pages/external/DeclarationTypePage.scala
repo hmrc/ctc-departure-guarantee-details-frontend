@@ -17,12 +17,11 @@
 package pages.external
 
 import models.DeclarationType
-import pages.QuestionPage
+import pages.ReadOnlyPage
 import pages.sections.external.PreTaskListSection
 import play.api.libs.json.JsPath
 
-// TODO - do we want a separate trait for read-only values?
-case object DeclarationTypePage extends QuestionPage[DeclarationType] {
+case object DeclarationTypePage extends ReadOnlyPage[DeclarationType] {
 
   override def path: JsPath = PreTaskListSection.path \ toString
 
