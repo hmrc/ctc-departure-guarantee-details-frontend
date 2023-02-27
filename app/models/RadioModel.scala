@@ -19,11 +19,9 @@ package models
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 
-trait RadioModel[T] extends Enumerable.Implicits {
+trait RadioModel[T] extends EnumerableType[T] {
 
   val messageKeyPrefix: String
-
-  val values: Seq[T]
 
   def radioItems(formKey: String = "value", checkedValue: Option[T] = None)(implicit messages: Messages): Seq[RadioItem] =
     radioItems(values, formKey, checkedValue)
@@ -42,11 +40,4 @@ trait RadioModel[T] extends Enumerable.Implicits {
           }
         )
     }
-
-  implicit def enumerable: Enumerable[T] =
-    Enumerable(
-      values.map(
-        v => v.toString -> v
-      ): _*
-    )
 }
