@@ -25,7 +25,7 @@ import pages.external.DeclarationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.guaranteeDetails.GuaranteeViewModel.GuaranteeViewModelProvider
+import viewModels.GuaranteeViewModel.GuaranteeViewModelProvider
 import views.html.guarantee.CheckYourAnswersView
 
 class CheckYourAnswersController @Inject() (

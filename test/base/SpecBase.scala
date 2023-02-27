@@ -49,9 +49,7 @@ trait SpecBase
   val eoriNumber: EoriNumber    = EoriNumber("GB1234567891234")
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123").get
 
-  val index: Index               = Index(0)
-  val itemIndex: Index           = Index(0)
-  val dangerousGoodsIndex: Index = Index(0)
+  val index: Index = Index(0)
 
   def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 

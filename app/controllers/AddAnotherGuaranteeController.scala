@@ -24,8 +24,8 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.guaranteeDetails.AddAnotherGuaranteeViewModel
-import viewModels.guaranteeDetails.AddAnotherGuaranteeViewModel.AddAnotherGuaranteeViewModelProvider
+import viewModels.AddAnotherGuaranteeViewModel
+import viewModels.AddAnotherGuaranteeViewModel.AddAnotherGuaranteeViewModelProvider
 import views.html.AddAnotherGuaranteeView
 
 import javax.inject.Inject

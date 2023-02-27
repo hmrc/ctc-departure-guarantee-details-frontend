@@ -18,7 +18,7 @@ package base
 
 import controllers.actions._
 import models.{Index, Mode, UserAnswers}
-import navigation._
+import navigation.{FakeGuaranteeDetailsNavigator, FakeGuaranteeNavigator, _}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -65,14 +65,11 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected val fakeNavigator: Navigator = new FakeNavigator(onwardRoute)
 
-  protected val fakeItemsNavigatorProvider: ItemsNavigatorProvider =
-    (mode: Mode) => new FakeItemsNavigator(onwardRoute, mode)
+  protected val fakeGuaranteeDetailsNavigatorProvider: GuaranteeDetailsNavigatorProvider =
+    (mode: Mode) => new FakeGuaranteeDetailsNavigator(onwardRoute, mode)
 
-  protected val fakeItemNavigatorProvider: ItemNavigatorProvider =
-    (mode: Mode, index: Index) => new FakeItemNavigator(onwardRoute, mode, index)
-
-  protected val fakeDangerousGoodsNavigatorProvider: DangerousGoodsNavigatorProvider =
-    (mode: Mode, itemIndex: Index, dangerousGoodsIndex: Index) => new FakeDangerousGoodsNavigator(onwardRoute, mode, itemIndex, dangerousGoodsIndex)
+  protected val fakeGuaranteeNavigatorProvider: GuaranteeNavigatorProvider =
+    (mode: Mode, index: Index) => new FakeGuaranteeNavigator(onwardRoute, mode, index)
 
   def guiceApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()

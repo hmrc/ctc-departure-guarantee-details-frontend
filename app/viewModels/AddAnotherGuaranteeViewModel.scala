@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package viewModels.guaranteeDetails
+package viewModels
 
 import config.FrontendAppConfig
 import models.{NormalMode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.cyaHelpers.GuaranteeDetailsCheckYourAnswersHelper
-import viewModels.{AddAnotherViewModel, ListItem}
 
 import javax.inject.Inject
 

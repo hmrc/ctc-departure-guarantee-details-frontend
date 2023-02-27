@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package viewModels.guaranteeDetails
+package viewModels
 
 import config.FrontendAppConfig
 import models.{CheckMode, Index, UserAnswers}
 import play.api.i18n.Messages
 import utils.cyaHelpers.GuaranteeCheckYourAnswersHelper
-import viewModels.Section
 
 import javax.inject.Inject
 
