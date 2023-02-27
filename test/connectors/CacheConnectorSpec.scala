@@ -32,13 +32,15 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
       .guiceApplicationBuilder()
       .configure(conf = "microservice.services.manage-transit-movements-departure-cache.port" -> server.port())
 
+  private val errorResponseGen = Gen.choose(400: Int, 599: Int)
+
   private lazy val connector: CacheConnector = app.injector.instanceOf[CacheConnector]
 
   private val json: String =
-    """
+    s"""
       |{
       |    "_id" : "2e8ede47-dbfb-44ea-a1e3-6c57b1fe6fe2",
-      |    "lrn" : "1234567890",
+      |    "lrn" : "$lrn",
       |    "eoriNumber" : "GB1234567",
       |    "data" : {},
       |    "tasks" : {},
@@ -53,7 +55,7 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
 
     "get" - {
 
-      val url = s"/manage-transit-movements-departure-cache/user-answers/${lrn.value}"
+      val url = s"/manage-transit-movements-departure-cache/user-answers/$lrn"
 
       "must return user answers when status is Ok" in {
         server.stubFor(
@@ -61,7 +63,9 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
             .willReturn(okJson(json))
         )
 
-        connector.get(lrn).futureValue mustBe Some(userAnswers)
+        val result: Option[UserAnswers] = await(connector.get(lrn))
+
+        result mustBe Some(userAnswers)
       }
 
       "return None when no cached data found for provided LRN" in {
@@ -78,56 +82,31 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
 
     "post" - {
 
-      val url = s"/manage-transit-movements-departure-cache/user-answers/${userAnswers.lrn}"
+      val url = s"/manage-transit-movements-departure-cache/user-answers/$lrn"
 
       "must return true when status is Ok" in {
-        server.stubFor(post(urlEqualTo(url)) willReturn aResponse().withStatus(OK))
-
-        val result: Boolean = await(connector.post(userAnswers))
-
-        result mustBe true
-      }
-
-      "return false for 4xx or 5xx response" in {
-        val status = Gen.choose(400: Int, 599: Int).sample.value
-
         server.stubFor(
           post(urlEqualTo(url))
-            .willReturn(aResponse().withStatus(status))
-        )
-
-        val result: Boolean = await(connector.post(userAnswers))
-
-        result mustBe false
-      }
-    }
-
-    "put" - {
-
-      val url = s"/manage-transit-movements-departure-cache/user-answers"
-
-      "must return true when status is Ok" in {
-        server.stubFor(
-          put(urlEqualTo(url))
             .willReturn(aResponse().withStatus(OK))
         )
 
-        val result: Boolean = await(connector.put(lrn))
+        val result: Boolean = await(connector.post(userAnswers))
 
         result mustBe true
       }
 
       "return false for 4xx or 5xx response" in {
-        val status = Gen.choose(400: Int, 599: Int).sample.value
+        forAll(errorResponseGen) {
+          error =>
+            server.stubFor(
+              post(urlEqualTo(url))
+                .willReturn(aResponse().withStatus(error))
+            )
 
-        server.stubFor(
-          put(urlEqualTo(url))
-            .willReturn(aResponse().withStatus(status))
-        )
+            val result: Boolean = await(connector.post(userAnswers))
 
-        val result: Boolean = await(connector.put(lrn))
-
-        result mustBe false
+            result mustBe false
+        }
       }
     }
 
@@ -152,37 +131,5 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
         result mustBe false
       }
     }
-
-    "deleteLock" - {
-
-      val url = s"/manage-transit-movements-departure-cache/user-answers/${userAnswers.lrn}/lock"
-
-      "must return true when status is Ok" in {
-        server.stubFor(delete(urlEqualTo(url)) willReturn aResponse().withStatus(OK))
-
-        val result: Boolean = await(connector.deleteLock(userAnswers))
-
-        result mustBe true
-      }
-
-      "return false for other responses" in {
-
-        val errorResponses: Gen[Int] = Gen
-          .chooseNum(400: Int, 599: Int)
-
-        forAll(errorResponses) {
-          error =>
-            server.stubFor(
-              delete(urlEqualTo(url))
-                .willReturn(aResponse().withStatus(error))
-            )
-
-            val result: Boolean = await(connector.deleteLock(userAnswers))
-
-            result mustBe false
-        }
-      }
-    }
   }
-
 }
