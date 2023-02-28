@@ -17,13 +17,12 @@
 package pages.external
 
 import models.reference.CustomsOffice
-import pages.QuestionPage
-import pages.sections.external.PreTaskListSection
+import pages.ReadOnlyPage
 import play.api.libs.json.JsPath
 
-case object OfficeOfDeparturePage extends QuestionPage[CustomsOffice] {
+case object OfficeOfDeparturePage extends ReadOnlyPage[CustomsOffice] {
 
-  override def path: JsPath = PreTaskListSection.path \ toString
+  override def path: JsPath = preTaskListPath \ toString
 
   override def toString: String = "officeOfDeparture"
 }
