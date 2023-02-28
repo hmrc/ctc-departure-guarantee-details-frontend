@@ -34,7 +34,7 @@
 @(form: Form[CurrencyCode], lrn: LocalReferenceNumber, currencyCodeList: Seq[CurrencyCode], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("guaranteeDetails.guarantee.currency.title"),
+    title = messages("guarantee.currency.title"),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -46,11 +46,11 @@
         @inputSelect(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("guaranteeDetails.guarantee.currency.heading"),
-                caption = Some(messages("guaranteeDetails.caption"))
+                heading = messages("guarantee.currency.heading"),
+                caption = Some(messages("caption"))
             ),
             selectItems = currencyCodeList.toSelectItems(form.value),
-            placeholder = messages("guaranteeDetails.guarantee.currency.placeholder")
+            placeholder = messages("guarantee.currency.placeholder")
         )
 
         @button(attributes = Map("id" -> "submit"))

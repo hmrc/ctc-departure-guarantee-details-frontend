@@ -30,7 +30,7 @@
 @(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("guaranteeDetails.guarantee.accessCode.title"),
+    title = messages("guarantee.accessCode.title"),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -43,11 +43,11 @@
             inputType ="password",
             field = form("value"),
             inputTextType = TextInputWithHiddenLabel(
-                heading = messages("guaranteeDetails.guarantee.accessCode.heading"),
-                caption = Some(messages("guaranteeDetails.caption")),
-                additionalHtml = messages("guaranteeDetails.guarantee.accessCode.paragraph").toParagraph
+                heading = messages("guarantee.accessCode.heading"),
+                caption = Some(messages("caption")),
+                additionalHtml = messages("guarantee.accessCode.paragraph").toParagraph
             ),
-            hint = Some(messages("guaranteeDetails.guarantee.accessCode.hint")),
+            hint = Some(messages("guarantee.accessCode.hint")),
             inputClass = InputSize.Width5
         )
 

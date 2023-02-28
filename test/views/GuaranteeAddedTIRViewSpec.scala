@@ -25,7 +25,7 @@ class GuaranteeAddedTIRViewSpec extends ViewBehaviours {
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[GuaranteeAddedTIRView].apply(lrn)(fakeRequest, messages)
 
-  override val prefix: String = "guaranteeDetails.guaranteeAddedTIR"
+  override val prefix: String = "guaranteeAddedTIR"
 
   behave like pageWithTitle()
 

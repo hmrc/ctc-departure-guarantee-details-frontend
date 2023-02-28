@@ -37,8 +37,8 @@ import scala.concurrent.Future
 
 class OtherReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val prefix3                  = "guaranteeDetails.guarantee.otherReference.option3"
-  private val prefix8                  = "guaranteeDetails.guarantee.otherReference.option8"
+  private val prefix3                  = "guarantee.otherReference.option3"
+  private val prefix8                  = "guarantee.otherReference.option8"
   private val formProvider             = new OtherReferenceFormProvider()
   private val form3                    = formProvider(prefix3)
   private val form8                    = formProvider(prefix8)

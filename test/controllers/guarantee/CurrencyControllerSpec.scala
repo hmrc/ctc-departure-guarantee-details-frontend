@@ -42,7 +42,7 @@ class CurrencyControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
   private val currencyCodeList = CurrencyCodeList(Seq(currencyCode1, currencyCode2))
 
   private val formProvider = new CurrencyCodeFormProvider()
-  private val form         = formProvider("guaranteeDetails.guarantee.currency", currencyCodeList)
+  private val form         = formProvider("guarantee.currency", currencyCodeList)
   private val mode         = NormalMode
 
   private val mockCurrenciesService: CurrenciesService = mock[CurrenciesService]

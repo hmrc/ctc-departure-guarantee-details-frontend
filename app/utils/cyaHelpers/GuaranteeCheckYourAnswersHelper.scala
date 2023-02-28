@@ -30,21 +30,21 @@ class GuaranteeCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode, inde
   def guaranteeType: Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicLink[GuaranteeType](
     page = GuaranteeTypePage(index),
     formatAnswer = formatEnumAsText(GuaranteeType.messageKeyPrefix),
-    prefix = "guaranteeDetails.guarantee.guaranteeType",
+    prefix = "guarantee.guaranteeType",
     id = Some("change-type")
   )(_ == TIRGuarantee)
 
   def guaranteeReferenceNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ReferenceNumberPage(index),
     formatAnswer = formatAsText,
-    prefix = "guaranteeDetails.guarantee.referenceNumber",
+    prefix = "guarantee.referenceNumber",
     id = Some("change-reference-number")
   )
 
   def otherReferenceYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = OtherReferenceYesNoPage(index),
     formatAnswer = formatAsYesOrNo,
-    prefix = "guaranteeDetails.guarantee.otherReferenceYesNo",
+    prefix = "guarantee.otherReferenceYesNo",
     id = Some("change-add-other-reference")
   )
 
@@ -58,7 +58,7 @@ class GuaranteeCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode, inde
         getAnswerAndBuildRow[String](
           page = OtherReferencePage(index),
           formatAnswer = formatAsText,
-          prefix = s"guaranteeDetails.guarantee.otherReference.$key",
+          prefix = s"guarantee.otherReference.$key",
           id = Some("change-other-reference")
         )
     }
@@ -66,14 +66,14 @@ class GuaranteeCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode, inde
   def accessCode: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = AccessCodePage(index),
     formatAnswer = formatAsPassword,
-    prefix = "guaranteeDetails.guarantee.accessCode",
+    prefix = "guarantee.accessCode",
     id = Some("change-access-code")
   )
 
   def liabilityCurrency: Option[SummaryListRow] = getAnswerAndBuildRow[CurrencyCode](
     page = CurrencyPage(index),
     formatAnswer = formatAsText,
-    prefix = "guaranteeDetails.guarantee.currency",
+    prefix = "guarantee.currency",
     id = Some("change-liability-currency")
   )
 
@@ -83,7 +83,7 @@ class GuaranteeCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode, inde
         getAnswerAndBuildRow[BigDecimal](
           page = LiabilityAmountPage(index),
           formatAnswer = formatAsCurrency(_, currencyCode),
-          prefix = "guaranteeDetails.guarantee.liabilityAmount",
+          prefix = "guarantee.liabilityAmount",
           id = Some("change-liability-amount")
         )
     }

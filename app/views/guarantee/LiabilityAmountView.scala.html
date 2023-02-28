@@ -30,7 +30,7 @@
 @(form: Form[_], lrn: LocalReferenceNumber, mode: Mode, index: Index, currency: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("guaranteeDetails.guarantee.liabilityAmount.title"),
+    title = messages("guarantee.liabilityAmount.title"),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -42,10 +42,10 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("guaranteeDetails.guarantee.liabilityAmount.heading"),
-                caption = Some(messages("guaranteeDetails.caption"))
+                heading = messages("guarantee.liabilityAmount.heading"),
+                caption = Some(messages("caption"))
             ),
-            hint = Some(messages("guaranteeDetails.guarantee.liabilityAmount.hint")),
+            hint = Some(messages("guarantee.liabilityAmount.hint")),
             inputClass = InputSize.Width10,
             prefix = Some(currency),
             pattern = Some("[0-9]*"),

@@ -37,7 +37,7 @@ import scala.concurrent.Future
 class LiabilityAmountControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider              = new MoneyFormProvider()
-  private val form                      = formProvider("guaranteeDetails.guarantee.liabilityAmount")
+  private val form                      = formProvider("guarantee.liabilityAmount")
   private val mode                      = NormalMode
   private lazy val referenceNumberRoute = routes.LiabilityAmountController.onPageLoad(lrn, mode, index).url
   private val validAnswer: BigDecimal   = 999.99

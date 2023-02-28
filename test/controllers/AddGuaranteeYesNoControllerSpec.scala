@@ -33,7 +33,7 @@ import views.html.AddGuaranteeYesNoView
 class AddGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val formProvider                = new YesNoFormProvider()
-  private val form                        = formProvider("guaranteeDetails.addGuaranteeYesNo")
+  private val form                        = formProvider("addGuaranteeYesNo")
   private lazy val addGuaranteeYesNoRoute = routes.AddGuaranteeYesNoController.onPageLoad(lrn).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =

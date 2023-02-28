@@ -49,7 +49,7 @@ class CurrencyController @Inject() (
     implicit request =>
       currenciesService.getCurrencyCodes().map {
         currencyCodeList =>
-          val form = formProvider("guaranteeDetails.guarantee.currency", currencyCodeList)
+          val form = formProvider("guarantee.currency", currencyCodeList)
           val preparedForm = request.userAnswers.get(CurrencyPage(index)) match {
             case None        => form
             case Some(value) => form.fill(value)
@@ -63,7 +63,7 @@ class CurrencyController @Inject() (
     implicit request =>
       currenciesService.getCurrencyCodes().flatMap {
         currencyCodeList =>
-          val form = formProvider("guaranteeDetails.guarantee.currency", currencyCodeList)
+          val form = formProvider("guarantee.currency", currencyCodeList)
           form
             .bindFromRequest()
             .fold(

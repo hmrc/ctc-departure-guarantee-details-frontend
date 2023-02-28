@@ -43,7 +43,7 @@ class GuaranteeTypeController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[GuaranteeType]("guaranteeDetails.guarantee.guaranteeType")
+  private val form = formProvider[GuaranteeType]("guarantee.guaranteeType")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

@@ -30,7 +30,7 @@
 @(lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("guaranteeDetails.guaranteeAddedTIR.title"),
+    title = messages("guaranteeAddedTIR.title"),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -38,18 +38,18 @@
     @formHelper(action = routes.GuaranteeAddedTIRController.onSubmit(lrn), Symbol("autoComplete") -> "off") {
 
         @heading(
-            heading = messages("guaranteeDetails.guaranteeAddedTIR.heading"),
-            caption = Some(messages("guaranteeDetails.caption"))
+            heading = messages("guaranteeAddedTIR.heading"),
+            caption = Some(messages("caption"))
         )
 
-        <p class="govuk-body">@messages("guaranteeDetails.guaranteeAddedTIR.paragraph1")</p>
+        <p class="govuk-body">@messages("guaranteeAddedTIR.paragraph1")</p>
 
         @govukInsetText(InsetText(
-           content = Text(messages("guaranteeDetails.guaranteeAddedTIR.paragraph2"))
+           content = Text(messages("guaranteeAddedTIR.paragraph2"))
         ))
 
-        <p class="govuk-body">@messages("guaranteeDetails.guaranteeAddedTIR.paragraph3")</p>
-        <p class="govuk-body">@messages("guaranteeDetails.guaranteeAddedTIR.paragraph4")</p>
+        <p class="govuk-body">@messages("guaranteeAddedTIR.paragraph3")</p>
+        <p class="govuk-body">@messages("guaranteeAddedTIR.paragraph4")</p>
 
         @button(
             messageKey = "site.continue",

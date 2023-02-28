@@ -45,7 +45,7 @@ class AddAnotherGuaranteeViewSpec extends ListWithActionsViewBehaviours {
       .instanceOf[AddAnotherGuaranteeView]
       .apply(formProvider(maxedOutViewModel), lrn, maxedOutViewModel)(fakeRequest, messages, frontendAppConfig)
 
-  override val prefix: String = "guaranteeDetails.addAnotherGuarantee"
+  override val prefix: String = "addAnotherGuarantee"
 
   behave like pageWithBackLink()
 
