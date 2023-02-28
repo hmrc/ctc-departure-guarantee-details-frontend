@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package pages.sections.external
+package pages
 
-import pages.sections.Section
-import play.api.libs.json.{JsObject, JsPath}
+import play.api.libs.json.{__, JsPath}
 
-case object PreTaskListSection extends Section[JsObject] {
+package object external {
 
-  override def path: JsPath = JsPath \ toString
+  lazy val preTaskListPath: JsPath = __ \ "preTaskList"
 
-  override def toString: String = "preTaskList"
 }
