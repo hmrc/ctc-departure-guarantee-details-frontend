@@ -29,8 +29,8 @@ class OtherReferenceViewSpec extends InputTextViewBehaviours[String] {
 
   override val prefix: String = Gen
     .oneOf(
-      "guaranteeDetails.guarantee.otherReference.option3",
-      "guaranteeDetails.guarantee.otherReference.option8"
+      "guarantee.otherReference.option3",
+      "guarantee.otherReference.option8"
     )
     .sample
     .value

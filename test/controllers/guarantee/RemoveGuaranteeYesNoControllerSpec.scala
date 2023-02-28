@@ -34,7 +34,7 @@ import scala.concurrent.Future
 class RemoveGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val formProvider                   = new YesNoFormProvider()
-  private val form                           = formProvider("guaranteeDetails.guarantee.removeGuaranteeYesNo")
+  private val form                           = formProvider("guarantee.removeGuaranteeYesNo")
   private lazy val removeGuaranteeYesNoRoute = routes.RemoveGuaranteeYesNoController.onPageLoad(lrn, index).url
 
   "RemoveGuaranteeYesNoController" - {

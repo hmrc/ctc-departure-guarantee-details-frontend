@@ -26,7 +26,7 @@ class AddGuaranteeYesNoViewSpec extends YesNoViewBehaviours {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector.instanceOf[AddGuaranteeYesNoView].apply(form, lrn)(fakeRequest, messages)
 
-  override val prefix: String = "guaranteeDetails.addGuaranteeYesNo"
+  override val prefix: String = "addGuaranteeYesNo"
 
   behave like pageWithTitle()
 

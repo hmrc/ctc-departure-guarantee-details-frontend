@@ -41,7 +41,7 @@ class AddGuaranteeYesNoController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("guaranteeDetails.addGuaranteeYesNo")
+  private val form = formProvider("addGuaranteeYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

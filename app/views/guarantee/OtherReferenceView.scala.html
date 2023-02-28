@@ -43,10 +43,10 @@
             field = form("value"),
             inputTextType = TextInputWithHiddenLabel(
                 heading = messages(s"$prefix.heading"),
-                caption = Some(messages("guaranteeDetails.caption")),
-                additionalHtml = messages("guaranteeDetails.guarantee.otherReference.paragraph").toParagraph
+                caption = Some(messages("caption")),
+                additionalHtml = messages("guarantee.otherReference.paragraph").toParagraph
             ),
-            hint = Some(messages("guaranteeDetails.guarantee.otherReference.hint")),
+            hint = Some(messages("guarantee.otherReference.hint")),
             inputClass = InputSize.Width20
         )
 

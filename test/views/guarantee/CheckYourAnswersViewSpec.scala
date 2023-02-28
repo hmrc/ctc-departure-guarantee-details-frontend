@@ -24,7 +24,7 @@ import views.html.guarantee.CheckYourAnswersView
 
 class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
-  override val prefix: String = "guaranteeDetails.checkYourAnswers"
+  override val prefix: String = "checkYourAnswers"
 
   override def view: HtmlFormat.Appendable = viewWithSections(sections)
 

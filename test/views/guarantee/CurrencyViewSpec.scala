@@ -34,7 +34,7 @@ class CurrencyViewSpec extends InputSelectViewBehaviours[CurrencyCode] {
 
   implicit override val arbitraryT: Arbitrary[CurrencyCode] = arbitraryCurrencyCode
 
-  override val prefix: String = "guaranteeDetails.guarantee.currency"
+  override val prefix: String = "guarantee.currency"
 
   behave like pageWithTitle()
 

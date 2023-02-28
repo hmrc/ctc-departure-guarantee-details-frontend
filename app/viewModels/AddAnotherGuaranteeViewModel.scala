@@ -28,7 +28,7 @@ case class AddAnotherGuaranteeViewModel(
   override val listItems: Seq[ListItem],
   onSubmitCall: Call
 ) extends AddAnotherViewModel {
-  override val prefix: String = "guaranteeDetails.addAnotherGuarantee"
+  override val prefix: String = "addAnotherGuarantee"
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxGuarantees
 }

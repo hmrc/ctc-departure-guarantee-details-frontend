@@ -13,112 +13,110 @@ site.section = This section is
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
-# Guarantee details
+caption = Guarantee details
 
-guaranteeDetails.caption = Guarantee details
+guaranteeAddedTIR.title = Guarantee added for TIR declaration
+guaranteeAddedTIR.heading = Guarantee added for TIR declaration
+guaranteeAddedTIR.paragraph1 = We’ve added the following guarantee to your declaration:
+guaranteeAddedTIR.paragraph2 = (B) Guarantee for goods dispatched under TIR procedure
+guaranteeAddedTIR.paragraph3 = This guarantee is required for all TIR declarations (goods moving under the cover of TIR carnet).
+guaranteeAddedTIR.paragraph4 = You don’t need to do anything here – this is just for your reference.
 
-guaranteeDetails.guaranteeAddedTIR.title = Guarantee added for TIR declaration
-guaranteeDetails.guaranteeAddedTIR.heading = Guarantee added for TIR declaration
-guaranteeDetails.guaranteeAddedTIR.paragraph1 = We’ve added the following guarantee to your declaration:
-guaranteeDetails.guaranteeAddedTIR.paragraph2 = (B) Guarantee for goods dispatched under TIR procedure
-guaranteeDetails.guaranteeAddedTIR.paragraph3 = This guarantee is required for all TIR declarations (goods moving under the cover of TIR carnet).
-guaranteeDetails.guaranteeAddedTIR.paragraph4 = You don’t need to do anything here – this is just for your reference.
+addAnotherGuarantee.singular.title = You have added {0} guarantee
+addAnotherGuarantee.singular.heading = You have added {0} guarantee
+addAnotherGuarantee.plural.title = You have added {0} guarantees
+addAnotherGuarantee.plural.heading = You have added {0} guarantees
+addAnotherGuarantee.error.required = Select yes if you want to add another guarantee
+addAnotherGuarantee.label = Do you want to add another guarantee?
+addAnotherGuarantee.maxLimit.label = You cannot add any more guarantees. To add another guarantee, you need to remove one first.
 
-guaranteeDetails.addAnotherGuarantee.singular.title = You have added {0} guarantee
-guaranteeDetails.addAnotherGuarantee.singular.heading = You have added {0} guarantee
-guaranteeDetails.addAnotherGuarantee.plural.title = You have added {0} guarantees
-guaranteeDetails.addAnotherGuarantee.plural.heading = You have added {0} guarantees
-guaranteeDetails.addAnotherGuarantee.error.required = Select yes if you want to add another guarantee
-guaranteeDetails.addAnotherGuarantee.label = Do you want to add another guarantee?
-guaranteeDetails.addAnotherGuarantee.maxLimit.label = You cannot add any more guarantees. To add another guarantee, you need to remove one first.
+addGuaranteeYesNo.title = Do you want to add a guarantee?
+addGuaranteeYesNo.heading = Do you want to add a guarantee?
+addGuaranteeYesNo.error.required = Select yes if you want to add a guarantee
 
-guaranteeDetails.addGuaranteeYesNo.title = Do you want to add a guarantee?
-guaranteeDetails.addGuaranteeYesNo.heading = Do you want to add a guarantee?
-guaranteeDetails.addGuaranteeYesNo.error.required = Select yes if you want to add a guarantee
+checkYourAnswers.title = Check your answers
+checkYourAnswers.heading = Check your answers
 
-guaranteeDetails.checkYourAnswers.title = Check your answers
-guaranteeDetails.checkYourAnswers.heading = Check your answers
+# Guarantee
 
-# Guarantee details - Guarantee
+guarantee.guaranteeType.title = Which type of guarantee is it?
+guarantee.guaranteeType.heading = Which type of guarantee is it?
+guarantee.guaranteeType.0 = (0) Guarantee waiver
+guarantee.guaranteeType.1 = (1) Comprehensive guarantee
+guarantee.guaranteeType.2 = (2) Individual guarantee as an undertaking by a guarantor
+guarantee.guaranteeType.3 = (3) Individual guarantee in cash or an equivalent recognised by the customs authorities
+guarantee.guaranteeType.4 = (4) Individual guarantee in the form of vouchers
+guarantee.guaranteeType.5 = (5) Guarantee waiver – secured for 500 euros or less
+guarantee.guaranteeType.8 = (8) Guarantee not required – exempt public body
+guarantee.guaranteeType.9 = (9) Individual guarantee with multiple usage
+guarantee.guaranteeType.A = (A) Guarantee waiver by agreement
+guarantee.guaranteeType.B = (B) Guarantee for goods dispatched under TIR procedure
+guarantee.guaranteeType.checkYourAnswersLabel = Guarantee type
+guarantee.guaranteeType.change.hidden = type of guarantee
+guarantee.guaranteeType.error.required = Select which type of guarantee you are using
 
-guaranteeDetails.guarantee.guaranteeType.title = Which type of guarantee is it?
-guaranteeDetails.guarantee.guaranteeType.heading = Which type of guarantee is it?
-guaranteeDetails.guarantee.guaranteeType.0 = (0) Guarantee waiver
-guaranteeDetails.guarantee.guaranteeType.1 = (1) Comprehensive guarantee
-guaranteeDetails.guarantee.guaranteeType.2 = (2) Individual guarantee as an undertaking by a guarantor
-guaranteeDetails.guarantee.guaranteeType.3 = (3) Individual guarantee in cash or an equivalent recognised by the customs authorities
-guaranteeDetails.guarantee.guaranteeType.4 = (4) Individual guarantee in the form of vouchers
-guaranteeDetails.guarantee.guaranteeType.5 = (5) Guarantee waiver – secured for 500 euros or less
-guaranteeDetails.guarantee.guaranteeType.8 = (8) Guarantee not required – exempt public body
-guaranteeDetails.guarantee.guaranteeType.9 = (9) Individual guarantee with multiple usage
-guaranteeDetails.guarantee.guaranteeType.A = (A) Guarantee waiver by agreement
-guaranteeDetails.guarantee.guaranteeType.B = (B) Guarantee for goods dispatched under TIR procedure
-guaranteeDetails.guarantee.guaranteeType.checkYourAnswersLabel = Guarantee type
-guaranteeDetails.guarantee.guaranteeType.change.hidden = type of guarantee
-guaranteeDetails.guarantee.guaranteeType.error.required = Select which type of guarantee you are using
+guarantee.referenceNumber.title = What is the Guarantee Reference Number (GRN)?
+guarantee.referenceNumber.heading = What is the Guarantee Reference Number (GRN)?
+guarantee.referenceNumber.checkYourAnswersLabel = Guarantee Reference Number (GRN)
+guarantee.referenceNumber.error.required = Enter the Guarantee Reference Number
+guarantee.referenceNumber.change.hidden = guarantee reference number
+guarantee.referenceNumber.paragraph = You must make sure this reference is up to date.
+guarantee.referenceNumber.hint = It can be up to 24 characters long and include both letters and numbers. For example, 01GB1234567890120A123456.
+guarantee.referenceNumber.error.length = The Guarantee Reference Number must be 24 characters or less
+guarantee.referenceNumber.error.invalid = The Guarantee Reference Number must only include the letters a to z and numbers 0 to 9
 
-guaranteeDetails.guarantee.referenceNumber.title = What is the Guarantee Reference Number (GRN)?
-guaranteeDetails.guarantee.referenceNumber.heading = What is the Guarantee Reference Number (GRN)?
-guaranteeDetails.guarantee.referenceNumber.checkYourAnswersLabel = Guarantee Reference Number (GRN)
-guaranteeDetails.guarantee.referenceNumber.error.required = Enter the Guarantee Reference Number
-guaranteeDetails.guarantee.referenceNumber.change.hidden = guarantee reference number
-guaranteeDetails.guarantee.referenceNumber.paragraph = You must make sure this reference is up to date.
-guaranteeDetails.guarantee.referenceNumber.hint = It can be up to 24 characters long and include both letters and numbers. For example, 01GB1234567890120A123456.
-guaranteeDetails.guarantee.referenceNumber.error.length = The Guarantee Reference Number must be 24 characters or less
-guaranteeDetails.guarantee.referenceNumber.error.invalid = The Guarantee Reference Number must only include the letters a to z and numbers 0 to 9
+guarantee.otherReference.option3.title = What is the reference for the guarantee?
+guarantee.otherReference.option3.heading = What is the reference for the guarantee?
+guarantee.otherReference.option3.checkYourAnswersLabel = Reference for the guarantee
+guarantee.otherReference.option3.change.hidden = reference for the guarantee
+guarantee.otherReference.option3.error.required = Enter the reference for the guarantee
+guarantee.otherReference.option3.error.length = The reference for the guarantee must be 35 characters or less
+guarantee.otherReference.option3.error.invalid = The reference for the guarantee must only include the letters a to z and numbers 0 to 9
 
-guaranteeDetails.guarantee.otherReference.option3.title = What is the reference for the guarantee?
-guaranteeDetails.guarantee.otherReference.option3.heading = What is the reference for the guarantee?
-guaranteeDetails.guarantee.otherReference.option3.checkYourAnswersLabel = Reference for the guarantee
-guaranteeDetails.guarantee.otherReference.option3.change.hidden = reference for the guarantee
-guaranteeDetails.guarantee.otherReference.option3.error.required = Enter the reference for the guarantee
-guaranteeDetails.guarantee.otherReference.option3.error.length = The reference for the guarantee must be 35 characters or less
-guaranteeDetails.guarantee.otherReference.option3.error.invalid = The reference for the guarantee must only include the letters a to z and numbers 0 to 9
+guarantee.otherReference.option8.title = What is the reference?
+guarantee.otherReference.option8.heading = What is the reference?
+guarantee.otherReference.option8.checkYourAnswersLabel = Reference
+guarantee.otherReference.option8.change.hidden = reference
+guarantee.otherReference.option8.error.required = Enter the reference
+guarantee.otherReference.option8.error.length = The reference must be 35 characters or less
+guarantee.otherReference.option8.error.invalid = The reference must only include the letters a to z and numbers 0 to 9
 
-guaranteeDetails.guarantee.otherReference.option8.title = What is the reference?
-guaranteeDetails.guarantee.otherReference.option8.heading = What is the reference?
-guaranteeDetails.guarantee.otherReference.option8.checkYourAnswersLabel = Reference
-guaranteeDetails.guarantee.otherReference.option8.change.hidden = reference
-guaranteeDetails.guarantee.otherReference.option8.error.required = Enter the reference
-guaranteeDetails.guarantee.otherReference.option8.error.length = The reference must be 35 characters or less
-guaranteeDetails.guarantee.otherReference.option8.error.invalid = The reference must only include the letters a to z and numbers 0 to 9
+guarantee.otherReference.hint = This can be up to 35 characters long and include both letters and numbers.
+guarantee.otherReference.paragraph = You must make sure this reference is up to date.
 
-guaranteeDetails.guarantee.otherReference.hint = This can be up to 35 characters long and include both letters and numbers.
-guaranteeDetails.guarantee.otherReference.paragraph = You must make sure this reference is up to date.
+guarantee.otherReferenceYesNo.title = Do you want to add a reference for the guarantee?
+guarantee.otherReferenceYesNo.heading = Do you want to add a reference for the guarantee?
+guarantee.otherReferenceYesNo.checkYourAnswersLabel = Add reference for the guarantee
+guarantee.otherReferenceYesNo.error.required = Select yes if you want to add a reference for the guarantee
+guarantee.otherReferenceYesNo.change.hidden = if you want to add a reference for the guarantee
 
-guaranteeDetails.guarantee.otherReferenceYesNo.title = Do you want to add a reference for the guarantee?
-guaranteeDetails.guarantee.otherReferenceYesNo.heading = Do you want to add a reference for the guarantee?
-guaranteeDetails.guarantee.otherReferenceYesNo.checkYourAnswersLabel = Add reference for the guarantee
-guaranteeDetails.guarantee.otherReferenceYesNo.error.required = Select yes if you want to add a reference for the guarantee
-guaranteeDetails.guarantee.otherReferenceYesNo.change.hidden = if you want to add a reference for the guarantee
+guarantee.accessCode.title = What is the access code?
+guarantee.accessCode.heading = What is the access code?
+guarantee.accessCode.paragraph = This is set up by the Principal and works just like a bank PIN code.
+guarantee.accessCode.hint = The code will be 4 characters long, like 0000 or X9X9.
+guarantee.accessCode.checkYourAnswersLabel = Access code
+guarantee.accessCode.error.required = Enter the access code
+guarantee.accessCode.error.length = The access code must be 4 characters long
+guarantee.accessCode.error.invalid = The access code must only include the letters a to z and numbers 0 to 9
+guarantee.accessCode.change.hidden = access code
 
-guaranteeDetails.guarantee.accessCode.title = What is the access code?
-guaranteeDetails.guarantee.accessCode.heading = What is the access code?
-guaranteeDetails.guarantee.accessCode.paragraph = This is set up by the Principal and works just like a bank PIN code.
-guaranteeDetails.guarantee.accessCode.hint = The code will be 4 characters long, like 0000 or X9X9.
-guaranteeDetails.guarantee.accessCode.checkYourAnswersLabel = Access code
-guaranteeDetails.guarantee.accessCode.error.required = Enter the access code
-guaranteeDetails.guarantee.accessCode.error.length = The access code must be 4 characters long
-guaranteeDetails.guarantee.accessCode.error.invalid = The access code must only include the letters a to z and numbers 0 to 9
-guaranteeDetails.guarantee.accessCode.change.hidden = access code
+guarantee.liabilityAmount.title = How much is the liability amount?
+guarantee.liabilityAmount.heading = How much is the liability amount?
+guarantee.liabilityAmount.checkYourAnswersLabel = Liability amount
+guarantee.liabilityAmount.hint = This can have up to 2 decimal places, for example 999.99.
+guarantee.liabilityAmount.error.required = Enter the liability amount in pounds
+guarantee.liabilityAmount.error.invalidCharacters = The liability amount must only include numbers 0 to 9 and a decimal point
+guarantee.liabilityAmount.error.invalidFormat = The liability amount must only have up to 2 decimal places, for example 999.99
+guarantee.liabilityAmount.error.invalidValue = The liability amount must be 9,999,999,999,999,999.99 or less
+guarantee.liabilityAmount.change.hidden = liability amount
 
-guaranteeDetails.guarantee.liabilityAmount.title = How much is the liability amount?
-guaranteeDetails.guarantee.liabilityAmount.heading = How much is the liability amount?
-guaranteeDetails.guarantee.liabilityAmount.checkYourAnswersLabel = Liability amount
-guaranteeDetails.guarantee.liabilityAmount.hint = This can have up to 2 decimal places, for example 999.99.
-guaranteeDetails.guarantee.liabilityAmount.error.required = Enter the liability amount in pounds
-guaranteeDetails.guarantee.liabilityAmount.error.invalidCharacters = The liability amount must only include numbers 0 to 9 and a decimal point
-guaranteeDetails.guarantee.liabilityAmount.error.invalidFormat = The liability amount must only have up to 2 decimal places, for example 999.99
-guaranteeDetails.guarantee.liabilityAmount.error.invalidValue = The liability amount must be 9,999,999,999,999,999.99 or less
-guaranteeDetails.guarantee.liabilityAmount.change.hidden = liability amount
+guarantee.currency.title = What currency do you want to use for the liability?
+guarantee.currency.heading = What currency do you want to use for the liability?
+guarantee.currency.placeholder = Select a currency
+guarantee.currency.change.hidden = liability currency
+guarantee.currency.checkYourAnswersLabel = Liability currency
+guarantee.currency.error.required = Select the currency you want to use for the liability
 
-guaranteeDetails.guarantee.currency.title = What currency do you want to use for the liability?
-guaranteeDetails.guarantee.currency.heading = What currency do you want to use for the liability?
-guaranteeDetails.guarantee.currency.placeholder = Select a currency
-guaranteeDetails.guarantee.currency.change.hidden = liability currency
-guaranteeDetails.guarantee.currency.checkYourAnswersLabel = Liability currency
-guaranteeDetails.guarantee.currency.error.required = Select the currency you want to use for the liability
-
-guaranteeDetails.guarantee.removeGuaranteeYesNo.title = Are you sure you want to remove this guarantee?
-guaranteeDetails.guarantee.removeGuaranteeYesNo.heading = Are you sure you want to remove this guarantee?
-guaranteeDetails.guarantee.removeGuaranteeYesNo.error.required = Select yes if you want to remove this guarantee
+guarantee.removeGuaranteeYesNo.title = Are you sure you want to remove this guarantee?
+guarantee.removeGuaranteeYesNo.heading = Are you sure you want to remove this guarantee?
+guarantee.removeGuaranteeYesNo.error.required = Select yes if you want to remove this guarantee

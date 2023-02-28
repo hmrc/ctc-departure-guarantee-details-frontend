@@ -34,7 +34,7 @@ import scala.concurrent.Future
 class GuaranteeTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider            = new EnumerableFormProvider()
-  private val form                    = formProvider[GuaranteeType]("guaranteeDetails.guarantee.guaranteeType")
+  private val form                    = formProvider[GuaranteeType]("guarantee.guaranteeType")
   private val mode                    = NormalMode
   private lazy val guaranteeTypeRoute = routes.GuaranteeTypeController.onPageLoad(lrn, mode, index).url
 
