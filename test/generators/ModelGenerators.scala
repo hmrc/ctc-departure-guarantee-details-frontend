@@ -163,4 +163,10 @@ trait ModelGenerators {
       } yield CurrencyCode(currency, desc)
     }
 
+  implicit lazy val arbitraryCurrencyCodeList: Arbitrary[CurrencyCodeList] = Arbitrary {
+    for {
+      currencies <- listWithMaxLength[CurrencyCode]()
+    } yield CurrencyCodeList(currencies.distinctBy(_.currency))
+  }
+
 }
