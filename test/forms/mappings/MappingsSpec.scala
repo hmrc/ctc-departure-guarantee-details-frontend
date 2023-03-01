@@ -62,6 +62,11 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
       result.errors must contain(FormError("value", "error.required"))
     }
 
+    "must not bind a string of whitespace only" in {
+      val result = testForm.bind(Map("value" -> " \t"))
+      result.errors must contain(FormError("value", "error.required"))
+    }
+
     "must not bind an empty map" in {
       val result = testForm.bind(Map.empty[String, String])
       result.errors must contain(FormError("value", "error.required"))
@@ -79,25 +84,32 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
     }
   }
 
-  "trimmedText" - {
+  "textWithSpacesRemoved" - {
 
     val testForm: Form[String] =
       Form(
-        "value" -> trimmedText()
+        "value" -> textWithSpacesRemoved()
       )
 
-    "must bind a valid string" in {
-      val result = testForm.bind(Map("value" -> "   foobar    "))
-      result.get mustEqual "foobar"
-    }
+    "must bind a valid string" - {
+      "with no whitespace" in {
+        val result = testForm.bind(Map("value" -> "foobar"))
+        result.get mustEqual "foobar"
+      }
 
-    "must not bind a string with spaces" in {
-      val result = testForm.bind(Map("value" -> "     "))
-      result.errors must contain(FormError("value", "error.required"))
+      "with whitespace" in {
+        val result = testForm.bind(Map("value" -> " foo \t bar "))
+        result.get mustEqual "foobar"
+      }
     }
 
     "must not bind an empty string" in {
       val result = testForm.bind(Map("value" -> ""))
+      result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "must not bind a string of whitespace only" in {
+      val result = testForm.bind(Map("value" -> " \t"))
       result.errors must contain(FormError("value", "error.required"))
     }
 
@@ -112,9 +124,16 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
       result.errors must contain(FormError("value", "custom.error"))
     }
 
-    "must unbind a valid value" in {
-      val result = testForm.fill("foobar   ")
-      result.apply("value").value.value mustEqual "foobar   "
+    "must unbind a valid value" - {
+      "with no whitespace" in {
+        val result = testForm.fill("foobar")
+        result.apply("value").value.value mustEqual "foobar"
+      }
+
+      "with whitespace" in {
+        val result = testForm.fill(" foo \t bar ")
+        result.apply("value").value.value mustEqual " foo \t bar "
+      }
     }
   }
 
