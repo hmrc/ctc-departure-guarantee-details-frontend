@@ -29,23 +29,9 @@ trait Formatters {
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
       data.get(key) match {
-        case None | Some("") => Left(Seq(FormError(key, errorKey, args)))
-        case Some(s)         => Right(s)
-      }
-
-    override def unbind(key: String, value: String): Map[String, String] =
-      Map(key -> value)
-  }
-
-  private[mappings] def trimmedStringFormatter(errorKey: String, args: Seq[Any] = Seq.empty): Formatter[String] = new Formatter[String] {
-
-    private def error(key: String) = Left(Seq(FormError(key, errorKey, args)))
-
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
-      data.get(key) match {
-        case None                      => error(key)
-        case Some(s) if s.trim.isEmpty => error(key)
-        case Some(s)                   => Right(s.trim)
+        case None                      => Left(Seq(FormError(key, errorKey, args)))
+        case Some(s) if s.trim.isEmpty => Left(Seq(FormError(key, errorKey, args)))
+        case Some(s)                   => Right(s)
       }
 
     override def unbind(key: String, value: String): Map[String, String] =
