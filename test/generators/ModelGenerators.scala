@@ -169,4 +169,8 @@ trait ModelGenerators {
     } yield CurrencyCodeList(currencies.distinctBy(_.currency))
   }
 
+  lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
+    Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
+  }
+
 }
