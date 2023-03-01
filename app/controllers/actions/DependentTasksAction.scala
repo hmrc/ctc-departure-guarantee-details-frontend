@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DependentTasksActionImpl @Inject() (implicit val executionContext: ExecutionContext, config: FrontendAppConfig) extends DependentTasksAction {
 
   override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] = {
-    val dependentTasks = Seq.empty
+    val dependentTasks = Seq(".preTaskList")
     if (dependentTasks.forall(request.userAnswers.tasks.get(_).exists(_.isCompleted))) {
       Future.successful(None)
     } else {
