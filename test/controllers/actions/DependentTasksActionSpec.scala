@@ -21,6 +21,7 @@ import generators.Generators
 import models.requests.DataRequest
 import models.{TaskStatus, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.mvc.{Result, Results}
 import play.api.test.Helpers._
@@ -29,11 +30,13 @@ import scala.concurrent.Future
 
 class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
+  private val dependentTasks = frontendAppConfig.dependentTasks
+
   def harness(userAnswers: UserAnswers): Future[Result] = {
 
-    lazy val actionProvider = app.injector.instanceOf[DependentTasksAction]
+    lazy val action = app.injector.instanceOf[DependentTasksAction]
 
-    actionProvider
+    action
       .invokeBlock(
         DataRequest(fakeRequest, eoriNumber, userAnswers),
         {
@@ -46,21 +49,35 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
   "DependentTasksAction" - {
 
     "return None if dependent sections are completed" in {
-      val tasks       = Map(".preTaskList" -> TaskStatus.Completed)
+      val tasks       = Map(dependentTasks.map(_ -> TaskStatus.Completed): _*)
       val userAnswers = emptyUserAnswers.copy(tasks = tasks)
       val result      = harness(userAnswers)
       status(result) mustBe OK
       redirectLocation(result) mustBe None
     }
 
-    "return to task list if dependent sections aren't completed" in {
-      forAll(arbitrary[TaskStatus](arbitraryIncompleteTaskStatus)) {
-        taskStatus =>
-          val tasks       = Map(".preTaskList" -> taskStatus)
-          val userAnswers = emptyUserAnswers.copy(tasks = tasks)
-          val result      = harness(userAnswers)
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe frontendAppConfig.taskListUrl(userAnswers.lrn)
+    "return to task list" - {
+      "when all dependent sections are incomplete" in {
+        forAll(arbitrary[TaskStatus](arbitraryIncompleteTaskStatus)) {
+          taskStatus =>
+            val tasks       = Map(dependentTasks.map(_ -> taskStatus): _*)
+            val userAnswers = emptyUserAnswers.copy(tasks = tasks)
+            val result      = harness(userAnswers)
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result).value mustBe frontendAppConfig.taskListUrl(userAnswers.lrn)
+        }
+      }
+
+      "when one dependent section is incomplete" in {
+        forAll(Gen.oneOf(dependentTasks), arbitrary[TaskStatus](arbitraryIncompleteTaskStatus)) {
+          (dependentTask, taskStatus) =>
+            val tasks = Map(dependentTasks.map(_ -> TaskStatus.Completed): _*)
+              .updated(dependentTask, taskStatus)
+            val userAnswers = emptyUserAnswers.copy(tasks = tasks)
+            val result      = harness(userAnswers)
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result).value mustBe frontendAppConfig.taskListUrl(userAnswers.lrn)
+        }
       }
     }
   }
