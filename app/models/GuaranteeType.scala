@@ -19,11 +19,13 @@ package models
 import config.Constants.XI
 import pages.external.OfficeOfDeparturePage
 
-sealed trait GuaranteeType
+sealed trait GuaranteeType extends Radioable[GuaranteeType] {
+  override val messageKeyPrefix: String = GuaranteeType.messageKeyPrefix
+}
 
-object GuaranteeType extends RadioModelU[GuaranteeType] {
+object GuaranteeType extends EnumerableType[GuaranteeType] {
 
-  override val messageKeyPrefix = "guarantee.guaranteeType"
+  val messageKeyPrefix: String = "guarantee.guaranteeType"
 
   case object GuaranteeWaiver extends WithName("0") with GuaranteeType
 
@@ -58,7 +60,7 @@ object GuaranteeType extends RadioModelU[GuaranteeType] {
     TIRGuarantee
   )
 
-  override def valuesU(userAnswers: UserAnswers): Seq[GuaranteeType] = {
+  def values(userAnswers: UserAnswers): Seq[GuaranteeType] = {
     val valuesExcludingTIRGuarantee = values.filterNot(_ == TIRGuarantee)
     userAnswers.get(OfficeOfDeparturePage).map(_.countryCode) match {
       case Some(XI) => valuesExcludingTIRGuarantee.filterNot(_ == IndividualGuaranteeMultiple)

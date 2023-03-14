@@ -18,7 +18,6 @@ package models.reference
 
 import models.Selectable
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 import java.util.Currency
 import scala.util.Try
@@ -29,7 +28,7 @@ case class CurrencyCode(currency: String, description: Option[String]) extends S
     x => s" - $x"
   )
 
-  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(currency), this.toString, selected)
+  override val value: String = currency
 
   val symbol: String = Try(Currency.getInstance(currency).getSymbol).getOrElse(currency)
 }

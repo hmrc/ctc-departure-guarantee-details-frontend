@@ -67,7 +67,7 @@ class GuaranteeTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
           val answers = emptyUserAnswers
             .setValue(OfficeOfDeparturePage, CustomsOffice("XI1", "name", None))
 
-          val radios = GuaranteeType.valuesU(answers)
+          val radios = GuaranteeType.values(answers)
           val expected = Seq(
             GuaranteeWaiver,
             ComprehensiveGuarantee,
@@ -86,7 +86,7 @@ class GuaranteeTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
           val answers = emptyUserAnswers
             .setValue(OfficeOfDeparturePage, CustomsOffice("GB1", "name", None))
 
-          val radios = GuaranteeType.valuesU(answers)
+          val radios = GuaranteeType.values(answers)
           val expected = Seq(
             GuaranteeWaiver,
             ComprehensiveGuarantee,

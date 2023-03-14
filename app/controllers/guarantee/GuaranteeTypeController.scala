@@ -52,7 +52,7 @@ class GuaranteeTypeController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, lrn, GuaranteeType.radioItemsU(request.userAnswers), mode, index))
+      Ok(view(preparedForm, lrn, GuaranteeType.values(request.userAnswers), mode, index))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(lrn).async {
@@ -60,7 +60,7 @@ class GuaranteeTypeController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, GuaranteeType.radioItems, mode, index))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, GuaranteeType.values(request.userAnswers), mode, index))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
             GuaranteeTypePage(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()

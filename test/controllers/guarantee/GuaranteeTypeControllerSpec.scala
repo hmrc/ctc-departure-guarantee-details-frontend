@@ -59,7 +59,7 @@ class GuaranteeTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, GuaranteeType.radioItemsU(userAnswers), mode, index)(request, messages).toString
+        view(form, lrn, GuaranteeType.values(userAnswers), mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -78,7 +78,7 @@ class GuaranteeTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, GuaranteeType.radioItemsU(userAnswers), mode, index)(request, messages).toString
+        view(filledForm, lrn, GuaranteeType.values(userAnswers), mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -98,8 +98,8 @@ class GuaranteeTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+      setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, guaranteeTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -111,7 +111,7 @@ class GuaranteeTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, GuaranteeType.radioItems, mode, index)(request, messages).toString
+        view(boundForm, lrn, GuaranteeType.values(userAnswers), mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
