@@ -107,7 +107,7 @@ guarantee.liabilityAmount.hint = This can have up to 2 decimal places, for examp
 guarantee.liabilityAmount.error.required = Enter the liability amount in pounds
 guarantee.liabilityAmount.error.invalidCharacters = The liability amount must only include numbers 0 to 9 and a decimal point
 guarantee.liabilityAmount.error.invalidFormat = The liability amount must only have up to 2 decimal places, for example 999.99
-guarantee.liabilityAmount.error.invalidValue = The liability amount must be 9,999,999,999,999,999.99 or less
+guarantee.liabilityAmount.error.invalidValue = The liability amount must be 16 characters or less
 guarantee.liabilityAmount.change.hidden = liability amount
 
 guarantee.currency.title = What currency do you want to use for the liability?
