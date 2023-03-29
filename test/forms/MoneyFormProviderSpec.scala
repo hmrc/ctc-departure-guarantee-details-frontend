@@ -16,11 +16,11 @@
 
 package forms
 
-import forms.behaviours.DoubleFieldBehaviours
+import forms.behaviours.{BigDecimalFieldBehaviours, DoubleFieldBehaviours}
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class MoneyFormProviderSpec extends DoubleFieldBehaviours {
+class MoneyFormProviderSpec extends DoubleFieldBehaviours with BigDecimalFieldBehaviours {
 
   private val prefix               = Gen.alphaNumStr.sample.value
   private val requiredKey          = s"$prefix.error.required"
