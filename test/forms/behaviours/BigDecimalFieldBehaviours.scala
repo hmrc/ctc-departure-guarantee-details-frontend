@@ -16,7 +16,6 @@
 
 package forms.behaviours
 
-import org.scalacheck.Gen
 import play.api.data.{Form, FormError}
 
 trait BigDecimalFieldBehaviours extends FieldBehaviours {
