@@ -16,8 +16,7 @@
 
 package forms.mappings
 
-import models.Enumerable
-import models.reference.{CurrencyCode, CurrencyCodeList}
+import models.{Enumerable, Selectable, SelectableList}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
 import play.api.data.format.Formats.ignoredFormat
@@ -55,10 +54,10 @@ trait Mappings extends Formatters with Constraints {
   ): FieldMapping[BigDecimal] =
     of(currencyFormatter(requiredKey, invalidCharactersKey, invalidFormatKey, invalidValueKey))
 
-  protected def currencyCode(
-    currencyCodeList: CurrencyCodeList,
+  protected def selectable[T <: Selectable](
+    selectableList: SelectableList[T],
     errorKey: String = "error.required",
     args: Seq[Any] = Seq.empty
-  ): FieldMapping[CurrencyCode] =
-    of(currencyCodeFormatter(currencyCodeList, errorKey, args))
+  ): FieldMapping[T] =
+    of(selectableFormatter[T](selectableList, errorKey, args))
 }

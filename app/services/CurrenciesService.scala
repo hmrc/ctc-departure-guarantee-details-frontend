@@ -17,7 +17,8 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.reference.{CurrencyCode, CurrencyCodeList}
+import models.SelectableList
+import models.reference.CurrencyCode
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -27,12 +28,12 @@ class CurrenciesService @Inject() (
   referenceDataConnector: ReferenceDataConnector
 )(implicit ec: ExecutionContext) {
 
-  def getCurrencyCodes()(implicit hc: HeaderCarrier): Future[CurrencyCodeList] =
+  def getCurrencyCodes()(implicit hc: HeaderCarrier): Future[SelectableList[CurrencyCode]] =
     referenceDataConnector
       .getCurrencyCodes()
       .map(sort)
 
-  private def sort(currencyCodes: Seq[CurrencyCode]): CurrencyCodeList =
-    CurrencyCodeList(currencyCodes.sortBy(_.currency.toLowerCase))
+  private def sort(currencyCodes: Seq[CurrencyCode]): SelectableList[CurrencyCode] =
+    SelectableList(currencyCodes.sortBy(_.currency.toLowerCase))
 
 }

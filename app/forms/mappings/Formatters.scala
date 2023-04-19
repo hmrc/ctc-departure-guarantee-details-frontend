@@ -16,8 +16,7 @@
 
 package forms.mappings
 
-import models.reference.{CurrencyCode, CurrencyCodeList}
-import models.{Enumerable, RichString}
+import models.{Enumerable, RichString, Selectable, SelectableList}
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -142,25 +141,26 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString())
     }
 
-  private[mappings] def currencyCodeFormatter(
-    currencyCodeList: CurrencyCodeList,
+  private[mappings] def selectableFormatter[T <: Selectable](
+    selectableList: SelectableList[T],
     errorKey: String,
     args: Seq[Any] = Seq.empty
-  ): Formatter[CurrencyCode] = new Formatter[CurrencyCode] {
+  ): Formatter[T] = new Formatter[T] {
 
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], CurrencyCode] = {
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], T] = {
       lazy val error = Left(Seq(FormError(key, errorKey, args)))
       data.get(key) match {
-        case None => error
-        case Some(currency) =>
-          currencyCodeList.getCurrencyCode(currency) match {
-            case Some(currencyCode: CurrencyCode) => Right(currencyCode)
-            case None                             => error
+        case None =>
+          error
+        case Some(value) =>
+          selectableList.values.find(_.value == value) match {
+            case Some(selectable) => Right(selectable)
+            case None             => error
           }
       }
     }
 
-    override def unbind(key: String, currencyCode: CurrencyCode): Map[String, String] =
-      Map(key -> currencyCode.currency)
+    override def unbind(key: String, selectable: T): Map[String, String] =
+      Map(key -> selectable.value)
   }
 }

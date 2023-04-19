@@ -163,10 +163,10 @@ trait ModelGenerators {
       } yield CurrencyCode(currency, desc)
     }
 
-  implicit lazy val arbitraryCurrencyCodeList: Arbitrary[CurrencyCodeList] = Arbitrary {
+  implicit def arbitrarySelectableList[T <: Selectable](implicit arbitrary: Arbitrary[T]): Arbitrary[SelectableList[T]] = Arbitrary {
     for {
-      currencies <- listWithMaxLength[CurrencyCode]()
-    } yield CurrencyCodeList(currencies.distinctBy(_.currency))
+      values <- listWithMaxLength[T]()
+    } yield SelectableList(values.distinctBy(_.value))
   }
 
   lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
