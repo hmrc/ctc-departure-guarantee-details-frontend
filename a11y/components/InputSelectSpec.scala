@@ -17,8 +17,9 @@
 package components
 
 import a11ySpecBase.A11ySpecBase
-import forms.CurrencyCodeFormProvider
-import models.reference.CurrencyCodeList
+import forms.SelectableFormProvider
+import models.SelectableList
+import models.reference.CurrencyCode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.twirl.api.Html
@@ -35,14 +36,14 @@ class InputSelectSpec extends A11ySpecBase {
     val prefix           = Gen.alphaNumStr.sample.value
     val title            = nonEmptyString.sample.value
     val caption          = Gen.option(nonEmptyString).sample.value
-    val currencyCodeList = arbitrary[CurrencyCodeList].sample.value
+    val currencyCodeList = arbitrary[SelectableList[CurrencyCode]].sample.value
     val label            = nonEmptyString.sample.value
     val hint             = Gen.option(nonEmptyString).sample.value
     val placeholder      = nonEmptyString.sample.value
-    val selectedValue    = Gen.oneOf(None, Some(currencyCodeList.currencyCodes.head)).sample.value
-    val selectItems      = currencyCodeList.currencyCodes.toSelectItems(selectedValue)
+    val selectedValue    = Gen.oneOf(None, Some(currencyCodeList.values.head)).sample.value
+    val selectItems      = currencyCodeList.values.toSelectItems(selectedValue)
     val additionalHtml   = arbitrary[Html].sample.value
-    val form             = new CurrencyCodeFormProvider()(prefix, currencyCodeList)
+    val form             = new SelectableFormProvider()(prefix, currencyCodeList)
     val preparedForm = selectedValue match {
       case Some(country) => form.fill(country)
       case None          => form

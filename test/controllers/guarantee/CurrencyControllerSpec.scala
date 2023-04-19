@@ -17,10 +17,10 @@
 package controllers.guarantee
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.CurrencyCodeFormProvider
+import forms.SelectableFormProvider
 import generators.Generators
-import models.NormalMode
-import models.reference.{CurrencyCode, CurrencyCodeList}
+import models.reference.CurrencyCode
+import models.{NormalMode, SelectableList}
 import navigation.GuaranteeNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -39,9 +39,9 @@ class CurrencyControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
   private val currencyCode1    = arbitrary[CurrencyCode].sample.value
   private val currencyCode2    = arbitrary[CurrencyCode].sample.value
-  private val currencyCodeList = CurrencyCodeList(Seq(currencyCode1, currencyCode2))
+  private val currencyCodeList = SelectableList(Seq(currencyCode1, currencyCode2))
 
-  private val formProvider = new CurrencyCodeFormProvider()
+  private val formProvider = new SelectableFormProvider()
   private val form         = formProvider("guarantee.currency", currencyCodeList)
   private val mode         = NormalMode
 
@@ -70,7 +70,7 @@ class CurrencyControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, currencyCodeList.currencyCodes, mode, index)(request, messages).toString
+        view(form, lrn, currencyCodeList.values, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -90,7 +90,7 @@ class CurrencyControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, currencyCodeList.currencyCodes, mode, index)(request, messages).toString
+        view(filledForm, lrn, currencyCodeList.values, mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -125,7 +125,7 @@ class CurrencyControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, currencyCodeList.currencyCodes, mode, index)(request, messages).toString
+        view(boundForm, lrn, currencyCodeList.values, mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

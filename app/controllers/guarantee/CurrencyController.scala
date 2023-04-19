@@ -18,7 +18,7 @@ package controllers.guarantee
 
 import controllers.actions.Actions
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.CurrencyCodeFormProvider
+import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{GuaranteeNavigatorProvider, UserAnswersNavigator}
 import pages.guarantee.CurrencyPage
@@ -37,7 +37,7 @@ class CurrencyController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: GuaranteeNavigatorProvider,
   actions: Actions,
-  formProvider: CurrencyCodeFormProvider,
+  formProvider: SelectableFormProvider,
   currenciesService: CurrenciesService,
   val controllerComponents: MessagesControllerComponents,
   view: CurrencyView
@@ -55,7 +55,7 @@ class CurrencyController @Inject() (
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, lrn, currencyCodeList.currencyCodes, mode, index))
+          Ok(view(preparedForm, lrn, currencyCodeList.values, mode, index))
       }
   }
 
@@ -67,7 +67,7 @@ class CurrencyController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, currencyCodeList.currencyCodes, mode, index))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, currencyCodeList.values, mode, index))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
                 CurrencyPage(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()

@@ -19,7 +19,8 @@ package services
 import base.SpecBase
 import connectors.ReferenceDataConnector
 import generators.Generators
-import models.reference.{CurrencyCode, CurrencyCodeList}
+import models.SelectableList
+import models.reference.CurrencyCode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -50,7 +51,7 @@ class CurrenciesServiceSpec extends SpecBase with BeforeAndAfterEach with Genera
           .thenReturn(Future.successful(currencyCodes))
 
         service.getCurrencyCodes().futureValue mustBe
-          CurrencyCodeList(Seq(currencyCode1, currencyCode2))
+          SelectableList(Seq(currencyCode1, currencyCode2))
 
         verify(mockRefDataConnector).getCurrencyCodes()(any(), any())
       }

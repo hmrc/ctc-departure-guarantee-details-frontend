@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package models.reference
+package forms
 
-case class CurrencyCodeList(currencyCodes: Seq[CurrencyCode]) {
+import forms.mappings.Mappings
+import models.{Selectable, SelectableList}
+import play.api.data.Form
 
-  def getAll: Seq[CurrencyCode] =
-    currencyCodes
+import javax.inject.Inject
 
-  def getCurrencyCode(currency: String): Option[CurrencyCode] =
-    currencyCodes.find(_.currency == currency)
+class SelectableFormProvider @Inject() extends Mappings {
 
-}
-
-object CurrencyCodeList {
-
-  def apply(currencyCodes: Seq[CurrencyCode]): CurrencyCodeList =
-    new CurrencyCodeList(currencyCodes)
+  def apply[T <: Selectable](prefix: String, selectableList: SelectableList[T], args: Any*): Form[T] =
+    Form(
+      "value" -> selectable[T](selectableList, s"$prefix.error.required", args)
+    )
 }
