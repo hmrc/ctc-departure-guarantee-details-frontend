@@ -38,10 +38,10 @@ class GuaranteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             .setValue(DeclarationTypePage, declarationType)
             .setValue(GuaranteeTypePage(index), guaranteeType)
 
-          forAll(arbitraryGuaranteeAnswers(initialAnswers, index), arbitrary[Mode]) {
-            (answers, mode) =>
+          forAll(arbitraryGuaranteeAnswers(initialAnswers, index)) {
+            answers =>
               val navigatorProvider = new GuaranteeNavigatorProviderImpl()
-              val navigator         = navigatorProvider.apply(mode, index)
+              val navigator         = navigatorProvider.apply(CheckMode, index)
 
               navigator
                 .nextPage(answers)
@@ -57,10 +57,10 @@ class GuaranteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             .setValue(DeclarationTypePage, declarationType)
             .setValue(GuaranteeTypePage(index), GuaranteeType.GuaranteeWaiverByAgreement)
 
-          forAll(arbitraryGuaranteeAnswers(initialAnswers, index), arbitrary[Mode]) {
-            (answers, mode) =>
+          forAll(arbitraryGuaranteeAnswers(initialAnswers, index)) {
+            answers =>
               val navigatorProvider = new GuaranteeNavigatorProviderImpl()
-              val navigator         = navigatorProvider.apply(mode, index)
+              val navigator         = navigatorProvider.apply(CheckMode, index)
 
               navigator
                 .nextPage(answers)

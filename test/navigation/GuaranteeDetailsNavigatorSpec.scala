@@ -33,10 +33,10 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
       "when TIR declaration type" - {
         "must redirect to 'TIR guarantee added' page" in {
           val initialAnswers = emptyUserAnswers.setValue(DeclarationTypePage, Option4)
-          forAll(arbitraryGuaranteeDetailsAnswers(initialAnswers), arbitrary[Mode]) {
-            (answers, mode) =>
+          forAll(arbitraryGuaranteeDetailsAnswers(initialAnswers)) {
+            answers =>
               val navigatorProvider = new GuaranteeDetailsNavigatorProviderImpl()
-              val navigator         = navigatorProvider.apply(mode)
+              val navigator         = navigatorProvider.apply(CheckMode)
 
               navigator
                 .nextPage(answers)
@@ -50,10 +50,10 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
             declarationType =>
               val initialAnswers = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
-              forAll(arbitraryGuaranteeDetailsAnswers(initialAnswers), arbitrary[Mode]) {
-                (answers, mode) =>
+              forAll(arbitraryGuaranteeDetailsAnswers(initialAnswers)) {
+                answers =>
                   val navigatorProvider = new GuaranteeDetailsNavigatorProviderImpl()
-                  val navigator         = navigatorProvider.apply(mode)
+                  val navigator         = navigatorProvider.apply(CheckMode)
 
                   navigator
                     .nextPage(answers)
