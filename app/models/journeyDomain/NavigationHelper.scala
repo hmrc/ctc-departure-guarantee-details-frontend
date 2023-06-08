@@ -26,7 +26,7 @@ class NavigationHelper(mode: Mode, currentPage: Option[QuestionPage[_]]) {
 
   def read[T](page: QuestionPage[T])(reader: QuestionPage[T] => UserAnswersReader[T]): UserAnswersReader[T] = {
     val result: UserAnswersReader[T] = if (stopAtNextPage) UserAnswersReader.fail(page) else reader(page)
-    if (currentPage.contains(page) && mode == NormalMode) stopAtNextPage = true
+    stopAtNextPage = (currentPage.contains(page) || currentPage.isEmpty) && mode == NormalMode
     result
   }
 }
