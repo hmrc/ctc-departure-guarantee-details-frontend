@@ -19,7 +19,8 @@ package navigation
 import config.FrontendAppConfig
 import models._
 import models.domain.UserAnswersReader
-import models.journeyDomain.GuaranteeDomain
+import models.journeyDomain.{GuaranteeDomain, NavigationHelper}
+import pages.QuestionPage
 
 import javax.inject.{Inject, Singleton}
 
@@ -43,6 +44,9 @@ class GuaranteeNavigator(
 
   override type T = GuaranteeDomain
 
-  implicit override val reader: UserAnswersReader[GuaranteeDomain] =
-    GuaranteeDomain.userAnswersReader(index)
+  implicit override val reader: Option[QuestionPage[_]] => UserAnswersReader[GuaranteeDomain] = {
+    page =>
+      implicit val navigationHelper: NavigationHelper = NavigationHelper(mode, page)
+      GuaranteeDomain.userAnswersReader(index)
+  }
 }

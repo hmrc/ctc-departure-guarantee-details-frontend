@@ -18,8 +18,8 @@ import cats.data.ReaderT
 import models.TaskStatus.{Completed, InProgress}
 import models.UserAnswers
 import models.domain.UserAnswersReader
-import models.journeyDomain.GuaranteeDetailsDomain
 import models.journeyDomain.OpsError.WriterError
+import models.journeyDomain.{GuaranteeDetailsDomain, NavigationHelper}
 import models.requests.MandatoryDataRequest
 import navigation.UserAnswersNavigator
 import pages.QuestionPage
@@ -67,6 +67,7 @@ package object controllers {
         case (page, userAnswers) =>
           page.path.path.headOption.map(_.toJsonString) match {
             case Some(section) =>
+              implicit val navigationHelper: NavigationHelper = NavigationHelper()
               val status = UserAnswersReader[GuaranteeDetailsDomain].run(userAnswers) match {
                 case Left(_)  => InProgress
                 case Right(_) => Completed
@@ -103,7 +104,7 @@ package object controllers {
 
     def navigate()(implicit navigator: UserAnswersNavigator, executionContext: ExecutionContext): Future[Result] =
       navigate {
-        case (_, userAnswers) => navigator.nextPage(userAnswers)
+        case (page, userAnswers) => navigator.nextPage(userAnswers)
       }
 
     def navigateTo(call: Call)(implicit executionContext: ExecutionContext): Future[Result] =

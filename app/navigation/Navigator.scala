@@ -17,8 +17,10 @@
 package navigation
 
 import models.UserAnswers
+import pages.QuestionPage
 import play.api.mvc.Call
 
 trait Navigator {
-  def nextPage(userAnswers: UserAnswers): Call
+  def nextPage(userAnswers: UserAnswers): Call = nextPage(userAnswers, None)
+  def nextPage(userAnswers: UserAnswers, page: Option[QuestionPage[_]]): Call
 }

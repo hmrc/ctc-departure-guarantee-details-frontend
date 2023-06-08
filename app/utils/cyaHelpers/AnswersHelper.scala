@@ -17,7 +17,7 @@
 package utils.cyaHelpers
 
 import config.FrontendAppConfig
-import models.journeyDomain.JourneyDomainModel
+import models.journeyDomain.{JourneyDomainModel, NavigationHelper}
 import models.journeyDomain.Stage.AccessingJourney
 import models.domain.UserAnswersReader
 import models.{Index, LocalReferenceNumber, Mode, RichJsArray, RichOptionalJsArray, UserAnswers}
@@ -31,6 +31,8 @@ import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
 import viewModels.{Link, ListItem}
 
 class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig) extends SummaryListRowHelper {
+
+  implicit val navigationHelper: NavigationHelper = NavigationHelper()
 
   protected def lrn: LocalReferenceNumber = userAnswers.lrn
 

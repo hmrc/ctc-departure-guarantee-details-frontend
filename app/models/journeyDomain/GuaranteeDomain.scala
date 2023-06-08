@@ -39,10 +39,10 @@ sealed trait GuaranteeDomain extends JourneyDomainModel {
 object GuaranteeDomain {
 
   // scalastyle:off cyclomatic.complexity
-  implicit def userAnswersReader(index: Index): UserAnswersReader[GuaranteeDomain] =
+  implicit def userAnswersReader(index: Index)(implicit navigationHelper: NavigationHelper): UserAnswersReader[GuaranteeDomain] =
     DeclarationTypePage.reader.flatMap {
       case Option4 =>
-        GuaranteeTypePage(index).mandatoryReader(_ == TIRGuarantee).map(GuaranteeOfTypesAB(_)(index))
+        navigationHelper.read(GuaranteeTypePage(index))(_.mandatoryReader(_ == TIRGuarantee)).map(GuaranteeOfTypesAB(_)(index))
       case _ =>
         GuaranteeTypePage(index).reader.flatMap {
           guaranteeType =>
@@ -96,13 +96,13 @@ object GuaranteeDomain {
 
   object GuaranteeOfTypes01249 {
 
-    def userAnswersReader(index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
+    def userAnswersReader(index: Index, guaranteeType: GuaranteeType)(implicit navigationHelper: NavigationHelper): UserAnswersReader[GuaranteeDomain] =
       (
         UserAnswersReader(guaranteeType),
-        ReferenceNumberPage(index).reader,
-        CurrencyPage(index).reader,
-        LiabilityAmountPage(index).reader,
-        AccessCodePage(index).reader
+        navigationHelper.read(ReferenceNumberPage(index))(_.reader),
+        navigationHelper.read(CurrencyPage(index))(_.reader),
+        navigationHelper.read(LiabilityAmountPage(index))(_.reader),
+        navigationHelper.read(AccessCodePage(index))(_.reader)
       ).tupled.map((GuaranteeOfTypes01249.apply _).tupled).map(_(index))
   }
 

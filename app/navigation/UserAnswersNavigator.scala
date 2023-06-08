@@ -22,6 +22,7 @@ import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.Stage.CompletingJourney
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.{Mode, UserAnswers}
+import pages.QuestionPage
 import play.api.Logging
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs.GET
@@ -32,12 +33,20 @@ trait UserAnswersNavigator extends Navigator {
 
   type T <: JourneyDomainModel
 
-  implicit val reader: UserAnswersReader[T]
+  implicit val reader: Option[QuestionPage[_]] => UserAnswersReader[T]
 
   val mode: Mode
 
-  override def nextPage(userAnswers: UserAnswers): Call =
-    UserAnswersNavigator.nextPage[T](userAnswers, mode)
+  // TODO - pass Option[QuestionPage[_]] into nextPage
+  //  create some implicit reader class
+  //  this will get passed into the user answers reader
+  //  need to call something like reader.read(<page>)
+  //  compare <page> to the current page
+  //  if they're the same AND we're in NormalMode -> toggle some mutable flag
+  //  if the flag is ever true, auto-return a Left
+
+  override def nextPage(userAnswers: UserAnswers, page: Option[QuestionPage[_]]): Call =
+    UserAnswersNavigator.nextPage[T](userAnswers, mode)(reader(page), config)
 }
 
 object UserAnswersNavigator extends Logging {

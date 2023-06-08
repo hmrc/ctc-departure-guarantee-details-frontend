@@ -38,7 +38,7 @@ case class GuaranteeDetailsDomain(
 
 object GuaranteeDetailsDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[GuaranteeDetailsDomain] =
+  implicit def userAnswersReader(implicit navigationHelper: NavigationHelper): UserAnswersReader[GuaranteeDetailsDomain] =
     GuaranteeDetailsSection.arrayReader
       .flatMap {
         case x if x.isEmpty =>
