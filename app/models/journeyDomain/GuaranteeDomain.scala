@@ -44,7 +44,7 @@ object GuaranteeDomain {
       case Option4 =>
         navigationHelper.read(GuaranteeTypePage(index))(_.mandatoryReader(_ == TIRGuarantee)).map(GuaranteeOfTypesAB(_)(index))
       case _ =>
-        GuaranteeTypePage(index).reader.flatMap {
+        navigationHelper.read(GuaranteeTypePage(index))(_.reader).flatMap {
           guaranteeType =>
             guaranteeType match {
               case GuaranteeWaiverByAgreement =>
@@ -115,11 +115,11 @@ object GuaranteeDomain {
 
   object GuaranteeOfType5 {
 
-    def userAnswersReader(index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
+    def userAnswersReader(index: Index, guaranteeType: GuaranteeType)(implicit navigationHelper: NavigationHelper): UserAnswersReader[GuaranteeDomain] =
       (
         UserAnswersReader(guaranteeType),
-        CurrencyPage(index).reader,
-        LiabilityAmountPage(index).reader
+        navigationHelper.read(CurrencyPage(index))(_.reader),
+        navigationHelper.read(LiabilityAmountPage(index))(_.reader)
       ).tupled.map((GuaranteeOfType5.apply _).tupled).map(_(index))
   }
 
@@ -133,12 +133,12 @@ object GuaranteeDomain {
 
   object GuaranteeOfType8 {
 
-    def userAnswersReader(index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
+    def userAnswersReader(index: Index, guaranteeType: GuaranteeType)(implicit navigationHelper: NavigationHelper): UserAnswersReader[GuaranteeDomain] =
       (
         UserAnswersReader(guaranteeType),
-        OtherReferencePage(index).reader,
-        CurrencyPage(index).reader,
-        LiabilityAmountPage(index).reader
+        navigationHelper.read(OtherReferencePage(index))(_.reader),
+        navigationHelper.read(CurrencyPage(index))(_.reader),
+        navigationHelper.read(LiabilityAmountPage(index))(_.reader)
       ).tupled.map((GuaranteeOfType8.apply _).tupled).map(_(index))
   }
 
@@ -146,8 +146,8 @@ object GuaranteeDomain {
 
   object GuaranteeOfType3 {
 
-    def userAnswersReader(index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
-      OtherReferenceYesNoPage(index).reader.flatMap {
+    def userAnswersReader(index: Index, guaranteeType: GuaranteeType)(implicit navigationHelper: NavigationHelper): UserAnswersReader[GuaranteeDomain] =
+      navigationHelper.read(OtherReferenceYesNoPage(index))(_.reader).flatMap {
         case true  => GuaranteeOfType3WithReference.userAnswersReader(index, guaranteeType)
         case false => GuaranteeOfType3WithoutReference.userAnswersReader(index, guaranteeType)
       }
@@ -163,12 +163,12 @@ object GuaranteeDomain {
 
   object GuaranteeOfType3WithReference {
 
-    def userAnswersReader(index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
+    def userAnswersReader(index: Index, guaranteeType: GuaranteeType)(implicit navigationHelper: NavigationHelper): UserAnswersReader[GuaranteeDomain] =
       (
         UserAnswersReader(guaranteeType),
-        OtherReferencePage(index).reader,
-        CurrencyPage(index).reader,
-        LiabilityAmountPage(index).reader
+        navigationHelper.read(OtherReferencePage(index))(_.reader),
+        navigationHelper.read(CurrencyPage(index))(_.reader),
+        navigationHelper.read(LiabilityAmountPage(index))(_.reader)
       ).tupled.map((GuaranteeOfType3WithReference.apply _).tupled).map(_(index))
   }
 

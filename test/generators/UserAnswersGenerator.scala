@@ -18,13 +18,15 @@ package generators
 
 import models.domain.UserAnswersReader
 import models.journeyDomain.OpsError.ReaderError
-import models.journeyDomain.{GuaranteeDetailsDomain, GuaranteeDomain}
+import models.journeyDomain.{GuaranteeDetailsDomain, GuaranteeDomain, NavigationHelper}
 import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   self: Generators =>
+
+  implicit val navigationHelper: NavigationHelper = NavigationHelper()
 
   implicit lazy val arbitraryUserAnswers: Arbitrary[UserAnswers] =
     Arbitrary {

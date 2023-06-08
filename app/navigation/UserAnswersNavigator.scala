@@ -37,14 +37,6 @@ trait UserAnswersNavigator extends Navigator {
 
   val mode: Mode
 
-  // TODO - pass Option[QuestionPage[_]] into nextPage
-  //  create some implicit reader class
-  //  this will get passed into the user answers reader
-  //  need to call something like reader.read(<page>)
-  //  compare <page> to the current page
-  //  if they're the same AND we're in NormalMode -> toggle some mutable flag
-  //  if the flag is ever true, auto-return a Left
-
   override def nextPage(userAnswers: UserAnswers, page: Option[QuestionPage[_]]): Call =
     UserAnswersNavigator.nextPage[T](userAnswers, mode)(reader(page), config)
 }

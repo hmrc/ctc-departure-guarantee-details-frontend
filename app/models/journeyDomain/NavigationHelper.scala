@@ -22,11 +22,11 @@ import pages.QuestionPage
 
 class NavigationHelper(mode: Mode, currentPage: Option[QuestionPage[_]]) {
 
-  private var autoLeft: Boolean = false
+  private var stopAtNextPage: Boolean = false
 
   def read[T](page: QuestionPage[T])(reader: QuestionPage[T] => UserAnswersReader[T]): UserAnswersReader[T] = {
-    val result: UserAnswersReader[T] = if (autoLeft) UserAnswersReader.fail(page) else reader(page)
-    if (currentPage.contains(page) && mode == NormalMode) autoLeft = true
+    val result: UserAnswersReader[T] = if (stopAtNextPage) UserAnswersReader.fail(page) else reader(page)
+    if (currentPage.contains(page) && mode == NormalMode) stopAtNextPage = true
     result
   }
 }
