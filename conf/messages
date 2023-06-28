@@ -98,7 +98,7 @@ guarantee.accessCode.hint.postTransition = The code will be up to 4 characters l
 guarantee.accessCode.checkYourAnswersLabel = Access code
 guarantee.accessCode.error.required = Enter the access code
 guarantee.accessCode.error.length.transition = The access code must be 4 characters long
-guarantee.accessCode.error.length.postTransition = The access code must be 4 characters long
+guarantee.accessCode.error.length.postTransition = The access code must be up to 4 characters long
 guarantee.accessCode.error.invalid = The access code must only include the letters a to z and numbers 0 to 9
 guarantee.accessCode.change.hidden = access code
 
