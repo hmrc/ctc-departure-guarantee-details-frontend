@@ -20,15 +20,15 @@ import models.reference.CurrencyCode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
-class AddAmountAndCurrencyYesNoPageSpec extends PageBehaviours {
+class AddLiabilityYesNoPageSpec extends PageBehaviours {
 
   "AddAmountAndCurrencyYesNoPage" - {
 
-    beRetrievable[Boolean](AddAmountAndCurrencyYesNoPage(index))
+    beRetrievable[Boolean](AddLiabilityYesNoPage(index))
 
-    beSettable[Boolean](AddAmountAndCurrencyYesNoPage(index))
+    beSettable[Boolean](AddLiabilityYesNoPage(index))
 
-    beRemovable[Boolean](AddAmountAndCurrencyYesNoPage(index))
+    beRemovable[Boolean](AddLiabilityYesNoPage(index))
 
     "cleanup" - {
       "when NO selected" - {
@@ -39,7 +39,7 @@ class AddAmountAndCurrencyYesNoPageSpec extends PageBehaviours {
                 .setValue(CurrencyPage(index), currencyCode)
                 .setValue(LiabilityAmountPage(index), amount)
 
-              val result = userAnswers.setValue(OtherReferenceYesNoPage(index), false)
+              val result = userAnswers.setValue(AddLiabilityYesNoPage(index), false)
 
               result.get(LiabilityAmountPage(index)) mustNot be(defined)
               result.get(CurrencyPage(index)) mustNot be(defined)
@@ -55,7 +55,7 @@ class AddAmountAndCurrencyYesNoPageSpec extends PageBehaviours {
                 .setValue(CurrencyPage(index), currencyCode)
                 .setValue(LiabilityAmountPage(index), amount)
 
-              val result = userAnswers.setValue(OtherReferenceYesNoPage(index), true)
+              val result = userAnswers.setValue(AddLiabilityYesNoPage(index), true)
 
               result.get(LiabilityAmountPage(index)) must be(defined)
               result.get(CurrencyPage(index)) must be(defined)

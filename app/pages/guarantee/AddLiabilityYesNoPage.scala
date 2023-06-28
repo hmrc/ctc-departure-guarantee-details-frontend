@@ -25,11 +25,11 @@ import play.api.mvc.Call
 
 import scala.util.Try
 
-case class AddAmountAndCurrencyYesNoPage(index: Index) extends QuestionPage[Boolean] {
+case class AddLiabilityYesNoPage(index: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = GuaranteeSection(index).path \ toString
 
-  override def toString: String = "addAmountAndCurrencyYesNo"
+  override def toString: String = "addLiabilityYesNo"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
@@ -42,5 +42,5 @@ case class AddAmountAndCurrencyYesNoPage(index: Index) extends QuestionPage[Bool
     }
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddAmountAndCurrencyYesNoController.onPageLoad(userAnswers.lrn, mode, index))
+    Some(routes.AddLiabilityYesNoController.onPageLoad(userAnswers.lrn, mode, index))
 }

@@ -30,21 +30,21 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("guarantee.addAmountAndCurrencyYesNo.title"),
+    title = messages("guarantee.addLiabilityYesNo.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.AddAmountAndCurrencyYesNoController.onSubmit(lrn, mode, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddLiabilityYesNoController.onSubmit(lrn, mode, index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("guarantee.addAmountAndCurrencyYesNo.heading"),
+                heading = messages("guarantee.addLiabilityYesNo.heading"),
                 caption = Some(messages("caption")),
-                additionalHtml = messages("guarantee.addAmountAndCurrencyYesNo.paragraph").toParagraph
+                additionalHtml = messages("guarantee.addLiabilityYesNo.paragraph").toParagraph
             )
         )
 

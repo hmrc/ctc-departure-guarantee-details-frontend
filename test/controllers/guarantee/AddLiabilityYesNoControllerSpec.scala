@@ -23,21 +23,21 @@ import navigation.GuaranteeNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.guarantee.AddAmountAndCurrencyYesNoPage
+import pages.guarantee.AddLiabilityYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.guarantee.AddAmountAndCurrencyYesNoView
+import views.html.guarantee.AddLiabilityYesNoView
 
 import scala.concurrent.Future
 
-class AddAmountAndCurrencyYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
+class AddLiabilityYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider                        = new YesNoFormProvider()
-  private val form                                = formProvider("guarantee.addAmountAndCurrencyYesNo")
+  private val form                                = formProvider("guarantee.addLiabilityYesNo")
   private val mode                                = NormalMode
-  private lazy val addAmountAndCurrencyYesNoRoute = routes.AddAmountAndCurrencyYesNoController.onPageLoad(lrn, mode, index).url
+  private lazy val addAmountAndCurrencyYesNoRoute = routes.AddLiabilityYesNoController.onPageLoad(lrn, mode, index).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -53,7 +53,7 @@ class AddAmountAndCurrencyYesNoControllerSpec extends SpecBase with AppWithDefau
       val request = FakeRequest(GET, addAmountAndCurrencyYesNoRoute)
       val result  = route(app, request).value
 
-      val view = injector.instanceOf[AddAmountAndCurrencyYesNoView]
+      val view = injector.instanceOf[AddLiabilityYesNoView]
 
       status(result) mustEqual OK
 
@@ -63,7 +63,7 @@ class AddAmountAndCurrencyYesNoControllerSpec extends SpecBase with AppWithDefau
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddAmountAndCurrencyYesNoPage(index), true)
+      val userAnswers = emptyUserAnswers.setValue(AddLiabilityYesNoPage(index), true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addAmountAndCurrencyYesNoRoute)
@@ -72,7 +72,7 @@ class AddAmountAndCurrencyYesNoControllerSpec extends SpecBase with AppWithDefau
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[AddAmountAndCurrencyYesNoView]
+      val view = injector.instanceOf[AddLiabilityYesNoView]
 
       status(result) mustEqual OK
 
@@ -107,7 +107,7 @@ class AddAmountAndCurrencyYesNoControllerSpec extends SpecBase with AppWithDefau
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddAmountAndCurrencyYesNoView]
+      val view = injector.instanceOf[AddLiabilityYesNoView]
 
       contentAsString(result) mustEqual
         view(boundForm, lrn, mode, index)(request, messages).toString
