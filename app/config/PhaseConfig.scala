@@ -21,12 +21,22 @@ import models.Phase.{PostTransition, Transition}
 
 trait PhaseConfig {
   val phase: Phase
+
+  def amendMessageKey(key: String): String
+
+  def lengthError(prefix: String): String = amendMessageKey(s"$prefix.error.length")
+
+  def accessCodeHint: String = amendMessageKey("guarantee.accessCode.hint")
 }
 
 class TransitionConfig() extends PhaseConfig {
   override val phase: Phase = Transition
+
+  override def amendMessageKey(key: String): String = s"$key.transition"
 }
 
 class PostTransitionConfig() extends PhaseConfig {
   override val phase: Phase = PostTransition
+
+  override def amendMessageKey(key: String): String = s"$key.postTransition"
 }

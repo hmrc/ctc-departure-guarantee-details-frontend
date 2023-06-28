@@ -30,13 +30,13 @@ class AccessCodeFormProviderSpec extends StringFieldBehaviours with SpecBase wit
 
   private val requiredKey = s"$prefix.error.required"
   private val invalidKey  = s"$prefix.error.invalid"
-  private val lengthKey   = s"$prefix.error.length"
 
   private val fieldName = "value"
 
   "TransitionAccessCodeFormProvider" - {
 
-    val app = transitionApplicationBuilder().build()
+    val lengthKey = s"$prefix.error.length.transition"
+    val app       = transitionApplicationBuilder().build()
 
     ".value" - {
 
@@ -75,7 +75,8 @@ class AccessCodeFormProviderSpec extends StringFieldBehaviours with SpecBase wit
 
   "PostTransitionAccessCodeFormProvider" - {
 
-    val app = postTransitionApplicationBuilder().build()
+    val lengthKey = s"$prefix.error.length.postTransition"
+    val app       = postTransitionApplicationBuilder().build()
 
     ".value" - {
 

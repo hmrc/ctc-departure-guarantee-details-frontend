@@ -16,36 +16,37 @@
 
 package forms
 
+import config.PhaseConfig
 import forms.Constants.accessCodeLength
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
 import play.api.data.validation.Constraint
 
-sealed trait AccessCodeFormProvider extends Mappings {
+import javax.inject.Inject
 
-  def lengthConstraint(prefix: String): Constraint[String]
+abstract class AccessCodeFormProvider(phaseConfig: PhaseConfig) extends Mappings {
+
+  val lengthConstraint: (Int, String) => Constraint[String]
 
   def apply(prefix: String): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required")
         .verifying(
           StopOnFirstFail[String](
-            lengthConstraint(prefix),
+            lengthConstraint(accessCodeLength, phaseConfig.lengthError(prefix)),
             regexp(alphaNumericRegex, s"$prefix.error.invalid")
           )
         )
     )
 }
 
-class TransitionAccessCodeFormProvider extends AccessCodeFormProvider {
+class TransitionAccessCodeFormProvider @Inject() (phaseConfig: PhaseConfig) extends AccessCodeFormProvider(phaseConfig) {
 
-  override def lengthConstraint(prefix: String): Constraint[String] =
-    exactLength(accessCodeLength, s"$prefix.error.length")
+  override val lengthConstraint: (Int, String) => Constraint[String] = exactLength
 }
 
-class PostTransitionAccessCodeFormProvider extends AccessCodeFormProvider {
+class PostTransitionAccessCodeFormProvider @Inject() (phaseConfig: PhaseConfig) extends AccessCodeFormProvider(phaseConfig) {
 
-  override def lengthConstraint(prefix: String): Constraint[String] =
-    maxLength(accessCodeLength, s"$prefix.error.length")
+  override val lengthConstraint: (Int, String) => Constraint[String] = maxLength
 }

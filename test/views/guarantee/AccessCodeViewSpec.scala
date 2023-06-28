@@ -16,23 +16,34 @@
 
 package views.guarantee
 
+import base.AppWithDefaultMockFixtures
 import forms.AccessCodeFormProvider
 import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
+import play.api.Application
 import play.api.data.Form
+import play.api.test.Helpers.running
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.guarantee.AccessCodeView
 
-class AccessCodeViewSpec extends InputTextViewBehaviours[String] {
+class AccessCodeViewSpec extends InputTextViewBehaviours[String] with AppWithDefaultMockFixtures {
 
   override val prefix: String = "guarantee.accessCode"
 
   override def form: Form[String] = app.injector.instanceOf[AccessCodeFormProvider].apply(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[AccessCodeView].apply(form, lrn, NormalMode, index)(fakeRequest, messages)
+    applyView(app, form)
+
+  private def applyView(app: Application): HtmlFormat.Appendable = {
+    val form = app.injector.instanceOf[AccessCodeFormProvider].apply(prefix)
+    applyView(app, form)
+  }
+
+  private def applyView(app: Application, form: Form[String]): HtmlFormat.Appendable =
+    app.injector.instanceOf[AccessCodeView].apply(form, lrn, NormalMode, index)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
@@ -46,9 +57,23 @@ class AccessCodeViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithContent("p", "This is set up by the Principal and works just like a bank PIN code.")
 
-  behave like pageWithHint("The code will be 4 characters long, like 0000 or X9X9.")
-
   behave like pageWithInputText(Some(InputSize.Width5))
 
   behave like pageWithSubmitButton("Save and continue")
+
+  "when during transition" - {
+    val app = transitionApplicationBuilder().build()
+    running(app) {
+      val doc = parseView(applyView(app))
+      behave like pageWithHint(doc, "The code will be 4 characters long, like 0000 or X9X9.")
+    }
+  }
+
+  "when post transition" - {
+    val app = postTransitionApplicationBuilder().build()
+    running(app) {
+      val doc = parseView(applyView(app))
+      behave like pageWithHint(doc, "The code will be up to 4 characters long, like 0000 or X9X9.")
+    }
+  }
 }
