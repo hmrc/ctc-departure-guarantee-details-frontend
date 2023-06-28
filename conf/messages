@@ -100,6 +100,13 @@ guarantee.accessCode.error.length = The access code must be 4 characters long
 guarantee.accessCode.error.invalid = The access code must only include the letters a to z and numbers 0 to 9
 guarantee.accessCode.change.hidden = access code
 
+guarantee.addLiabilityYesNo.title = Do you want to add a liability for the guarantee?
+guarantee.addLiabilityYesNo.heading = Do you want to add a liability for the guarantee?
+guarantee.addLiabilityYesNo.paragraph = This includes the liability currency and amount.
+guarantee.addLiabilityYesNo.checkYourAnswersLabel = Add liability for the guarantee
+guarantee.addLiabilityYesNo.error.required = Select yes if you want to add a liability for the guarantee
+guarantee.addLiabilityYesNo.change.hidden = if you want to add a liability for the guarantee
+
 guarantee.liabilityAmount.title = How much is the liability amount?
 guarantee.liabilityAmount.heading = How much is the liability amount?
 guarantee.liabilityAmount.checkYourAnswersLabel = Liability amount

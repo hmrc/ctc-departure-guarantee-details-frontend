@@ -24,6 +24,11 @@ POST       /:index/access-code/:lrn                               controllers.gu
 GET        /:index/change-access-code/:lrn                        controllers.guarantee.AccessCodeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, index: Index)
 POST       /:index/change-access-code/:lrn                        controllers.guarantee.AccessCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, index: Index)
 
+GET        /:index/add-liability/:lrn                             controllers.guarantee.AddLiabilityYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, index: Index)
+POST       /:index/add-liability/:lrn                             controllers.guarantee.AddLiabilityYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, index: Index)
+GET        /:index/change-add-liability/:lrn                      controllers.guarantee.AddLiabilityYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, index: Index)
+POST       /:index/change-add-liability/:lrn                      controllers.guarantee.AddLiabilityYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, index: Index)
+
 GET        /:index/liability-amount/:lrn                          controllers.guarantee.LiabilityAmountController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, index: Index)
 POST       /:index/liability-amount/:lrn                          controllers.guarantee.LiabilityAmountController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, index: Index)
 GET        /:index/change-liability-amount/:lrn                   controllers.guarantee.LiabilityAmountController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, index: Index)
