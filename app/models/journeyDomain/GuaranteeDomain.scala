@@ -110,8 +110,8 @@ object GuaranteeDomain {
 
     def userAnswersReader(index: Index, guaranteeType: GuaranteeType)(implicit phaseConfig: PhaseConfig): UserAnswersReader[GuaranteeDomain] =
       phaseConfig.phase match {
-        case Phase.Transition     => TransitionGuaranteeOfType5.userAnswersReader(index, guaranteeType)
-        case Phase.PostTransition => PostTransitionGuaranteeOfType5.userAnswersReader(index, guaranteeType)
+        case Phase.Transition     => TransitionGuaranteeOfType5.userAnswersReader(index, guaranteeType).widen[GuaranteeDomain]
+        case Phase.PostTransition => PostTransitionGuaranteeOfType5.userAnswersReader(index, guaranteeType).widen[GuaranteeDomain]
       }
   }
 
@@ -123,7 +123,7 @@ object GuaranteeDomain {
 
   object TransitionGuaranteeOfType5 {
 
-    def userAnswersReader(index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
+    def userAnswersReader(index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeOfType5] =
       (
         UserAnswersReader(guaranteeType),
         AddLiabilityYesNoPage(index).filterOptionalDependent(identity)(LiabilityDomain.userAnswersReader(index))
@@ -134,11 +134,11 @@ object GuaranteeDomain {
     `type`: GuaranteeType,
     liability: LiabilityDomain
   )(override val index: Index)
-      extends GuaranteeDomain
+      extends GuaranteeOfType5
 
   object PostTransitionGuaranteeOfType5 {
 
-    def userAnswersReader(index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
+    def userAnswersReader(index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeOfType5] =
       (
         UserAnswersReader(guaranteeType),
         LiabilityDomain.userAnswersReader(index)
