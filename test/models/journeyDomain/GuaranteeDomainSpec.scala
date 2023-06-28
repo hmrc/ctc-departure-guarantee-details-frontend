@@ -172,7 +172,6 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
         val currencyCode    = arbitrary[CurrencyCode].sample.value
 
         "when with reference" in {
-
           val userAnswers = emptyUserAnswers
             .setValue(DeclarationTypePage, declarationType)
             .setValue(GuaranteeTypePage(index), guaranteeType)
@@ -196,7 +195,6 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
         }
 
         "when without reference" in {
-
           val userAnswers = emptyUserAnswers
             .setValue(DeclarationTypePage, declarationType)
             .setValue(GuaranteeTypePage(index), guaranteeType)
@@ -219,7 +217,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
     "cannot be parsed from user answers" - {
 
       "when non-TIR" - {
-        "when 0,1,2,4,5,9 guarantee type" - {
+        "when 0,1,2,4,9 guarantee type" - {
           "when grn missing" in {
             val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
             val guaranteeType   = `0,1,2,4,9`.sample.value
@@ -345,7 +343,6 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           }
 
           "when otherReferenceYesNoPage is true and otherReference is unanswered" in {
-
             val userAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
               .setValue(GuaranteeTypePage(index), guaranteeType)
@@ -359,6 +356,37 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           }
         }
 
+        "when 5 guarantee type" - {
+          val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+          val guaranteeType   = `5`.sample.value
+
+          "when currency is unanswered" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(GuaranteeTypePage(index), guaranteeType)
+
+            val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+              GuaranteeDomain.userAnswersReader(index)
+            ).run(userAnswers)
+
+            result.left.value.page mustBe CurrencyPage(index)
+          }
+
+          "when liability amount is unanswered" in {
+            val currencyCode = arbitrary[CurrencyCode].sample.value
+
+            val userAnswers = emptyUserAnswers
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(GuaranteeTypePage(index), guaranteeType)
+              .setValue(CurrencyPage(index), currencyCode)
+
+            val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+              GuaranteeDomain.userAnswersReader(index)
+            ).run(userAnswers)
+
+            result.left.value.page mustBe LiabilityAmountPage(index)
+          }
+        }
       }
     }
   }
