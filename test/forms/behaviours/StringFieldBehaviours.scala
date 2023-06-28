@@ -58,6 +58,26 @@ trait StringFieldBehaviours extends FieldBehaviours {
       }
     }
 
+  def fieldWithExactLength(form: Form[_], fieldName: String, length: Int, lengthError: FormError): Unit = {
+    s"must not bind strings longer than $length characters" in {
+
+      forAll(stringsLongerThan(length) -> "longString") {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors mustEqual Seq(lengthError)
+      }
+    }
+
+    s"must not bind strings shorter than $length characters" in {
+
+      forAll(stringsWithLength(length - 1) -> "shortString") {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors mustEqual Seq(lengthError)
+      }
+    }
+  }
+
   def fieldWithInvalidCharacters(form: Form[_], fieldName: String, error: FormError, length: Int = 100): Unit =
     "must not bind strings with invalid characters" in {
 

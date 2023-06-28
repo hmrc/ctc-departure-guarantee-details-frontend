@@ -29,7 +29,7 @@ class AccessCodeViewSpec extends InputTextViewBehaviours[String] {
 
   override val prefix: String = "guarantee.accessCode"
 
-  override def form: Form[String] = new AccessCodeFormProvider()(prefix)
+  override def form: Form[String] = app.injector.instanceOf[AccessCodeFormProvider].apply(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[AccessCodeView].apply(form, lrn, NormalMode, index)(fakeRequest, messages)

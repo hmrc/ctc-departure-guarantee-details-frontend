@@ -20,19 +20,32 @@ import forms.Constants.accessCodeLength
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
+import play.api.data.validation.Constraint
 
-import javax.inject.Inject
+sealed trait AccessCodeFormProvider extends Mappings {
 
-class AccessCodeFormProvider @Inject() extends Mappings {
+  def lengthConstraint(prefix: String): Constraint[String]
 
   def apply(prefix: String): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required")
         .verifying(
           StopOnFirstFail[String](
-            exactLength(accessCodeLength, s"$prefix.error.length"),
+            lengthConstraint(prefix),
             regexp(alphaNumericRegex, s"$prefix.error.invalid")
           )
         )
     )
+}
+
+class TransitionAccessCodeFormProvider extends AccessCodeFormProvider {
+
+  override def lengthConstraint(prefix: String): Constraint[String] =
+    exactLength(accessCodeLength, s"$prefix.error.length")
+}
+
+class PostTransitionAccessCodeFormProvider extends AccessCodeFormProvider {
+
+  override def lengthConstraint(prefix: String): Constraint[String] =
+    maxLength(accessCodeLength, s"$prefix.error.length")
 }

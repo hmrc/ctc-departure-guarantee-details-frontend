@@ -16,11 +16,14 @@
 
 package config
 
+import forms.{AccessCodeFormProvider, PostTransitionAccessCodeFormProvider}
+
 class PostTransitionModule extends Module {
 
   override def configure(): Unit = {
     super.configure()
 
     bind(classOf[PhaseConfig]).to(classOf[PostTransitionConfig])
+    bind(classOf[AccessCodeFormProvider]).to(classOf[PostTransitionAccessCodeFormProvider])
   }
 }
