@@ -16,9 +16,10 @@
 
 package base
 
+import config.{PostTransitionModule, TransitionModule}
 import controllers.actions._
 import models.{Index, Mode, UserAnswers}
-import navigation.{FakeGuaranteeDetailsNavigator, FakeGuaranteeNavigator, _}
+import navigation._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -71,7 +72,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeGuaranteeNavigatorProvider: GuaranteeNavigatorProvider =
     (mode: Mode, index: Index) => new FakeGuaranteeNavigator(onwardRoute, mode, index)
 
-  def guiceApplicationBuilder(): GuiceApplicationBuilder =
+  private def defaultApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
@@ -82,4 +83,17 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[DependentTasksAction].to[FakeDependentTasksAction],
         bind[LockService].toInstance(mockLockService)
       )
+
+  protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    defaultApplicationBuilder()
+
+  protected def transitionApplicationBuilder(): GuiceApplicationBuilder =
+    defaultApplicationBuilder()
+      .disable[PostTransitionModule]
+      .bindings(new TransitionModule)
+
+  protected def postTransitionApplicationBuilder(): GuiceApplicationBuilder =
+    defaultApplicationBuilder()
+      .disable[TransitionModule]
+      .bindings(new PostTransitionModule)
 }
