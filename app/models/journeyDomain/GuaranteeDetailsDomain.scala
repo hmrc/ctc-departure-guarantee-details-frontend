@@ -17,6 +17,7 @@
 package models.journeyDomain
 
 import cats.implicits._
+import config.PhaseConfig
 import controllers.routes
 import models.DeclarationType.Option4
 import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
@@ -38,7 +39,7 @@ case class GuaranteeDetailsDomain(
 
 object GuaranteeDetailsDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[GuaranteeDetailsDomain] =
+  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[GuaranteeDetailsDomain] =
     GuaranteeDetailsSection.arrayReader
       .flatMap {
         case x if x.isEmpty =>

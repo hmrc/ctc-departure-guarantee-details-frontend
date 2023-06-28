@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions.Actions
 import models.GuaranteeType._
 import models.{Index, LocalReferenceNumber}
@@ -37,7 +37,7 @@ class GuaranteeAddedTIRController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: GuaranteeAddedTIRView,
   config: FrontendAppConfig
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
