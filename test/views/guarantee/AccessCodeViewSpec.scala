@@ -73,7 +73,7 @@ class AccessCodeViewSpec extends InputTextViewBehaviours[String] with AppWithDef
     val app = postTransitionApplicationBuilder().build()
     running(app) {
       val doc = parseView(applyView(app))
-      behave like pageWithHint(doc, "The code will be up to 4 characters long, like 0000 or X9X9.")
+      behave like pageWithHint(doc, "The code can be up to 4 characters long, like 0 or X9X9.")
     }
   }
 }
