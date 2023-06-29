@@ -42,6 +42,7 @@ class GuaranteeTypePageSpec extends PageBehaviours {
                 .setValue(GuaranteeTypePage(index), guaranteeType)
                 .setValue(ReferenceNumberPage(index), str)
                 .setValue(AccessCodePage(index), str)
+                .setValue(AddLiabilityYesNoPage(index), true)
                 .setValue(CurrencyPage(index), currencyCode)
                 .setValue(LiabilityAmountPage(index), amount)
                 .setValue(OtherReferenceYesNoPage(index), true)
@@ -53,8 +54,9 @@ class GuaranteeTypePageSpec extends PageBehaviours {
 
                   postChange.get(ReferenceNumberPage(index)) mustNot be(defined)
                   postChange.get(AccessCodePage(index)) mustNot be(defined)
-                  postChange.get(LiabilityAmountPage(index)) mustNot be(defined)
+                  postChange.get(AddLiabilityYesNoPage(index)) mustNot be(defined)
                   postChange.get(CurrencyPage(index)) mustNot be(defined)
+                  postChange.get(LiabilityAmountPage(index)) mustNot be(defined)
                   postChange.get(OtherReferenceYesNoPage(index)) mustNot be(defined)
                   postChange.get(OtherReferencePage(index)) mustNot be(defined)
               }
@@ -70,6 +72,7 @@ class GuaranteeTypePageSpec extends PageBehaviours {
                 .setValue(GuaranteeTypePage(index), guaranteeType)
                 .setValue(ReferenceNumberPage(index), str)
                 .setValue(AccessCodePage(index), str)
+                .setValue(AddLiabilityYesNoPage(index), true)
                 .setValue(CurrencyPage(index), currencyCode)
                 .setValue(LiabilityAmountPage(index), amount)
                 .setValue(OtherReferenceYesNoPage(index), true)
@@ -79,8 +82,9 @@ class GuaranteeTypePageSpec extends PageBehaviours {
 
               postChange.get(ReferenceNumberPage(index)) must be(defined)
               postChange.get(AccessCodePage(index)) must be(defined)
-              postChange.get(LiabilityAmountPage(index)) must be(defined)
+              postChange.get(AddLiabilityYesNoPage(index)) must be(defined)
               postChange.get(CurrencyPage(index)) must be(defined)
+              postChange.get(LiabilityAmountPage(index)) must be(defined)
               postChange.get(OtherReferenceYesNoPage(index)) must be(defined)
               postChange.get(OtherReferencePage(index)) must be(defined)
           }

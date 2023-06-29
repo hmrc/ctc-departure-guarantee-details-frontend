@@ -16,6 +16,7 @@
 
 package controllers.guarantee
 
+import config.PhaseConfig
 import controllers.actions.Actions
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AccessCodeFormProvider
@@ -39,7 +40,7 @@ class AccessCodeController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: AccessCodeView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

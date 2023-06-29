@@ -16,6 +16,7 @@
 
 package generators
 
+import config.PhaseConfig
 import models.domain.UserAnswersReader
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.{GuaranteeDetailsDomain, GuaranteeDomain}
@@ -26,7 +27,7 @@ import org.scalacheck.{Arbitrary, Gen}
 trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   self: Generators =>
 
-  implicit lazy val arbitraryUserAnswers: Arbitrary[UserAnswers] =
+  implicit def arbitraryUserAnswers(implicit phaseConfig: PhaseConfig): Arbitrary[UserAnswers] =
     Arbitrary {
       for {
         lrn        <- arbitrary[LocalReferenceNumber]
@@ -57,9 +58,9 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
     rec(initialUserAnswers)
   }
 
-  def arbitraryGuaranteeDetailsAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
+  def arbitraryGuaranteeDetailsAnswers(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
     buildUserAnswers[GuaranteeDetailsDomain](userAnswers)(GuaranteeDetailsDomain.userAnswersReader)
 
-  def arbitraryGuaranteeAnswers(userAnswers: UserAnswers, index: Index): Gen[UserAnswers] =
+  def arbitraryGuaranteeAnswers(userAnswers: UserAnswers, index: Index)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
     buildUserAnswers[GuaranteeDomain](userAnswers)(GuaranteeDomain.userAnswersReader(index))
 }
