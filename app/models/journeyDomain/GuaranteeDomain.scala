@@ -85,7 +85,37 @@ object GuaranteeDomain {
       UserAnswersReader(GuaranteeOfTypesAB(guaranteeType)(index))
   }
 
-  case class GuaranteeOfTypes01249(
+  sealed trait GuaranteeOfTypes01249 extends GuaranteeDomain
+
+  object GuaranteeOfTypes01249 {
+
+    def userAnswersReader(index: Index, guaranteeType: GuaranteeType)(implicit phaseConfig: PhaseConfig): UserAnswersReader[GuaranteeDomain] =
+      phaseConfig.phase match {
+        case Phase.Transition     => TransitionGuaranteeOfTypes01249.userAnswersReader(index, guaranteeType).widen[GuaranteeDomain]
+        case Phase.PostTransition => PostTransitionGuaranteeOfTypes01249.userAnswersReader(index, guaranteeType).widen[GuaranteeDomain]
+      }
+  }
+
+  case class TransitionGuaranteeOfTypes01249(
+    `type`: GuaranteeType,
+    grn: String,
+    liability: Option[LiabilityDomain],
+    accessCode: String
+  )(override val index: Index)
+      extends GuaranteeDomain
+
+  object TransitionGuaranteeOfTypes01249 {
+
+    def userAnswersReader(index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
+      (
+        UserAnswersReader(guaranteeType),
+        ReferenceNumberPage(index).reader,
+        AddLiabilityYesNoPage(index).filterOptionalDependent(identity)(LiabilityDomain.userAnswersReader(index)),
+        AccessCodePage(index).reader
+      ).tupled.map((TransitionGuaranteeOfTypes01249.apply _).tupled).map(_(index))
+  }
+
+  case class PostTransitionGuaranteeOfTypes01249(
     `type`: GuaranteeType,
     grn: String,
     liability: LiabilityDomain,
@@ -93,7 +123,7 @@ object GuaranteeDomain {
   )(override val index: Index)
       extends GuaranteeDomain
 
-  object GuaranteeOfTypes01249 {
+  object PostTransitionGuaranteeOfTypes01249 {
 
     def userAnswersReader(index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
       (
@@ -101,7 +131,7 @@ object GuaranteeDomain {
         ReferenceNumberPage(index).reader,
         LiabilityDomain.userAnswersReader(index),
         AccessCodePage(index).reader
-      ).tupled.map((GuaranteeOfTypes01249.apply _).tupled).map(_(index))
+      ).tupled.map((PostTransitionGuaranteeOfTypes01249.apply _).tupled).map(_(index))
   }
 
   sealed trait GuaranteeOfType5 extends GuaranteeDomain

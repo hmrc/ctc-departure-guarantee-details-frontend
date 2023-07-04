@@ -49,19 +49,67 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
 
       "when not TIR" - {
         "when 0,1,2,4,9 guarantee type" - {
-          "must return 5 rows" in {
-            val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
-            val guaranteeType   = arbitrary[GuaranteeType](arbitrary01249GuaranteeType).sample.value
-            val initialAnswers = emptyUserAnswers
-              .setValue(DeclarationTypePage, declarationType)
-              .setValue(GuaranteeTypePage(index), guaranteeType)
+          "when transition" - {
+            val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+            when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
 
-            forAll(arbitraryGuaranteeAnswers(initialAnswers, index)) {
-              answers =>
-                val result  = GuaranteeViewModel(answers, index)
-                val section = result.section
-                section.sectionTitle mustNot be(defined)
-                section.rows.length mustBe 5
+            "when adding liability" - {
+              "must return 6 rows" in {
+                val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+                val guaranteeType   = arbitrary[GuaranteeType](arbitrary01249GuaranteeType).sample.value
+                val initialAnswers = emptyUserAnswers
+                  .setValue(DeclarationTypePage, declarationType)
+                  .setValue(GuaranteeTypePage(index), guaranteeType)
+                  .setValue(AddLiabilityYesNoPage(index), true)
+
+                forAll(arbitraryGuaranteeAnswers(initialAnswers, index)(mockPhaseConfig)) {
+                  answers =>
+                    val result  = GuaranteeViewModel(answers, index)
+                    val section = result.section
+                    section.sectionTitle mustNot be(defined)
+                    section.rows.length mustBe 6
+                }
+              }
+            }
+
+            "when not adding liability" - {
+              "must return 4 rows" in {
+                val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+                val guaranteeType   = arbitrary[GuaranteeType](arbitrary01249GuaranteeType).sample.value
+                val initialAnswers = emptyUserAnswers
+                  .setValue(DeclarationTypePage, declarationType)
+                  .setValue(GuaranteeTypePage(index), guaranteeType)
+                  .setValue(AddLiabilityYesNoPage(index), false)
+
+                forAll(arbitraryGuaranteeAnswers(initialAnswers, index)(mockPhaseConfig)) {
+                  answers =>
+                    val result  = GuaranteeViewModel(answers, index)
+                    val section = result.section
+                    section.sectionTitle mustNot be(defined)
+                    section.rows.length mustBe 4
+                }
+              }
+            }
+          }
+
+          "when post transition" - {
+            val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+            when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+
+            "must return 5 rows" in {
+              val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+              val guaranteeType   = arbitrary[GuaranteeType](arbitrary01249GuaranteeType).sample.value
+              val initialAnswers = emptyUserAnswers
+                .setValue(DeclarationTypePage, declarationType)
+                .setValue(GuaranteeTypePage(index), guaranteeType)
+
+              forAll(arbitraryGuaranteeAnswers(initialAnswers, index)(mockPhaseConfig)) {
+                answers =>
+                  val result  = GuaranteeViewModel(answers, index)
+                  val section = result.section
+                  section.sectionTitle mustNot be(defined)
+                  section.rows.length mustBe 5
+              }
             }
           }
         }
