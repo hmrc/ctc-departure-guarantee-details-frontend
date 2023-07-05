@@ -29,19 +29,30 @@ import scala.concurrent.Future
 
 class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler with ScalaCheckPropertyChecks {
 
-  private val baseUrl = "test-only/transit-movements-trader-reference-data"
+  private val baseUrl = "customs-reference-data/test-only"
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder = super
     .guiceApplicationBuilder()
     .configure(
-      conf = "microservice.services.referenceData.port" -> server.port()
+      conf = "microservice.services.customsReferenceData.port" -> server.port()
     )
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
 
   private val currencyCodesResponseJson: String =
     """
-      |[
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/CurrencyCodes"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "CurrencyCodes",
+      |  "data": [
       | {
       |   "currency":"GBP",
       |   "description":"Sterling"
@@ -51,6 +62,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |   "description":"Swiss Franc"
       | }
       |]
+      |}
       |""".stripMargin
 
   "Reference Data" - {
@@ -58,7 +70,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     "getCurrencyCodes" - {
       "must return a successful future response with a sequence of currency codes" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/currency-codes"))
+          get(urlEqualTo(s"/$baseUrl/lists/CurrencyCodes"))
             .willReturn(okJson(currencyCodesResponseJson))
         )
 
@@ -72,7 +84,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/currency-codes", connector.getCurrencyCodes())
+        checkErrorResponse(s"/$baseUrl/lists/CurrencyCodes", connector.getCurrencyCodes())
       }
     }
   }
