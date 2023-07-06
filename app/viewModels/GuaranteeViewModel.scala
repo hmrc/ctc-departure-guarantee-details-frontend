@@ -40,6 +40,7 @@ object GuaranteeViewModel {
         helper.guaranteeReferenceNumber,
         helper.otherReferenceYesNo,
         helper.otherReference,
+        helper.addLiabilityYesNo,
         helper.liabilityCurrency,
         helper.liabilityAmount,
         helper.accessCode

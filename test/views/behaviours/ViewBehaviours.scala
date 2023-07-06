@@ -20,8 +20,8 @@ import base.SpecBase
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Assertion
-import play.twirl.api.TwirlHelperImports._
 import play.twirl.api.HtmlFormat
+import play.twirl.api.TwirlHelperImports._
 import views.base.ViewSpecAssertions
 
 import scala.jdk.CollectionConverters._
@@ -130,6 +130,9 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     }
 
   def pageWithHint(expectedText: String): Unit =
+    pageWithHint(doc, expectedText)
+
+  def pageWithHint(doc: Document, expectedText: String): Unit =
     "must render hint" in {
       val hint = getElementByClass(doc, "govuk-hint")
       assertElementContainsText(hint, expectedText)

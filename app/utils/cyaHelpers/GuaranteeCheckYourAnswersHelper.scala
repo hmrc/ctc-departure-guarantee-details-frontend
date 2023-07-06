@@ -70,6 +70,13 @@ class GuaranteeCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode, inde
     id = Some("change-access-code")
   )
 
+  def addLiabilityYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddLiabilityYesNoPage(index),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "guarantee.addLiabilityYesNo",
+    id = Some("change-add-liability")
+  )
+
   def liabilityCurrency: Option[SummaryListRow] = getAnswerAndBuildRow[CurrencyCode](
     page = CurrencyPage(index),
     formatAnswer = formatAsText,

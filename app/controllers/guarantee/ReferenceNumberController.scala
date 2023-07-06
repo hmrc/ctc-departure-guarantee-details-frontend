@@ -16,6 +16,7 @@
 
 package controllers.guarantee
 
+import config.PhaseConfig
 import controllers.actions.Actions
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.GuaranteeReferenceNumberFormProvider
@@ -39,7 +40,7 @@ class ReferenceNumberController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: ReferenceNumberView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

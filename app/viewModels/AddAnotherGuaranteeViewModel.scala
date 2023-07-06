@@ -16,7 +16,7 @@
 
 package viewModels
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.{NormalMode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -35,12 +35,12 @@ case class AddAnotherGuaranteeViewModel(
 
 object AddAnotherGuaranteeViewModel {
 
-  def apply(userAnswers: UserAnswers)(implicit messages: Messages, config: FrontendAppConfig): AddAnotherGuaranteeViewModel =
+  def apply(userAnswers: UserAnswers)(implicit messages: Messages, config: FrontendAppConfig, phaseConfig: PhaseConfig): AddAnotherGuaranteeViewModel =
     new AddAnotherGuaranteeViewModelProvider()(userAnswers)
 
   class AddAnotherGuaranteeViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers)(implicit messages: Messages, config: FrontendAppConfig): AddAnotherGuaranteeViewModel = {
+    def apply(userAnswers: UserAnswers)(implicit messages: Messages, config: FrontendAppConfig, phaseConfig: PhaseConfig): AddAnotherGuaranteeViewModel = {
       val helper = new GuaranteeDetailsCheckYourAnswersHelper(userAnswers, NormalMode)
 
       // TODO - decide what to do with in progress guarantees (Lefts). Currently lumping them together with the completed ones (Rights).

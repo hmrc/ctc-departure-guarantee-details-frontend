@@ -14,43 +14,38 @@
  * limitations under the License.
  *@
 
-@import config.PhaseConfig
 @import controllers.guarantee.routes
 @import models.{Index, LocalReferenceNumber}
-@import viewModels.components.InputTextViewModel._
-@import views.html.components.{Button, ErrorSummary, InputText}
+@import viewModels.components.InputYesNoViewModel._
+@import views.html.components.{Button, ErrorSummary, InputYesNo}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputText: InputText,
+    inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
-    button: Button,
-    phaseConfig: PhaseConfig
+    button: Button
 )
 
-@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("guarantee.accessCode.title"),
+    title = messages("guarantee.addLiabilityYesNo.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.AccessCodeController.onSubmit(lrn, mode, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddLiabilityYesNoController.onSubmit(lrn, mode, index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
-        @inputText(
-            inputType ="password",
+        @inputYesNo(
             field = form("value"),
-            inputTextType = TextInputWithHiddenLabel(
-                heading = messages("guarantee.accessCode.heading"),
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("guarantee.addLiabilityYesNo.heading"),
                 caption = Some(messages("caption")),
-                additionalHtml = messages("guarantee.accessCode.paragraph").toParagraph
-            ),
-            hint = Some(messages(phaseConfig.accessCodeHint)),
-            inputClass = InputSize.Width5
+                additionalHtml = messages("guarantee.addLiabilityYesNo.paragraph").toParagraph
+            )
         )
 
         @button(attributes = Map("id" -> "submit"))

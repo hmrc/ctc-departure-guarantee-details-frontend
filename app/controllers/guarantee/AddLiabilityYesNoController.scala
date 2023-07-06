@@ -22,33 +22,33 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{GuaranteeNavigatorProvider, UserAnswersNavigator}
-import pages.guarantee.OtherReferenceYesNoPage
+import pages.guarantee.AddLiabilityYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.guarantee.OtherReferenceYesNoView
+import views.html.guarantee.AddLiabilityYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class OtherReferenceYesNoController @Inject() (
+class AddLiabilityYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: GuaranteeNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: OtherReferenceYesNoView
+  view: AddLiabilityYesNoView
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("guarantee.otherReferenceYesNo")
+  private val form = formProvider("guarantee.addLiabilityYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(OtherReferenceYesNoPage(index)) match {
+      val preparedForm = request.userAnswers.get(AddLiabilityYesNoPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -64,7 +64,7 @@ class OtherReferenceYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, index))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-            OtherReferenceYesNoPage(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            AddLiabilityYesNoPage(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }

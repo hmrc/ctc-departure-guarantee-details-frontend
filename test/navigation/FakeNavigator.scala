@@ -16,7 +16,7 @@
 
 package navigation
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.{Index, Mode, UserAnswers}
 import play.api.mvc.Call
 
@@ -24,10 +24,12 @@ class FakeNavigator(desiredRoute: Call) extends Navigator {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeGuaranteeDetailsNavigator(desiredRoute: Call, mode: Mode)(implicit config: FrontendAppConfig) extends GuaranteeDetailsNavigator(mode) {
+class FakeGuaranteeDetailsNavigator(desiredRoute: Call, mode: Mode)(implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
+    extends GuaranteeDetailsNavigator(mode) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeGuaranteeNavigator(desiredRoute: Call, mode: Mode, index: Index)(implicit config: FrontendAppConfig) extends GuaranteeNavigator(mode, index) {
+class FakeGuaranteeNavigator(desiredRoute: Call, mode: Mode, index: Index)(implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
+    extends GuaranteeNavigator(mode, index) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
