@@ -16,7 +16,7 @@
 
 package navigation
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models._
 import models.domain.UserAnswersReader
 import models.journeyDomain.GuaranteeDomain
@@ -24,7 +24,7 @@ import models.journeyDomain.GuaranteeDomain
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class GuaranteeNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig) extends GuaranteeNavigatorProvider {
+class GuaranteeNavigatorProviderImpl @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) extends GuaranteeNavigatorProvider {
 
   def apply(mode: Mode, index: Index): UserAnswersNavigator =
     new GuaranteeNavigator(mode, index)
@@ -38,7 +38,7 @@ trait GuaranteeNavigatorProvider {
 class GuaranteeNavigator(
   override val mode: Mode,
   index: Index
-)(implicit override val config: FrontendAppConfig)
+)(implicit override val appConfig: FrontendAppConfig, implicit override val phaseConfig: PhaseConfig)
     extends UserAnswersNavigator {
 
   override type T = GuaranteeDomain

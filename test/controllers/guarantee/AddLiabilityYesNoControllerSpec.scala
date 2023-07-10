@@ -17,44 +17,43 @@
 package controllers.guarantee
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.AccessCodeFormProvider
+import forms.YesNoFormProvider
 import models.NormalMode
 import navigation.GuaranteeNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.guarantee.AccessCodePage
+import org.scalatestplus.mockito.MockitoSugar
+import pages.guarantee.AddLiabilityYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.guarantee.AccessCodeView
+import views.html.guarantee.AddLiabilityYesNoView
 
 import scala.concurrent.Future
 
-class AccessCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AddLiabilityYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
-  private val formProvider         = app.injector.instanceOf[AccessCodeFormProvider]
-  private val form                 = formProvider("guarantee.accessCode")
-  private val mode                 = NormalMode
-  private lazy val accessCodeRoute = routes.AccessCodeController.onPageLoad(lrn, mode, index).url
-  private val validAccessCode      = "1234"
+  private val formProvider                        = new YesNoFormProvider()
+  private val form                                = formProvider("guarantee.addLiabilityYesNo")
+  private val mode                                = NormalMode
+  private lazy val addAmountAndCurrencyYesNoRoute = routes.AddLiabilityYesNoController.onPageLoad(lrn, mode, index).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[GuaranteeNavigatorProvider]).toInstance(fakeGuaranteeNavigatorProvider))
 
-  "AccessCode Controller" - {
+  "AddAmountAndCurrencyYesNo Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, accessCodeRoute)
+      val request = FakeRequest(GET, addAmountAndCurrencyYesNoRoute)
+      val result  = route(app, request).value
 
-      val result = route(app, request).value
-
-      val view = injector.instanceOf[AccessCodeView]
+      val view = injector.instanceOf[AddLiabilityYesNoView]
 
       status(result) mustEqual OK
 
@@ -64,16 +63,16 @@ class AccessCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AccessCodePage(index), validAccessCode)
+      val userAnswers = emptyUserAnswers.setValue(AddLiabilityYesNoPage(index), true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, accessCodeRoute)
+      val request = FakeRequest(GET, addAmountAndCurrencyYesNoRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> validAccessCode))
+      val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[AccessCodeView]
+      val view = injector.instanceOf[AddLiabilityYesNoView]
 
       status(result) mustEqual OK
 
@@ -83,12 +82,12 @@ class AccessCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
     "must redirect to the next page when valid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
-
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, accessCodeRoute)
-        .withFormUrlEncodedBody(("value", validAccessCode))
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, addAmountAndCurrencyYesNoRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
@@ -101,26 +100,24 @@ class AccessCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val invalidAnswer = ""
-
-      val request    = FakeRequest(POST, accessCodeRoute).withFormUrlEncodedBody(("value", ""))
-      val filledForm = form.bind(Map("value" -> invalidAnswer))
+      val request   = FakeRequest(POST, addAmountAndCurrencyYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AccessCodeView]
+      val view = injector.instanceOf[AddLiabilityYesNoView]
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, index)(request, messages).toString
+        view(boundForm, lrn, mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, accessCodeRoute)
+      val request = FakeRequest(GET, addAmountAndCurrencyYesNoRoute)
 
       val result = route(app, request).value
 
@@ -133,9 +130,8 @@ class AccessCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, accessCodeRoute)
-          .withFormUrlEncodedBody(("value", "test string"))
+      val request = FakeRequest(POST, addAmountAndCurrencyYesNoRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 

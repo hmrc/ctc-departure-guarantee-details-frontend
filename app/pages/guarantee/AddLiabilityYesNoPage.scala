@@ -17,39 +17,30 @@
 package pages.guarantee
 
 import controllers.guarantee.routes
-import models.DeclarationType.Option4
-import models.{GuaranteeType, Index, Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.external.DeclarationTypePage
 import pages.sections.GuaranteeSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 import scala.util.Try
 
-case class GuaranteeTypePage(index: Index) extends QuestionPage[GuaranteeType] {
+case class AddLiabilityYesNoPage(index: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = GuaranteeSection(index).path \ toString
 
-  override def toString: String = "guaranteeType"
+  override def toString: String = "addLiabilityYesNo"
 
-  override def cleanup(value: Option[GuaranteeType], userAnswers: UserAnswers): Try[UserAnswers] =
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(_) =>
+      case Some(false) =>
         userAnswers
-          .remove(ReferenceNumberPage(index))
-          .flatMap(_.remove(AccessCodePage(index)))
-          .flatMap(_.remove(AddLiabilityYesNoPage(index)))
-          .flatMap(_.remove(CurrencyPage(index)))
+          .remove(CurrencyPage(index))
           .flatMap(_.remove(LiabilityAmountPage(index)))
-          .flatMap(_.remove(OtherReferenceYesNoPage(index)))
-          .flatMap(_.remove(OtherReferencePage(index)))
-      case None => super.cleanup(value, userAnswers)
+      case _ =>
+        super.cleanup(value, userAnswers)
     }
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    userAnswers.get(DeclarationTypePage) map {
-      case Option4 => controllers.routes.GuaranteeAddedTIRController.onPageLoad(userAnswers.lrn)
-      case _       => routes.GuaranteeTypeController.onPageLoad(userAnswers.lrn, mode, index)
-    }
+    Some(routes.AddLiabilityYesNoController.onPageLoad(userAnswers.lrn, mode, index))
 }

@@ -333,6 +333,50 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
       }
     }
 
+    "addLiabilityYesNo" - {
+      "must return None" - {
+        "when AddLiabilityYesNoPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new GuaranteeCheckYourAnswersHelper(emptyUserAnswers, mode, index)
+              val result = helper.addLiabilityYesNo
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when AddLiabilityYesNoPage defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AddLiabilityYesNoPage(index), true)
+
+              val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
+              val result = helper.addLiabilityYesNo
+
+              result mustBe Some(
+                SummaryListRow(
+                  key = Key("Add liability for the guarantee".toText),
+                  value = Value("Yes".toText),
+                  actions = Some(
+                    Actions(
+                      items = List(
+                        ActionItem(
+                          content = "Change".toText,
+                          href = routes.AddLiabilityYesNoController.onPageLoad(answers.lrn, mode, index).url,
+                          visuallyHiddenText = Some("if you want to add a liability for the guarantee"),
+                          attributes = Map("id" -> "change-add-liability")
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+          }
+        }
+      }
+    }
+
     "liabilityAmount" - {
       "must return None" - {
         "when LiabilityAmountPage undefined" in {

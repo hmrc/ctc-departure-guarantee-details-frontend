@@ -17,12 +17,12 @@
 package models.journeyDomain
 
 import cats.implicits._
+import config.PhaseConfig
 import models.DeclarationType.Option4
 import models.GuaranteeType._
 import models.domain._
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.reference.CurrencyCode
-import models.{CheckMode, GuaranteeType, Index, Mode, UserAnswers}
+import models.{CheckMode, GuaranteeType, Index, Mode, Phase, UserAnswers}
 import pages.external.DeclarationTypePage
 import pages.guarantee._
 import play.api.mvc.Call
@@ -39,7 +39,7 @@ sealed trait GuaranteeDomain extends JourneyDomainModel {
 object GuaranteeDomain {
 
   // scalastyle:off cyclomatic.complexity
-  implicit def userAnswersReader(index: Index): UserAnswersReader[GuaranteeDomain] =
+  implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[GuaranteeDomain] =
     DeclarationTypePage.reader.flatMap {
       case Option4 =>
         GuaranteeTypePage(index).mandatoryReader(_ == TIRGuarantee).map(GuaranteeOfTypesAB(_)(index))
@@ -85,49 +85,100 @@ object GuaranteeDomain {
       UserAnswersReader(GuaranteeOfTypesAB(guaranteeType)(index))
   }
 
-  case class GuaranteeOfTypes01249(
+  sealed trait GuaranteeOfTypes01249 extends GuaranteeDomain
+
+  object GuaranteeOfTypes01249 {
+
+    def userAnswersReader(index: Index, guaranteeType: GuaranteeType)(implicit phaseConfig: PhaseConfig): UserAnswersReader[GuaranteeDomain] =
+      phaseConfig.phase match {
+        case Phase.Transition     => TransitionGuaranteeOfTypes01249.userAnswersReader(index, guaranteeType).widen[GuaranteeDomain]
+        case Phase.PostTransition => PostTransitionGuaranteeOfTypes01249.userAnswersReader(index, guaranteeType).widen[GuaranteeDomain]
+      }
+  }
+
+  case class TransitionGuaranteeOfTypes01249(
     `type`: GuaranteeType,
     grn: String,
-    currencyCode: CurrencyCode,
-    liabilityAmount: BigDecimal,
+    liability: Option[LiabilityDomain],
     accessCode: String
   )(override val index: Index)
       extends GuaranteeDomain
 
-  object GuaranteeOfTypes01249 {
+  object TransitionGuaranteeOfTypes01249 {
 
     def userAnswersReader(index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
       (
         UserAnswersReader(guaranteeType),
         ReferenceNumberPage(index).reader,
-        CurrencyPage(index).reader,
-        LiabilityAmountPage(index).reader,
+        AddLiabilityYesNoPage(index).filterOptionalDependent(identity)(LiabilityDomain.userAnswersReader(index)),
         AccessCodePage(index).reader
-      ).tupled.map((GuaranteeOfTypes01249.apply _).tupled).map(_(index))
+      ).tupled.map((TransitionGuaranteeOfTypes01249.apply _).tupled).map(_(index))
   }
 
-  case class GuaranteeOfType5(
+  case class PostTransitionGuaranteeOfTypes01249(
     `type`: GuaranteeType,
-    currencyCode: CurrencyCode,
-    liabilityAmount: BigDecimal
+    grn: String,
+    liability: LiabilityDomain,
+    accessCode: String
   )(override val index: Index)
       extends GuaranteeDomain
 
-  object GuaranteeOfType5 {
+  object PostTransitionGuaranteeOfTypes01249 {
 
     def userAnswersReader(index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
       (
         UserAnswersReader(guaranteeType),
-        CurrencyPage(index).reader,
-        LiabilityAmountPage(index).reader
-      ).tupled.map((GuaranteeOfType5.apply _).tupled).map(_(index))
+        ReferenceNumberPage(index).reader,
+        LiabilityDomain.userAnswersReader(index),
+        AccessCodePage(index).reader
+      ).tupled.map((PostTransitionGuaranteeOfTypes01249.apply _).tupled).map(_(index))
+  }
+
+  sealed trait GuaranteeOfType5 extends GuaranteeDomain
+
+  object GuaranteeOfType5 {
+
+    def userAnswersReader(index: Index, guaranteeType: GuaranteeType)(implicit phaseConfig: PhaseConfig): UserAnswersReader[GuaranteeDomain] =
+      phaseConfig.phase match {
+        case Phase.Transition     => TransitionGuaranteeOfType5.userAnswersReader(index, guaranteeType).widen[GuaranteeDomain]
+        case Phase.PostTransition => PostTransitionGuaranteeOfType5.userAnswersReader(index, guaranteeType).widen[GuaranteeDomain]
+      }
+  }
+
+  case class TransitionGuaranteeOfType5(
+    `type`: GuaranteeType,
+    liability: Option[LiabilityDomain]
+  )(override val index: Index)
+      extends GuaranteeOfType5
+
+  object TransitionGuaranteeOfType5 {
+
+    def userAnswersReader(index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeOfType5] =
+      (
+        UserAnswersReader(guaranteeType),
+        AddLiabilityYesNoPage(index).filterOptionalDependent(identity)(LiabilityDomain.userAnswersReader(index))
+      ).tupled.map((TransitionGuaranteeOfType5.apply _).tupled).map(_(index))
+  }
+
+  case class PostTransitionGuaranteeOfType5(
+    `type`: GuaranteeType,
+    liability: LiabilityDomain
+  )(override val index: Index)
+      extends GuaranteeOfType5
+
+  object PostTransitionGuaranteeOfType5 {
+
+    def userAnswersReader(index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeOfType5] =
+      (
+        UserAnswersReader(guaranteeType),
+        LiabilityDomain.userAnswersReader(index)
+      ).tupled.map((PostTransitionGuaranteeOfType5.apply _).tupled).map(_(index))
   }
 
   case class GuaranteeOfType8(
     `type`: GuaranteeType,
     otherReference: String,
-    currencyCode: CurrencyCode,
-    liabilityAmount: BigDecimal
+    liability: LiabilityDomain
   )(override val index: Index)
       extends GuaranteeDomain
 
@@ -137,8 +188,7 @@ object GuaranteeDomain {
       (
         UserAnswersReader(guaranteeType),
         OtherReferencePage(index).reader,
-        CurrencyPage(index).reader,
-        LiabilityAmountPage(index).reader
+        LiabilityDomain.userAnswersReader(index)
       ).tupled.map((GuaranteeOfType8.apply _).tupled).map(_(index))
   }
 
@@ -156,8 +206,7 @@ object GuaranteeDomain {
   case class GuaranteeOfType3WithReference(
     `type`: GuaranteeType,
     otherReference: String,
-    currencyCode: CurrencyCode,
-    liabilityAmount: BigDecimal
+    liability: LiabilityDomain
   )(override val index: Index)
       extends GuaranteeOfType3
 
@@ -167,8 +216,7 @@ object GuaranteeDomain {
       (
         UserAnswersReader(guaranteeType),
         OtherReferencePage(index).reader,
-        CurrencyPage(index).reader,
-        LiabilityAmountPage(index).reader
+        LiabilityDomain.userAnswersReader(index)
       ).tupled.map((GuaranteeOfType3WithReference.apply _).tupled).map(_(index))
   }
 

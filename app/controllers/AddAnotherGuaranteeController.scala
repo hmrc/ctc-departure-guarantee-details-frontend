@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions.Actions
 import forms.AddAnotherFormProvider
 import models.{LocalReferenceNumber, NormalMode}
@@ -37,7 +37,7 @@ class AddAnotherGuaranteeController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   viewModelProvider: AddAnotherGuaranteeViewModelProvider,
   view: AddAnotherGuaranteeView
-)(implicit config: FrontendAppConfig)
+)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
