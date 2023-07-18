@@ -18,12 +18,11 @@ package controllers.guarantee
 
 import config.PhaseConfig
 import controllers.actions.Actions
-import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
+import models.reference.CurrencyCode
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{GuaranteeNavigatorProvider, UserAnswersNavigator}
-import pages.guarantee.{AddDefaultLiabilityAmountYesNoPage, LiabilityAmountPage}
-import pages.sections.GuaranteeSection
+import pages.guarantee.{CurrencyPage, LiabilityAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -62,7 +61,11 @@ class AddDefaultLiabilityAmountController @Inject() (
           {
             case true =>
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-              AddDefaultLiabilityAmountYesNoPage(index).writeToUserAnswers(BigDecimal("10000")).updateTask().writeToSession().navigate()
+              for {
+                x <- Future.fromTry(request.userAnswers.set(CurrencyPage(index), CurrencyCode.apply("EUR", Some("Euro"))))
+                y <- Future.fromTry(x.set(LiabilityAmountPage(index), BigDecimal("10000")))
+                _ <- sessionRepository.set(y)
+              } yield Redirect(navigator.nextPage(y))
             case false =>
               Future.successful(Redirect(redirect))
           }
