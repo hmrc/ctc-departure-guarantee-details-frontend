@@ -130,6 +130,6 @@ guarantee.removeGuaranteeYesNo.title = Are you sure you want to remove this guar
 guarantee.removeGuaranteeYesNo.heading = Are you sure you want to remove this guarantee?
 guarantee.removeGuaranteeYesNo.error.required = Select yes if you want to remove this guarantee
 
-guarantee.addDefaultLiabilityAmount.title = Do you want to use the default liability amount of 10,000 euros? - Manage your transit movements - GOV.UK
-guarantee.addDefaultLiabilityAmount.heading = Do you want to use the default liability amount of 10,000 euros?
-guarantee.addDefaultLiabilityAmount.error.required = Select yes if you want to use the default liability amount of 10,000 euros
+guarantee.addDefaultLiabilityAmountYesNo.title = Do you want to use the default liability amount of 10,000 euros? - Manage your transit movements - GOV.UK
+guarantee.addDefaultLiabilityAmountYesNo.heading = Do you want to use the default liability amount of 10,000 euros?
+guarantee.addDefaultLiabilityAmountYesNo.error.required = Select yes if you want to use the default liability amount of 10,000 euros

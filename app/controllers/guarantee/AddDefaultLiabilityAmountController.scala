@@ -62,10 +62,10 @@ class AddDefaultLiabilityAmountController @Inject() (
             case true =>
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
               for {
-                x <- Future.fromTry(request.userAnswers.set(CurrencyPage(index), CurrencyCode.apply("EUR", Some("Euro"))))
-                y <- Future.fromTry(x.set(LiabilityAmountPage(index), BigDecimal("10000")))
-                _ <- sessionRepository.set(y)
-              } yield Redirect(navigator.nextPage(y))
+                ua1     <- Future.fromTry(request.userAnswers.set(CurrencyPage(index), CurrencyCode.apply("EUR", Some("Euro"))))
+                uaFinal <- Future.fromTry(ua1.set(LiabilityAmountPage(index), BigDecimal("10000")))
+                _       <- sessionRepository.set(uaFinal)
+              } yield Redirect(navigator.nextPage(uaFinal))
             case false =>
               Future.successful(Redirect(redirect))
           }

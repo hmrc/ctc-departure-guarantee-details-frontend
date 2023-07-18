@@ -30,7 +30,7 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("guarantee.addDefaultLiabilityAmount.title"),
+    title = messages("guarantee.addDefaultLiabilityAmountYesNo.title"),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -42,7 +42,7 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("guarantee.addDefaultLiabilityAmount.heading"),
+                heading = messages("guarantee.addDefaultLiabilityAmountYesNo.heading"),
                 caption = Some(messages("caption"))
             )
         )
