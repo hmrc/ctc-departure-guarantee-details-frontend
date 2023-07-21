@@ -34,7 +34,7 @@ trait UserAnswersEntryGenerators {
     import pages.external._
     {
       case OfficeOfDeparturePage => arbitrary[CustomsOffice](arbitraryOfficeOfDeparture).map(Json.toJson(_))
-      case DeclarationTypePage   => arbitrary[DeclarationType].map(Json.toJson(_))
+      case DeclarationTypePage   => arbitrary[String](arbitraryDeclarationType).map(Json.toJson(_))
     }
   }
 

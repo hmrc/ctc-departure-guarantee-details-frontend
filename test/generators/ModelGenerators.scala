@@ -82,14 +82,14 @@ trait ModelGenerators {
       )
     }
 
-  implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
+  lazy val arbitraryDeclarationType: Arbitrary[String] =
     Arbitrary {
-      Gen.oneOf(DeclarationType.values)
+      Gen.oneOf("T", "T1", "T2", "T2F", "TIR")
     }
 
-  lazy val arbitraryNonOption4DeclarationType: Arbitrary[DeclarationType] =
+  lazy val arbitraryNonTIRDeclarationType: Arbitrary[String] =
     Arbitrary {
-      Gen.oneOf(DeclarationType.values.filterNot(_ == DeclarationType.Option4))
+      Gen.oneOf("T", "T1", "T2", "T2F")
     }
 
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =

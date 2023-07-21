@@ -19,7 +19,6 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
-import models.DeclarationType
 import navigation.GuaranteeDetailsNavigatorProvider
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -74,7 +73,7 @@ class AddGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "when no submitted" - {
       "must redirect to task list" in {
-        val declarationType = arbitrary[DeclarationType].sample.value
+        val declarationType = arbitrary[String](arbitraryDeclarationType).sample.value
         val userAnswers     = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
         setExistingUserAnswers(userAnswers)
 

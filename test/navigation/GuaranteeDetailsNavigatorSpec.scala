@@ -17,9 +17,9 @@
 package navigation
 
 import base.SpecBase
+import config.Constants.TIR
 import controllers.routes
 import generators.Generators
-import models.DeclarationType.Option4
 import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -32,7 +32,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
     "when answers complete" - {
       "when TIR declaration type" - {
         "must redirect to 'TIR guarantee added' page" in {
-          val initialAnswers = emptyUserAnswers.setValue(DeclarationTypePage, Option4)
+          val initialAnswers = emptyUserAnswers.setValue(DeclarationTypePage, TIR)
           forAll(arbitraryGuaranteeDetailsAnswers(initialAnswers), arbitrary[Mode]) {
             (answers, mode) =>
               val navigatorProvider = new GuaranteeDetailsNavigatorProviderImpl()
@@ -47,7 +47,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
       "when non-TIR declaration type" - {
         "must redirect to 'add another guarantee' page" in {
-          forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+          forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
             declarationType =>
               val initialAnswers = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
               forAll(arbitraryGuaranteeDetailsAnswers(initialAnswers), arbitrary[Mode]) {

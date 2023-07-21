@@ -16,13 +16,10 @@
 
 package pages.external
 
-import models.DeclarationType
 import pages.ReadOnlyPage
 import play.api.libs.json.JsPath
 
-case object DeclarationTypePage extends ReadOnlyPage[DeclarationType] {
+case object DeclarationTypePage extends ReadOnlyPage[String] {
 
-  override def path: JsPath = preTaskListPath \ toString
-
-  override def toString: String = "declarationType"
+  override def path: JsPath = preTaskListPath \ "declarationType" \ "code"
 }
