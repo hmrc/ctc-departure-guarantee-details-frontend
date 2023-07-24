@@ -17,7 +17,7 @@
 package controllers.guarantee
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.MoneyFormProvider
+import forms.YesNoFormProvider
 import generators.Generators
 import models.NormalMode
 import models.reference.CurrencyCode
@@ -25,21 +25,21 @@ import navigation.GuaranteeNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import pages.guarantee.{CurrencyPage, LiabilityAmountPage}
+import pages.guarantee.CurrencyPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.guarantee.LiabilityAmountView
+import views.html.guarantee.{AddDefaultLiabilityAmountView, AddLiabilityYesNoView}
 
 import scala.concurrent.Future
 
-class LiabilityAmountControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class AddDefaultLiabilityAmountControllerTest extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider                  = new MoneyFormProvider()
-  private val form                          = formProvider("guarantee.liabilityAmount")
+  private val formProvider                  = new YesNoFormProvider()
+  private val form                          = formProvider("guarantee.addDefaultLiabilityAmountYesNo")
   private val mode                          = NormalMode
-  private lazy val referenceNumberRoute     = routes.LiabilityAmountController.onPageLoad(lrn, mode, index).url
+  private lazy val liabilityAmountRoute     = routes.LiabilityAmountController.onPageLoad(lrn, mode, index).url
   private lazy val addDefaultLiabilityRoute = routes.AddDefaultLiabilityAmountController.onPageLoad(lrn, mode, index).url
   private val validAnswer: BigDecimal       = 999.99
   private val zeroAmount: BigDecimal        = 0
@@ -51,56 +51,33 @@ class LiabilityAmountControllerSpec extends SpecBase with AppWithDefaultMockFixt
       .guiceApplicationBuilder()
       .overrides(bind(classOf[GuaranteeNavigatorProvider]).toInstance(fakeGuaranteeNavigatorProvider))
 
-  "LiabilityAmount Controller" - {
+  "AddDefaultLiability Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val userAnswers = emptyUserAnswers.setValue(CurrencyPage(index), currency)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, referenceNumberRoute)
+      val request = FakeRequest(GET, addDefaultLiabilityRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[LiabilityAmountView]
+      val view = injector.instanceOf[AddDefaultLiabilityAmountView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, index, currency.symbol)(request, messages).toString
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers
-        .setValue(CurrencyPage(index), currency)
-        .setValue(LiabilityAmountPage(index), validAnswer)
-
-      setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, referenceNumberRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> validAnswer.toString))
-
-      val view = injector.instanceOf[LiabilityAmountView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, index, currency.symbol)(request, messages).toString
+        view(form, lrn, mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers.setValue(CurrencyPage(index), currency)
-      setExistingUserAnswers(userAnswers)
-
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, referenceNumberRoute)
-        .withFormUrlEncodedBody(("value", validAnswer.toString))
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, addDefaultLiabilityRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
@@ -109,48 +86,44 @@ class LiabilityAmountControllerSpec extends SpecBase with AppWithDefaultMockFixt
       redirectLocation(result).value mustEqual onwardRoute.url
     }
 
-    "must redirect to the add default liability amount of 10000 euros page when 0 amount data is submitted" in {
-
-      val userAnswers = emptyUserAnswers.setValue(CurrencyPage(index), currency)
-      setExistingUserAnswers(userAnswers)
+    "must redirect to the liability amount page when valid data and a false is submitted" in {
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, referenceNumberRoute)
-        .withFormUrlEncodedBody(("value", zeroAmount.toString))
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, addDefaultLiabilityRoute)
+        .withFormUrlEncodedBody(("value", "false"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual addDefaultLiabilityRoute
+      redirectLocation(result).value mustEqual liabilityAmountRoute
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers.setValue(CurrencyPage(index), currency)
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
-      val invalidAnswer = ""
-
-      val request    = FakeRequest(POST, referenceNumberRoute).withFormUrlEncodedBody(("value", ""))
-      val filledForm = form.bind(Map("value" -> invalidAnswer))
+      val request   = FakeRequest(POST, addDefaultLiabilityRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[LiabilityAmountView]
+      val view = injector.instanceOf[AddDefaultLiabilityAmountView]
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, index, currency.symbol)(request, messages).toString
+        view(boundForm, lrn, mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, referenceNumberRoute)
+      val request = FakeRequest(GET, addDefaultLiabilityRoute)
 
       val result = route(app, request).value
 
@@ -163,8 +136,8 @@ class LiabilityAmountControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, referenceNumberRoute)
-        .withFormUrlEncodedBody(("value", validAnswer.toString))
+      val request = FakeRequest(POST, addDefaultLiabilityRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 

@@ -129,3 +129,7 @@ guarantee.currency.error.required = Select the currency you want to use for the 
 guarantee.removeGuaranteeYesNo.title = Are you sure you want to remove this guarantee?
 guarantee.removeGuaranteeYesNo.heading = Are you sure you want to remove this guarantee?
 guarantee.removeGuaranteeYesNo.error.required = Select yes if you want to remove this guarantee
+
+guarantee.addDefaultLiabilityAmountYesNo.title = Do you want to use the default liability amount of 10,000 euros?
+guarantee.addDefaultLiabilityAmountYesNo.heading = Do you want to use the default liability amount of 10,000 euros?
+guarantee.addDefaultLiabilityAmountYesNo.error.required = Select yes if you want to use the default liability amount of 10,000 euros
