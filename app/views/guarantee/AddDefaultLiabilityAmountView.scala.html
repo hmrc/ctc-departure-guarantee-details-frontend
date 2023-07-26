@@ -41,9 +41,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("guarantee.addDefaultLiabilityAmountYesNo.heading"),
-                caption = Some(messages("caption"))
+                caption = Some(messages("caption")),
+                additionalHtml = messages("guarantee.addDefaultLiabilityAmountYesNo.paragraph").toParagraph
             )
         )
 
