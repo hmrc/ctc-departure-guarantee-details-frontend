@@ -35,6 +35,8 @@ class AddDefaultLiabilityAmountViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading()
 
+  behave like pageWithContent("p", "The liability amount cannot be 0. If you are not able to calculate the liability, use the default amount of 10,000 euros.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")
