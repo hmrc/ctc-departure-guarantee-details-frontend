@@ -356,7 +356,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
 
               result mustBe Some(
                 SummaryListRow(
-                  key = Key("Add liability for the guarantee".toText),
+                  key = Key("Do you want to add a liability for the guarantee?".toText),
                   value = Value("Yes".toText),
                   actions = Some(
                     Actions(

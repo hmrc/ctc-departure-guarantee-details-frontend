@@ -105,7 +105,7 @@ guarantee.accessCode.change.hidden = access code
 guarantee.addLiabilityYesNo.title = Do you want to add a liability for the guarantee?
 guarantee.addLiabilityYesNo.heading = Do you want to add a liability for the guarantee?
 guarantee.addLiabilityYesNo.paragraph = This includes the liability currency and amount.
-guarantee.addLiabilityYesNo.checkYourAnswersLabel = Add liability for the guarantee
+guarantee.addLiabilityYesNo.checkYourAnswersLabel = Do you want to add a liability for the guarantee?
 guarantee.addLiabilityYesNo.error.required = Select yes if you want to add a liability for the guarantee
 guarantee.addLiabilityYesNo.change.hidden = if you want to add a liability for the guarantee
 
