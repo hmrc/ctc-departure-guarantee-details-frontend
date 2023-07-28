@@ -121,6 +121,7 @@ guarantee.liabilityAmount.change.hidden = liability amount
 
 guarantee.currency.title = What currency do you want to use for the liability?
 guarantee.currency.heading = What currency do you want to use for the liability?
+guarantee.currency.paragraph = The liability is the amount needed to cover the duty at risk if the goods are not delivered to the office of destination as expected.
 guarantee.currency.placeholder = Select a currency
 guarantee.currency.change.hidden = liability currency
 guarantee.currency.checkYourAnswersLabel = Liability currency
