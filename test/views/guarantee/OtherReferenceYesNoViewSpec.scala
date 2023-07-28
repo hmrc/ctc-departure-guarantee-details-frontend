@@ -35,6 +35,8 @@ class OtherReferenceYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading()
 
+  behave like pageWithContent("p", "This is a unique number used to identify the guarantee.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")

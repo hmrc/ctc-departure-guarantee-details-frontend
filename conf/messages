@@ -86,6 +86,7 @@ guarantee.otherReference.paragraph = You must make sure this reference is up to 
 
 guarantee.otherReferenceYesNo.title = Do you want to add a reference for the guarantee?
 guarantee.otherReferenceYesNo.heading = Do you want to add a reference for the guarantee?
+guarantee.otherReferenceYesNo.paragraph = This is a unique number used to identify the guarantee.
 guarantee.otherReferenceYesNo.checkYourAnswersLabel = Add reference for the guarantee
 guarantee.otherReferenceYesNo.error.required = Select yes if you want to add a reference for the guarantee
 guarantee.otherReferenceYesNo.change.hidden = if you want to add a reference for the guarantee

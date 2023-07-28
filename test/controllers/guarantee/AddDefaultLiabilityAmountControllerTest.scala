@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.guarantee.{AddDefaultLiabilityAmountView, AddLiabilityYesNoView}
+import views.html.guarantee.AddDefaultLiabilityAmountView
 
 import scala.concurrent.Future
 
@@ -41,8 +41,6 @@ class AddDefaultLiabilityAmountControllerTest extends SpecBase with AppWithDefau
   private val mode                          = NormalMode
   private lazy val liabilityAmountRoute     = routes.LiabilityAmountController.onPageLoad(lrn, mode, index).url
   private lazy val addDefaultLiabilityRoute = routes.AddDefaultLiabilityAmountController.onPageLoad(lrn, mode, index).url
-  private val validAnswer: BigDecimal       = 999.99
-  private val zeroAmount: BigDecimal        = 0
 
   private val currency = arbitrary[CurrencyCode].sample.value
 
