@@ -44,6 +44,11 @@ class CurrencyViewSpec extends InputSelectViewBehaviours[CurrencyCode] {
 
   behave like pageWithHeading()
 
+  behave like pageWithContent(
+    "p",
+    "The liability is the amount needed to cover the duty at risk if the goods are not delivered to the office of destination as expected."
+  )
+
   behave like pageWithSelect()
 
   behave like pageWithSubmitButton("Save and continue")

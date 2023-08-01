@@ -60,7 +60,7 @@ guarantee.referenceNumber.heading = What is the Guarantee Reference Number (GRN)
 guarantee.referenceNumber.checkYourAnswersLabel = Guarantee Reference Number (GRN)
 guarantee.referenceNumber.error.required = Enter the Guarantee Reference Number
 guarantee.referenceNumber.change.hidden = guarantee reference number
-guarantee.referenceNumber.paragraph = You must make sure this reference is up to date.
+guarantee.referenceNumber.paragraph = This is issued by Customs and is used to identify the guarantee.
 guarantee.referenceNumber.hint = It can be up to 24 characters long and include both letters and numbers. For example, 01GB1234567890120A123456.
 guarantee.referenceNumber.error.length = The Guarantee Reference Number must be 24 characters or less
 guarantee.referenceNumber.error.invalid = The Guarantee Reference Number must only include the letters a to z and numbers 0 to 9
@@ -82,10 +82,10 @@ guarantee.otherReference.option8.error.length = The reference must be 35 charact
 guarantee.otherReference.option8.error.invalid = The reference must only include the letters a to z and numbers 0 to 9
 
 guarantee.otherReference.hint = This can be up to 35 characters long and include both letters and numbers.
-guarantee.otherReference.paragraph = You must make sure this reference is up to date.
 
 guarantee.otherReferenceYesNo.title = Do you want to add a reference for the guarantee?
 guarantee.otherReferenceYesNo.heading = Do you want to add a reference for the guarantee?
+guarantee.otherReferenceYesNo.paragraph = This is a unique number used to identify the guarantee.
 guarantee.otherReferenceYesNo.checkYourAnswersLabel = Add reference for the guarantee
 guarantee.otherReferenceYesNo.error.required = Select yes if you want to add a reference for the guarantee
 guarantee.otherReferenceYesNo.change.hidden = if you want to add a reference for the guarantee
@@ -121,6 +121,7 @@ guarantee.liabilityAmount.change.hidden = liability amount
 
 guarantee.currency.title = What currency do you want to use for the liability?
 guarantee.currency.heading = What currency do you want to use for the liability?
+guarantee.currency.paragraph = The liability is the amount needed to cover the duty at risk if the goods are not delivered to the office of destination as expected.
 guarantee.currency.placeholder = Select a currency
 guarantee.currency.change.hidden = liability currency
 guarantee.currency.checkYourAnswersLabel = Liability currency

@@ -50,8 +50,6 @@ class OtherReferenceViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "You must make sure this reference is up to date.")
-
   behave like pageWithHint("This can be up to 35 characters long and include both letters and numbers.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
