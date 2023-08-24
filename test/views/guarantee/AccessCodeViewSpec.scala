@@ -22,7 +22,6 @@ import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.Application
 import play.api.data.Form
-import play.api.test.Helpers.running
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
@@ -36,11 +35,6 @@ class AccessCodeViewSpec extends InputTextViewBehaviours[String] with AppWithDef
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     applyView(app, form)
-
-  private def applyView(app: Application): HtmlFormat.Appendable = {
-    val form = app.injector.instanceOf[AccessCodeFormProvider].apply(prefix)
-    applyView(app, form)
-  }
 
   private def applyView(app: Application, form: Form[String]): HtmlFormat.Appendable =
     app.injector.instanceOf[AccessCodeView].apply(form, lrn, NormalMode, index)(fakeRequest, messages)
@@ -61,19 +55,5 @@ class AccessCodeViewSpec extends InputTextViewBehaviours[String] with AppWithDef
 
   behave like pageWithSubmitButton("Save and continue")
 
-  "when during transition" - {
-    val app = transitionApplicationBuilder().build()
-    running(app) {
-      val doc = parseView(applyView(app))
-      behave like pageWithHint(doc, "The code will be 4 characters long, like 0000 or X9X9.")
-    }
-  }
-
-  "when post transition" - {
-    val app = postTransitionApplicationBuilder().build()
-    running(app) {
-      val doc = parseView(applyView(app))
-      behave like pageWithHint(doc, "The code will be 4 characters long, like 0000 or X9X9.")
-    }
-  }
+  behave like pageWithHint("The code will be 4 characters long, like 0000 or X9X9.")
 }

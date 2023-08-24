@@ -21,95 +21,40 @@ import forms.Constants.accessCodeLength
 import forms.behaviours.StringFieldBehaviours
 import models.domain.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Gen
-import play.api.data.FormError
-import play.api.test.Helpers.running
+import play.api.data.{Form, FormError}
 
 class AccessCodeFormProviderSpec extends StringFieldBehaviours with SpecBase with AppWithDefaultMockFixtures {
 
-  private val prefix = Gen.alphaNumStr.sample.value
-
+  private val prefix      = Gen.alphaNumStr.sample.value
+  val form: Form[String]  = new AccessCodeFormProvider().apply(prefix)
   private val requiredKey = s"$prefix.error.required"
   private val invalidKey  = s"$prefix.error.invalid"
+  private val lengthKey   = s"$prefix.error.length"
+  private val fieldName   = "value"
 
-  private val fieldName = "value"
+  behave like fieldThatBindsValidData(
+    form = form,
+    fieldName = fieldName,
+    validDataGenerator = stringsWithMaxLength(accessCodeLength)
+  )
 
-  "TransitionAccessCodeFormProvider" - {
+  behave like mandatoryField(
+    form = form,
+    fieldName = fieldName,
+    requiredError = FormError(fieldName, requiredKey)
+  )
 
-    val lengthKey = s"$prefix.error.length.transition"
-    val app       = transitionApplicationBuilder().build()
+  behave like fieldWithInvalidCharacters(
+    form = form,
+    fieldName = fieldName,
+    error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
+    length = accessCodeLength
+  )
 
-    ".value" - {
-
-      running(app) {
-
-        val form = app.injector.instanceOf[AccessCodeFormProvider].apply(prefix)
-
-        behave like fieldThatBindsValidData(
-          form = form,
-          fieldName = fieldName,
-          validDataGenerator = stringsWithMaxLength(accessCodeLength)
-        )
-
-        behave like mandatoryField(
-          form = form,
-          fieldName = fieldName,
-          requiredError = FormError(fieldName, requiredKey)
-        )
-
-        behave like fieldWithInvalidCharacters(
-          form = form,
-          fieldName = fieldName,
-          error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
-          length = accessCodeLength
-        )
-
-        behave like fieldWithExactLength(
-          form = form,
-          fieldName = fieldName,
-          length = accessCodeLength,
-          lengthError = FormError(fieldName, lengthKey, Seq(accessCodeLength))
-        )
-      }
-    }
-  }
-
-  "PostTransitionAccessCodeFormProvider" - {
-
-    val lengthKey = s"$prefix.error.length.postTransition"
-    val app       = postTransitionApplicationBuilder().build()
-
-    ".value" - {
-
-      running(app) {
-
-        val form = app.injector.instanceOf[AccessCodeFormProvider].apply(prefix)
-
-        behave like fieldThatBindsValidData(
-          form = form,
-          fieldName = fieldName,
-          validDataGenerator = stringsWithMaxLength(accessCodeLength)
-        )
-
-        behave like mandatoryField(
-          form = form,
-          fieldName = fieldName,
-          requiredError = FormError(fieldName, requiredKey)
-        )
-
-        behave like fieldWithInvalidCharacters(
-          form = form,
-          fieldName = fieldName,
-          error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
-          length = accessCodeLength
-        )
-
-        behave like fieldWithMaxLength(
-          form = form,
-          fieldName = fieldName,
-          maxLength = accessCodeLength,
-          lengthError = FormError(fieldName, lengthKey, Seq(accessCodeLength))
-        )
-      }
-    }
-  }
+  behave like fieldWithExactLength(
+    form = form,
+    fieldName = fieldName,
+    length = accessCodeLength,
+    lengthError = FormError(fieldName, lengthKey, Seq(accessCodeLength))
+  )
 }
