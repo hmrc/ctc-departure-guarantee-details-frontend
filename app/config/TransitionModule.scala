@@ -16,14 +16,11 @@
 
 package config
 
-import forms.{AccessCodeFormProvider, TransitionAccessCodeFormProvider}
-
 class TransitionModule extends Module {
 
   override def configure(): Unit = {
     super.configure()
 
     bind(classOf[PhaseConfig]).to(classOf[TransitionConfig])
-    bind(classOf[AccessCodeFormProvider]).to(classOf[TransitionAccessCodeFormProvider])
   }
 }
