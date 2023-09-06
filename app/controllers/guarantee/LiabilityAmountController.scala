@@ -32,7 +32,6 @@ import views.html.guarantee.LiabilityAmountView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.math.BigDecimal
 
 class LiabilityAmountController @Inject() (
   override val messagesApi: MessagesApi,
@@ -65,13 +64,13 @@ class LiabilityAmountController @Inject() (
     .andThen(getMandatoryPage(CurrencyPage(index)))
     .async {
       implicit request =>
-        lazy val redirect = controllers.guarantee.routes.AddDefaultLiabilityAmountController.onPageLoad(lrn, mode, index)
         form
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, index, request.arg.symbol))),
             {
-              case v: BigDecimal if v == 0 => Future.successful(Redirect(redirect))
+              case v: BigDecimal if v == 0 =>
+                Future.successful(Redirect(routes.AddDefaultLiabilityAmountController.onPageLoad(lrn, mode, index)))
               case value =>
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
                 LiabilityAmountPage(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()

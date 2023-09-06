@@ -18,6 +18,7 @@ package controllers.guarantee
 
 import config.PhaseConfig
 import controllers.actions.Actions
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.reference.CurrencyCode
 import models.{Index, LocalReferenceNumber, Mode}
@@ -53,22 +54,21 @@ class AddDefaultLiabilityAmountController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      lazy val redirect = controllers.guarantee.routes.LiabilityAmountController.onPageLoad(lrn, mode, index)
       form
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, index))),
           {
             case true =>
-              // TODO - call updateTask()
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-              for {
-                ua1     <- Future.fromTry(request.userAnswers.set(CurrencyPage(index), CurrencyCode.apply("EUR", Some("Euro"))))
-                uaFinal <- Future.fromTry(ua1.set(LiabilityAmountPage(index), BigDecimal("10000")))
-                _       <- sessionRepository.set(uaFinal)
-              } yield Redirect(navigator.nextPage(uaFinal))
+              CurrencyPage(index)
+                .writeToUserAnswers(CurrencyCode("EUR", Some("Euro")))
+                .andThenWriteToUserAnswers(LiabilityAmountPage(index), BigDecimal(10000))
+                .updateTask()
+                .writeToSession()
+                .navigate()
             case false =>
-              Future.successful(Redirect(redirect))
+              Future.successful(Redirect(routes.LiabilityAmountController.onPageLoad(lrn, mode, index)))
           }
         )
   }

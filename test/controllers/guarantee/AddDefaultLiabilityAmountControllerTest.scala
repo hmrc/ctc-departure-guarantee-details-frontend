@@ -19,13 +19,14 @@ package controllers.guarantee
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
-import models.NormalMode
 import models.reference.CurrencyCode
+import models.{NormalMode, TaskStatus, UserAnswers}
 import navigation.GuaranteeNavigatorProvider
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.guarantee.CurrencyPage
+import pages.guarantee.{CurrencyPage, LiabilityAmountPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -39,7 +40,6 @@ class AddDefaultLiabilityAmountControllerTest extends SpecBase with AppWithDefau
   private val formProvider                  = new YesNoFormProvider()
   private val form                          = formProvider("guarantee.addDefaultLiabilityAmountYesNo")
   private val mode                          = NormalMode
-  private lazy val liabilityAmountRoute     = routes.LiabilityAmountController.onPageLoad(lrn, mode, index).url
   private lazy val addDefaultLiabilityRoute = routes.AddDefaultLiabilityAmountController.onPageLoad(lrn, mode, index).url
 
   private val currency = arbitrary[CurrencyCode].sample.value
@@ -82,6 +82,12 @@ class AddDefaultLiabilityAmountControllerTest extends SpecBase with AppWithDefau
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+      userAnswersCaptor.getValue.get(CurrencyPage(index)).value mustBe CurrencyCode("EUR", Some("Euro"))
+      userAnswersCaptor.getValue.get(LiabilityAmountPage(index)).value mustBe BigDecimal(10000)
+      userAnswersCaptor.getValue.tasks.get(".guaranteeDetails").value mustBe TaskStatus.InProgress
     }
 
     "must redirect to the liability amount page when valid data and a false is submitted" in {
@@ -97,7 +103,8 @@ class AddDefaultLiabilityAmountControllerTest extends SpecBase with AppWithDefau
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual liabilityAmountRoute
+      redirectLocation(result).value mustEqual
+        routes.LiabilityAmountController.onPageLoad(lrn, mode, index).url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
