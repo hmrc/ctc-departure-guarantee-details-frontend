@@ -40,27 +40,30 @@ class RemoveGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
   "RemoveGuaranteeYesNoController" - {
 
     "must return OK and the correct view for a GET" in {
-      setExistingUserAnswers(emptyUserAnswers)
+      forAll(arbitraryGuaranteeAnswers(emptyUserAnswers, index)) {
+        userAnswers =>
+          setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, removeGuaranteeYesNoRoute)
-      val result  = route(app, request).value
+          val request = FakeRequest(GET, removeGuaranteeYesNoRoute)
+          val result  = route(app, request).value
 
-      val view = injector.instanceOf[RemoveGuaranteeYesNoView]
+          val view = injector.instanceOf[RemoveGuaranteeYesNoView]
 
-      status(result) mustEqual OK
+          status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(form, lrn, index)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(form, lrn, index)(request, messages).toString
+      }
     }
 
     "when yes submitted" - {
       "must redirect to add another guarantee and remove guarantee at specified index" in {
         forAll(arbitraryGuaranteeAnswers(emptyUserAnswers, index)) {
-          answers =>
+          userAnswers =>
             reset(mockSessionRepository)
             when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-            setExistingUserAnswers(answers)
+            setExistingUserAnswers(userAnswers)
 
             val request = FakeRequest(POST, removeGuaranteeYesNoRoute)
               .withFormUrlEncodedBody(("value", "true"))
@@ -82,10 +85,10 @@ class RemoveGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
     "when no submitted" - {
       "must redirect to add another guarantee and not remove guarantee at specified index" in {
         forAll(arbitraryGuaranteeAnswers(emptyUserAnswers, index)) {
-          answers =>
+          userAnswers =>
             reset(mockSessionRepository)
 
-            setExistingUserAnswers(answers)
+            setExistingUserAnswers(userAnswers)
 
             val request = FakeRequest(POST, removeGuaranteeYesNoRoute)
               .withFormUrlEncodedBody(("value", "false"))
@@ -103,44 +106,78 @@ class RemoveGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      setExistingUserAnswers(emptyUserAnswers)
+      forAll(arbitraryGuaranteeAnswers(emptyUserAnswers, index)) {
+        userAnswers =>
+          setExistingUserAnswers(userAnswers)
 
-      val request   = FakeRequest(POST, removeGuaranteeYesNoRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+          val request   = FakeRequest(POST, removeGuaranteeYesNoRoute).withFormUrlEncodedBody(("value", ""))
+          val boundForm = form.bind(Map("value" -> ""))
 
-      val result = route(app, request).value
+          val result = route(app, request).value
 
-      status(result) mustEqual BAD_REQUEST
+          status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[RemoveGuaranteeYesNoView]
+          val view = injector.instanceOf[RemoveGuaranteeYesNoView]
 
-      contentAsString(result) mustEqual
-        view(boundForm, lrn, index)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(boundForm, lrn, index)(request, messages).toString
+      }
     }
 
-    "must redirect to Session Expired for a GET if no existing data is found" in {
-      setNoExistingUserAnswers()
+    "must redirect to Session Expired for a GET" - {
+      "when no existing data is found" in {
+        setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, removeGuaranteeYesNoRoute)
+        val request = FakeRequest(GET, removeGuaranteeYesNoRoute)
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      }
+
+      "when no guarantee is found" in {
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, removeGuaranteeYesNoRoute)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          controllers.routes.AddAnotherGuaranteeController.onPageLoad(lrn).url
+      }
     }
 
-    "must redirect to Session Expired for a POST if no existing data is found" in {
-      setNoExistingUserAnswers()
+    "must redirect to Session Expired for a POST" - {
+      "when no existing data is found" in {
+        setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, removeGuaranteeYesNoRoute)
-        .withFormUrlEncodedBody(("value", "true"))
+        val request = FakeRequest(POST, removeGuaranteeYesNoRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      }
+
+      "when no guarantee is found" in {
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, removeGuaranteeYesNoRoute)
+          .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          controllers.routes.AddAnotherGuaranteeController.onPageLoad(lrn).url
+      }
     }
   }
 }
