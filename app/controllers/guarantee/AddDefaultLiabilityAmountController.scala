@@ -60,6 +60,7 @@ class AddDefaultLiabilityAmountController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, index))),
           {
             case true =>
+              // TODO - call updateTask()
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
               for {
                 ua1     <- Future.fromTry(request.userAnswers.set(CurrencyPage(index), CurrencyCode.apply("EUR", Some("Euro"))))
