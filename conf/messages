@@ -60,7 +60,7 @@ guarantee.referenceNumber.heading = What is the Guarantee Reference Number (GRN)
 guarantee.referenceNumber.checkYourAnswersLabel = Guarantee Reference Number (GRN)
 guarantee.referenceNumber.error.required = Enter the Guarantee Reference Number
 guarantee.referenceNumber.change.hidden = guarantee reference number
-guarantee.referenceNumber.paragraph = You must make sure this reference is up to date.
+guarantee.referenceNumber.paragraph = This is issued by Customs and is used to identify the guarantee.
 guarantee.referenceNumber.hint = It can be up to 24 characters long and include both letters and numbers. For example, 01GB1234567890120A123456.
 guarantee.referenceNumber.error.length = The Guarantee Reference Number must be 24 characters or less
 guarantee.referenceNumber.error.invalid = The Guarantee Reference Number must only include the letters a to z and numbers 0 to 9
@@ -82,10 +82,10 @@ guarantee.otherReference.option8.error.length = The reference must be 35 charact
 guarantee.otherReference.option8.error.invalid = The reference must only include the letters a to z and numbers 0 to 9
 
 guarantee.otherReference.hint = This can be up to 35 characters long and include both letters and numbers.
-guarantee.otherReference.paragraph = You must make sure this reference is up to date.
 
 guarantee.otherReferenceYesNo.title = Do you want to add a reference for the guarantee?
 guarantee.otherReferenceYesNo.heading = Do you want to add a reference for the guarantee?
+guarantee.otherReferenceYesNo.paragraph = This is a unique number used to identify the guarantee.
 guarantee.otherReferenceYesNo.checkYourAnswersLabel = Add reference for the guarantee
 guarantee.otherReferenceYesNo.error.required = Select yes if you want to add a reference for the guarantee
 guarantee.otherReferenceYesNo.change.hidden = if you want to add a reference for the guarantee
@@ -93,19 +93,17 @@ guarantee.otherReferenceYesNo.change.hidden = if you want to add a reference for
 guarantee.accessCode.title = What is the access code?
 guarantee.accessCode.heading = What is the access code?
 guarantee.accessCode.paragraph = This is set up by the Principal and works just like a bank PIN code.
-guarantee.accessCode.hint.transition = The code will be 4 characters long, like 0000 or X9X9.
-guarantee.accessCode.hint.postTransition = The code can be up to 4 characters long, like 0 or X9X9.
+guarantee.accessCode.hint = The code will be 4 characters long, like 0000 or X9X9.
 guarantee.accessCode.checkYourAnswersLabel = Access code
 guarantee.accessCode.error.required = Enter the access code
-guarantee.accessCode.error.length.transition = The access code must be 4 characters long
-guarantee.accessCode.error.length.postTransition = The access code must be 4 characters or less
+guarantee.accessCode.error.length = The access code must be 4 characters long
 guarantee.accessCode.error.invalid = The access code must only include the letters a to z and numbers 0 to 9
 guarantee.accessCode.change.hidden = access code
 
 guarantee.addLiabilityYesNo.title = Do you want to add a liability for the guarantee?
 guarantee.addLiabilityYesNo.heading = Do you want to add a liability for the guarantee?
 guarantee.addLiabilityYesNo.paragraph = This includes the liability currency and amount.
-guarantee.addLiabilityYesNo.checkYourAnswersLabel = Add liability for the guarantee
+guarantee.addLiabilityYesNo.checkYourAnswersLabel = Do you want to add a liability for the guarantee?
 guarantee.addLiabilityYesNo.error.required = Select yes if you want to add a liability for the guarantee
 guarantee.addLiabilityYesNo.change.hidden = if you want to add a liability for the guarantee
 
@@ -121,6 +119,7 @@ guarantee.liabilityAmount.change.hidden = liability amount
 
 guarantee.currency.title = What currency do you want to use for the liability?
 guarantee.currency.heading = What currency do you want to use for the liability?
+guarantee.currency.paragraph = The liability is the amount needed to cover the duty at risk if the goods are not delivered to the office of destination as expected.
 guarantee.currency.placeholder = Select a currency
 guarantee.currency.change.hidden = liability currency
 guarantee.currency.checkYourAnswersLabel = Liability currency
@@ -129,3 +128,8 @@ guarantee.currency.error.required = Select the currency you want to use for the 
 guarantee.removeGuaranteeYesNo.title = Are you sure you want to remove this guarantee?
 guarantee.removeGuaranteeYesNo.heading = Are you sure you want to remove this guarantee?
 guarantee.removeGuaranteeYesNo.error.required = Select yes if you want to remove this guarantee
+
+guarantee.addDefaultLiabilityAmountYesNo.title = Do you want to use the default liability amount of 10,000 euros?
+guarantee.addDefaultLiabilityAmountYesNo.heading = Do you want to use the default liability amount of 10,000 euros?
+guarantee.addDefaultLiabilityAmountYesNo.paragraph = The liability amount cannot be 0. If you are not able to calculate the liability, use the default amount of 10,000 euros.
+guarantee.addDefaultLiabilityAmountYesNo.error.required = Select yes if you want to use the default liability amount of 10,000 euros

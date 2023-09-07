@@ -20,14 +20,14 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.guarantee.OtherReferenceYesNoView
+import views.html.guarantee.AddDefaultLiabilityAmountView
 
-class OtherReferenceYesNoViewSpec extends YesNoViewBehaviours {
+class AddDefaultLiabilityAmountViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[OtherReferenceYesNoView].apply(form, lrn, NormalMode, index)(fakeRequest, messages)
+    injector.instanceOf[AddDefaultLiabilityAmountView].apply(form, lrn, NormalMode, index)(fakeRequest, messages)
 
-  override val prefix: String = "guarantee.otherReferenceYesNo"
+  override val prefix: String = "guarantee.addDefaultLiabilityAmountYesNo"
 
   behave like pageWithTitle()
 
@@ -35,7 +35,7 @@ class OtherReferenceYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "This is a unique number used to identify the guarantee.")
+  behave like pageWithContent("p", "The liability amount cannot be 0. If you are not able to calculate the liability, use the default amount of 10,000 euros.")
 
   behave like pageWithRadioItems()
 

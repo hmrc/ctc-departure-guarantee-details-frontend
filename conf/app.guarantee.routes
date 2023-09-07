@@ -29,6 +29,11 @@ POST       /:index/add-liability/:lrn                             controllers.gu
 GET        /:index/change-add-liability/:lrn                      controllers.guarantee.AddLiabilityYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, index: Index)
 POST       /:index/change-add-liability/:lrn                      controllers.guarantee.AddLiabilityYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, index: Index)
 
+GET        /:index/add-default-liability-amount/:lrn              controllers.guarantee.AddDefaultLiabilityAmountController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, index: Index)
+POST       /:index/add-default-liability-amount/:lrn              controllers.guarantee.AddDefaultLiabilityAmountController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, index: Index)
+GET        /:index/change-add-default-liability-amount/:lrn       controllers.guarantee.AddDefaultLiabilityAmountController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, index: Index)
+POST       /:index/change-add-default-liability-amount/:lrn       controllers.guarantee.AddDefaultLiabilityAmountController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, index: Index)
+
 GET        /:index/liability-amount/:lrn                          controllers.guarantee.LiabilityAmountController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, index: Index)
 POST       /:index/liability-amount/:lrn                          controllers.guarantee.LiabilityAmountController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, index: Index)
 GET        /:index/change-liability-amount/:lrn                   controllers.guarantee.LiabilityAmountController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, index: Index)
@@ -44,3 +49,4 @@ POST       /:index/remove-guarantee/:lrn                          controllers.gu
 
 GET        /:index/check-answers/:lrn                             controllers.guarantee.CheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber, index: Index)
 POST       /:index/check-answers/:lrn                             controllers.guarantee.CheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber, index: Index)
+

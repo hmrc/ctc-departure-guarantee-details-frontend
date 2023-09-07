@@ -68,9 +68,12 @@ class LiabilityAmountController @Inject() (
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, index, request.arg.symbol))),
-            value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-              LiabilityAmountPage(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            {
+              case v: BigDecimal if v == 0 =>
+                Future.successful(Redirect(routes.AddDefaultLiabilityAmountController.onPageLoad(lrn, mode, index)))
+              case value =>
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+                LiabilityAmountPage(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
             }
           )
     }

@@ -15,38 +15,37 @@
  *@
 
 @import controllers.guarantee.routes
-@import models.{Index, LocalReferenceNumber}
-@import viewModels.components.InputTextViewModel._
-@import views.html.components.{Button, ErrorSummary, InputText}
+@import models.{LocalReferenceNumber, Index}
+@import viewModels.components.InputYesNoViewModel._
+@import views.html.components.{Button, ErrorSummary, InputYesNo}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputText: InputText,
+    inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, index: Index, prefix: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages(s"$prefix.title"),
+    title = messages("guarantee.addDefaultLiabilityAmountYesNo.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.OtherReferenceController.onSubmit(lrn, mode, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddDefaultLiabilityAmountController.onSubmit(lrn, mode, index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
-        @inputText(
+        @inputYesNo(
             field = form("value"),
-            inputTextType = OrdinaryTextInput(
-                heading = messages(s"$prefix.heading"),
-                caption = Some(messages("caption"))
-            ),
-            hint = Some(messages("guarantee.otherReference.hint")),
-            inputClass = InputSize.Width20
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("guarantee.addDefaultLiabilityAmountYesNo.heading"),
+                caption = Some(messages("caption")),
+                additionalHtml = messages("guarantee.addDefaultLiabilityAmountYesNo.paragraph").toParagraph
+            )
         )
 
         @button(attributes = Map("id" -> "submit"))

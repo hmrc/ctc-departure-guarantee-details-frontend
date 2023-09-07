@@ -45,9 +45,10 @@
 
         @inputSelect(
             field = form("value"),
-            selectType = OrdinarySelect(
+            selectType = SelectWithAdditionalHtml(
                 heading = messages("guarantee.currency.heading"),
-                caption = Some(messages("caption"))
+                caption = Some(messages("caption")),
+                additionalHtml = messages("guarantee.currency.paragraph").toParagraph
             ),
             selectItems = currencyCodeList.toSelectItems(form.value),
             placeholder = messages("guarantee.currency.placeholder")

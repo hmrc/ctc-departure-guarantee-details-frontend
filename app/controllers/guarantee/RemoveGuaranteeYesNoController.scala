@@ -23,7 +23,7 @@ import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber}
 import pages.sections.GuaranteeSection
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.guarantee.RemoveGuaranteeYesNoView
@@ -42,30 +42,35 @@ class RemoveGuaranteeYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
+  private def addAnother(lrn: LocalReferenceNumber): Call =
+    controllers.routes.AddAnotherGuaranteeController.onPageLoad(lrn)
+
   private val form = formProvider("guarantee.removeGuaranteeYesNo")
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      Ok(view(form, lrn, index))
-  }
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = actions
+    .requireIndex(lrn, GuaranteeSection(index), addAnother(lrn)) {
+      implicit request =>
+        Ok(view(form, lrn, index))
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      lazy val redirect = controllers.routes.AddAnotherGuaranteeController.onPageLoad(lrn)
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, index))),
-          {
-            case true =>
-              GuaranteeSection(index)
-                .removeFromUserAnswers()
-                .updateTask()
-                .writeToSession()
-                .navigateTo(redirect)
-            case false =>
-              Future.successful(Redirect(redirect))
-          }
-        )
-  }
+  def onSubmit(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = actions
+    .requireIndex(lrn, GuaranteeSection(index), addAnother(lrn))
+    .async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, index))),
+            {
+              case true =>
+                GuaranteeSection(index)
+                  .removeFromUserAnswers()
+                  .updateTask()
+                  .writeToSession()
+                  .navigateTo(addAnother(lrn))
+              case false =>
+                Future.successful(Redirect(addAnother(lrn)))
+            }
+          )
+    }
 }
