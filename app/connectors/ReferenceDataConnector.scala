@@ -17,6 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
+import models.GuaranteeType
 import models.reference._
 import play.api.Logging
 import play.api.http.Status._
@@ -32,6 +33,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getCurrencyCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CurrencyCode]] = {
     val serviceUrl = s"${config.referenceDataUrl}/lists/CurrencyCodes"
     http.GET[Seq[CurrencyCode]](serviceUrl, headers = version2Header)
+  }
+
+  def getGuaranteeTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[GuaranteeType]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/lists/GuaranteeType"
+    http.GET[Seq[GuaranteeType]](serviceUrl, headers = version2Header)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(

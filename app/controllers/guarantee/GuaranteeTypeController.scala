@@ -23,9 +23,11 @@ import forms.EnumerableFormProvider
 import models.{GuaranteeType, Index, LocalReferenceNumber, Mode}
 import navigation.{GuaranteeNavigatorProvider, UserAnswersNavigator}
 import pages.guarantee.GuaranteeTypePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.GuaranteeTypesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.guarantee.GuaranteeTypeView
 
@@ -37,6 +39,7 @@ class GuaranteeTypeController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: GuaranteeNavigatorProvider,
   actions: Actions,
+  guaranteeTypesService: GuaranteeTypesService,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: GuaranteeTypeView
@@ -44,28 +47,41 @@ class GuaranteeTypeController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[GuaranteeType]("guarantee.guaranteeType")
+  private def form(guaranteeTypes: Seq[GuaranteeType]): Form[GuaranteeType] =
+    formProvider[GuaranteeType]("guarantee.guaranteeType", guaranteeTypes)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(GuaranteeTypePage(index)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .async {
+      implicit request =>
+        guaranteeTypesService.getGuaranteeTypes().map {
+          guaranteeTypes =>
+            val preparedForm = request.userAnswers.get(GuaranteeTypePage(index)) match {
+              case None        => form(guaranteeTypes)
+              case Some(value) => form(guaranteeTypes).fill(value)
+            }
 
-      Ok(view(preparedForm, lrn, GuaranteeType.values(request.userAnswers), mode, index))
-  }
+            Ok(view(preparedForm, lrn, guaranteeTypes, mode, index))
+        }
+    }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, GuaranteeType.values(request.userAnswers), mode, index))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-            GuaranteeTypePage(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
-        )
+      guaranteeTypesService.getGuaranteeTypes().flatMap {
+        guaranteeTypes =>
+          form(guaranteeTypes)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, guaranteeTypes, mode, index))),
+              value => {
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+                GuaranteeTypePage(index)
+                  .writeToUserAnswers(value)
+                  .updateTask()
+                  .writeToSession()
+                  .navigate()
+              }
+            )
+      }
   }
 }

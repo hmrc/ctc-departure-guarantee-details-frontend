@@ -42,22 +42,24 @@ object GuaranteeDomain {
   implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[GuaranteeDomain] =
     DeclarationTypePage.reader.flatMap {
       case Option4 =>
-        GuaranteeTypePage(index).mandatoryReader(_ == TIRGuarantee).map(GuaranteeOfTypesAB(_)(index))
+        GuaranteeTypePage(index)
+          .mandatoryReader(_ == GuaranteeType("B", "Guarantee for goods dispatched under TIR procedure"))
+          .map(GuaranteeOfTypesAB(_)(index))
       case _ =>
         GuaranteeTypePage(index).reader.flatMap {
           guaranteeType =>
             guaranteeType match {
-              case GuaranteeWaiverByAgreement =>
+              case GuaranteeType("A", _) =>
                 GuaranteeOfTypesAB.userAnswersReader(index, guaranteeType)
-              case GuaranteeWaiver | ComprehensiveGuarantee | IndividualGuarantee | FlatRateVoucher | IndividualGuaranteeMultiple =>
+              case GuaranteeType("0", _) | GuaranteeType("1", _) | GuaranteeType("2", _) | GuaranteeType("4", _) | GuaranteeType("9", _) =>
                 GuaranteeOfTypes01249.userAnswersReader(index, guaranteeType)
-              case GuaranteeWaiverSecured =>
+              case GuaranteeType("5", _) =>
                 GuaranteeOfType5.userAnswersReader(index, guaranteeType)
-              case GuaranteeNotRequiredExemptPublicBody =>
+              case GuaranteeType("8", _) =>
                 GuaranteeOfType8.userAnswersReader(index, guaranteeType)
-              case CashDepositGuarantee =>
+              case GuaranteeType("3", _) =>
                 GuaranteeOfType3.userAnswersReader(index, guaranteeType)
-              case TIRGuarantee =>
+              case GuaranteeType(_, _) =>
                 UserAnswersReader.fail[GuaranteeDomain](GuaranteeTypePage(index))
             }
         }

@@ -32,7 +32,7 @@ class GuaranteeCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode, inde
     formatAnswer = formatEnumAsText(GuaranteeType.messageKeyPrefix),
     prefix = "guarantee.guaranteeType",
     id = Some("change-type")
-  )(_ == TIRGuarantee)
+  )(_ == GuaranteeType("B", "Guarantee for goods dispatched under TIR procedure"))
 
   def guaranteeReferenceNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ReferenceNumberPage(index),
@@ -50,9 +50,9 @@ class GuaranteeCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode, inde
 
   def otherReference: Option[SummaryListRow] =
     (userAnswers.get(GuaranteeTypePage(index)) match {
-      case Some(CashDepositGuarantee)                 => Some("option3")
-      case Some(GuaranteeNotRequiredExemptPublicBody) => Some("option8")
-      case _                                          => None
+      case Some(GuaranteeType("3", _)) => Some("option3")
+      case Some(GuaranteeType("8", _)) => Some("option8")
+      case _                           => None
     }).flatMap {
       key =>
         getAnswerAndBuildRow[String](

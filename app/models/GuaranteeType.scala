@@ -16,55 +16,16 @@
 
 package models
 
-import config.Constants.XI
-import pages.external.OfficeOfDeparturePage
+import play.api.libs.json.{Format, Json}
 
-sealed trait GuaranteeType extends Radioable[GuaranteeType] {
+case class GuaranteeType(code: String, description: String) extends Radioable[GuaranteeType] {
   override val messageKeyPrefix: String = GuaranteeType.messageKeyPrefix
+  override def toString: String         = s"$description"
 }
 
-object GuaranteeType extends EnumerableType[GuaranteeType] {
+object GuaranteeType extends DynamicEnumerableType[GuaranteeType] {
+  implicit val format: Format[GuaranteeType] = Json.format[GuaranteeType]
 
-  val messageKeyPrefix: String = "guarantee.guaranteeType"
+  val messageKeyPrefix = "guarantee.guaranteeType"
 
-  case object GuaranteeWaiver extends WithName("0") with GuaranteeType
-
-  case object ComprehensiveGuarantee extends WithName("1") with GuaranteeType
-
-  case object IndividualGuarantee extends WithName("2") with GuaranteeType
-
-  case object CashDepositGuarantee extends WithName("3") with GuaranteeType
-
-  case object FlatRateVoucher extends WithName("4") with GuaranteeType
-
-  case object GuaranteeWaiverSecured extends WithName("5") with GuaranteeType
-
-  case object GuaranteeNotRequiredExemptPublicBody extends WithName("8") with GuaranteeType
-
-  case object IndividualGuaranteeMultiple extends WithName("9") with GuaranteeType
-
-  case object GuaranteeWaiverByAgreement extends WithName("A") with GuaranteeType
-
-  case object TIRGuarantee extends WithName("B") with GuaranteeType
-
-  val values: Seq[GuaranteeType] = Seq(
-    GuaranteeWaiver,
-    ComprehensiveGuarantee,
-    IndividualGuarantee,
-    CashDepositGuarantee,
-    FlatRateVoucher,
-    GuaranteeWaiverSecured,
-    GuaranteeNotRequiredExemptPublicBody,
-    IndividualGuaranteeMultiple,
-    GuaranteeWaiverByAgreement,
-    TIRGuarantee
-  )
-
-  def values(userAnswers: UserAnswers): Seq[GuaranteeType] = {
-    val valuesExcludingTIRGuarantee = values.filterNot(_ == TIRGuarantee)
-    userAnswers.get(OfficeOfDeparturePage).map(_.countryCode) match {
-      case Some(XI) => valuesExcludingTIRGuarantee.filterNot(_ == IndividualGuaranteeMultiple)
-      case _        => valuesExcludingTIRGuarantee
-    }
-  }
 }

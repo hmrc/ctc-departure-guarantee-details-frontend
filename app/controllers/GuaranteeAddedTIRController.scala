@@ -19,7 +19,7 @@ package controllers
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions.Actions
 import models.GuaranteeType._
-import models.{Index, LocalReferenceNumber}
+import models.{GuaranteeType, Index, LocalReferenceNumber}
 import pages.guarantee.GuaranteeTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -49,7 +49,7 @@ class GuaranteeAddedTIRController @Inject() (
   def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       GuaranteeTypePage(Index(0))
-        .writeToUserAnswers(TIRGuarantee)
+        .writeToUserAnswers(GuaranteeType("B", "Guarantee for goods dispatched under TIR procedure"))
         .updateTask()
         .writeToSession()
         .navigateTo(config.taskListUrl(lrn))
