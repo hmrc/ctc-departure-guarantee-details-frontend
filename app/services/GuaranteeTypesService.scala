@@ -17,8 +17,8 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.{GuaranteeType, SelectableList}
-import models.reference.CurrencyCode
+import models.GuaranteeType
+import services.GuaranteeTypesService.filterUserAnswers
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -28,12 +28,23 @@ class GuaranteeTypesService @Inject() (
   referenceDataConnector: ReferenceDataConnector
 )(implicit ec: ExecutionContext) {
 
-  def getGuaranteeTypes()(implicit hc: HeaderCarrier): Future[Seq[GuaranteeType]] =
-    referenceDataConnector
-      .getGuaranteeTypes()
-      .map(sort)
-
   private def sort(guaranteeType: Seq[GuaranteeType]): Seq[GuaranteeType] =
-    guaranteeType.sortBy(_.description.toLowerCase)
+    guaranteeType.sortBy(_.code.toLowerCase)
 
+  def getGuaranteeTypes()(implicit hc: HeaderCarrier): Future[Seq[GuaranteeType]] =
+    referenceDataConnector.getGuaranteeTypes
+      .map(sort)
+      .map {
+        x =>
+          filterUserAnswers(x)
+
+      }
+}
+
+object GuaranteeTypesService {
+
+  def filterUserAnswers(foo: Seq[GuaranteeType]): Seq[GuaranteeType] =
+    foo.filterNot(
+      x => x.code == "J" || x.code == "R"
+    )
 }
