@@ -29,7 +29,7 @@ class GuaranteeCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode, inde
 
   def guaranteeType: Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicLink[GuaranteeType](
     page = GuaranteeTypePage(index),
-    formatAnswer = formatEnumAsText(GuaranteeType.messageKeyPrefix),
+    formatAnswer = formatAsText,
     prefix = "guarantee.guaranteeType",
     id = Some("change-type")
   )(_ == GuaranteeType("B", "Guarantee for goods dispatched under TIR procedure"))

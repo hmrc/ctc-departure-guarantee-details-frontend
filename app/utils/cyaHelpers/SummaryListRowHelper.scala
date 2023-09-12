@@ -56,7 +56,7 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
     formatEnumAsString(messageKeyPrefix)(answer).toText
 
   protected def formatEnumAsString[T](messageKeyPrefix: String)(answer: T): String =
-    messages(s"$messageKeyPrefix.$answer")
+    messages(s"$answer")
 
   protected def buildRow(
     prefix: String,
