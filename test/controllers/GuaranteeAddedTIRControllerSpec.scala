@@ -17,8 +17,8 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import models.GuaranteeType.TIRGuarantee
-import models.{Index, UserAnswers}
+import models.GuaranteeType._
+import models.{GuaranteeType, Index, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -65,7 +65,7 @@ class GuaranteeAddedTIRControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-      userAnswersCaptor.getValue.get(GuaranteeTypePage(Index(0))).get mustBe TIRGuarantee
+      userAnswersCaptor.getValue.get(GuaranteeTypePage(Index(0))).get mustBe GuaranteeType("B", "Guarantee for goods dispatched under TIR procedure")
     }
   }
 }

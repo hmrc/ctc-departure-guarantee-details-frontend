@@ -34,11 +34,11 @@ import pages.guarantee._
 class GuaranteeDomainSpec extends SpecBase with Generators {
 
   private val `0,1,2,4,9` = arbitrary01249GuaranteeType.arbitrary
-  private val `3`         = Gen.const(CashDepositGuarantee)
-  private val `5`         = Gen.const(GuaranteeWaiverSecured)
-  private val `8`         = Gen.const(GuaranteeNotRequiredExemptPublicBody)
-  private val `A`         = Gen.const(GuaranteeWaiverByAgreement)
-  private val `B`         = Gen.const(TIRGuarantee)
+  private val `3`         = Gen.const(cashDepositGuarantee)
+  private val `5`         = Gen.const(waiverImportExportGuarantee)
+  private val `8`         = Gen.const(notRequiredByPublicBodiesGuarantee)
+  private val `A`         = Gen.const(waiverByAgreementuarantee)
+  private val `B`         = Gen.const(tirGuarantee)
 
   "GuaranteeDomain" - {
 

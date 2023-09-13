@@ -19,89 +19,49 @@ package models
 import base.SpecBase
 import generators.Generators
 import models.GuaranteeType._
-import models.reference.CustomsOffice
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.external.OfficeOfDeparturePage
-import play.api.libs.json.{JsError, JsString, Json}
+import play.api.libs.json.Json
 
 class GuaranteeTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "GuaranteeType" - {
 
-    "must deserialise valid values" in {
-
-      val gen = Gen.oneOf(GuaranteeType.values)
-
-      forAll(gen) {
-        guaranteeType =>
-          JsString(guaranteeType.toString).validate[GuaranteeType].asOpt.value mustEqual guaranteeType
-      }
-    }
-
-    "must fail to deserialise invalid values" in {
-
-      val gen = arbitrary[String] suchThat (!GuaranteeType.values.map(_.toString).contains(_))
-
-      forAll(gen) {
-        invalidValue =>
-          JsString(invalidValue).validate[GuaranteeType] mustEqual JsError("error.invalid")
-      }
-    }
-
     "must serialise" in {
-
-      val gen = Gen.oneOf(GuaranteeType.values)
-
-      forAll(gen) {
-        guaranteeType =>
-          Json.toJson(guaranteeType) mustEqual JsString(guaranteeType.toString)
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val guaranteeType = GuaranteeType(code, description)
+          Json.toJson(guaranteeType) mustBe Json.parse(s"""
+               |{
+               |  "code": "$code",
+               |  "description": "$description"
+               |}
+               |""".stripMargin)
       }
     }
 
-    "Radio options" - {
-
-      "Must return the correct number of radios" - {
-        "When Office of Departure is 'XI'" in {
-          val answers = emptyUserAnswers
-            .setValue(OfficeOfDeparturePage, CustomsOffice("XI1", "name", None))
-
-          val radios = GuaranteeType.values(answers)
-          val expected = Seq(
-            GuaranteeWaiver,
-            ComprehensiveGuarantee,
-            IndividualGuarantee,
-            CashDepositGuarantee,
-            FlatRateVoucher,
-            GuaranteeWaiverSecured,
-            GuaranteeNotRequiredExemptPublicBody,
-            GuaranteeWaiverByAgreement
-          )
-
-          radios mustBe expected
-        }
-
-        "When Office of Departure is 'GB'" in {
-          val answers = emptyUserAnswers
-            .setValue(OfficeOfDeparturePage, CustomsOffice("GB1", "name", None))
-
-          val radios = GuaranteeType.values(answers)
-          val expected = Seq(
-            GuaranteeWaiver,
-            ComprehensiveGuarantee,
-            IndividualGuarantee,
-            CashDepositGuarantee,
-            FlatRateVoucher,
-            GuaranteeWaiverSecured,
-            GuaranteeNotRequiredExemptPublicBody,
-            IndividualGuaranteeMultiple,
-            GuaranteeWaiverByAgreement
-          )
-
-          radios mustBe expected
-        }
+    "must deserialise" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val guaranteeType = GuaranteeType(code, description)
+          Json
+            .parse(s"""
+                 |{
+                 |  "code": "$code",
+                 |  "description": "$description"
+                 |}
+                 |""".stripMargin)
+            .as[GuaranteeType] mustBe guaranteeType
       }
     }
+
+    "must format as string" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val guaranteeType = GuaranteeType(code, description)
+          guaranteeType.toString mustBe s"$description"
+      }
+    }
+
   }
 }

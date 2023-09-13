@@ -124,7 +124,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
                 val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
                 val initialAnswers = emptyUserAnswers
                   .setValue(DeclarationTypePage, declarationType)
-                  .setValue(GuaranteeTypePage(index), GuaranteeWaiverSecured)
+                  .setValue(GuaranteeTypePage(index), waiverGuarantee)
                   .setValue(AddLiabilityYesNoPage(index), true)
 
                 forAll(arbitraryGuaranteeAnswers(initialAnswers, index)(mockPhaseConfig)) {
@@ -142,7 +142,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
                 val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
                 val initialAnswers = emptyUserAnswers
                   .setValue(DeclarationTypePage, declarationType)
-                  .setValue(GuaranteeTypePage(index), GuaranteeWaiverSecured)
+                  .setValue(GuaranteeTypePage(index), waiverGuarantee)
                   .setValue(AddLiabilityYesNoPage(index), false)
 
                 forAll(arbitraryGuaranteeAnswers(initialAnswers, index)(mockPhaseConfig)) {
@@ -164,7 +164,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
               val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
               val initialAnswers = emptyUserAnswers
                 .setValue(DeclarationTypePage, declarationType)
-                .setValue(GuaranteeTypePage(index), GuaranteeWaiverSecured)
+                .setValue(GuaranteeTypePage(index), waiverGuarantee)
 
               forAll(arbitraryGuaranteeAnswers(initialAnswers, index)(mockPhaseConfig)) {
                 answers =>
@@ -182,7 +182,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
             val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
             val initialAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
-              .setValue(GuaranteeTypePage(index), GuaranteeType.GuaranteeWaiverByAgreement)
+              .setValue(GuaranteeTypePage(index), waiverByAgreementuarantee)
 
             forAll(arbitraryGuaranteeAnswers(initialAnswers, index)) {
               answers =>
@@ -199,7 +199,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
             val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
             val initialAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
-              .setValue(GuaranteeTypePage(index), GuaranteeNotRequiredExemptPublicBody)
+              .setValue(GuaranteeTypePage(index), notRequiredByPublicBodiesGuarantee)
 
             forAll(arbitraryGuaranteeAnswers(initialAnswers, index)) {
               answers =>
@@ -217,7 +217,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
               val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
               val initialAnswers = emptyUserAnswers
                 .setValue(DeclarationTypePage, declarationType)
-                .setValue(GuaranteeTypePage(index), CashDepositGuarantee)
+                .setValue(GuaranteeTypePage(index), cashDepositGuarantee)
                 .setValue(OtherReferenceYesNoPage(index), true)
 
               forAll(arbitraryGuaranteeAnswers(initialAnswers, index)) {
@@ -235,7 +235,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
               val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
               val initialAnswers = emptyUserAnswers
                 .setValue(DeclarationTypePage, declarationType)
-                .setValue(GuaranteeTypePage(index), CashDepositGuarantee)
+                .setValue(GuaranteeTypePage(index), cashDepositGuarantee)
                 .setValue(OtherReferenceYesNoPage(index), false)
 
               forAll(arbitraryGuaranteeAnswers(initialAnswers, index)) {

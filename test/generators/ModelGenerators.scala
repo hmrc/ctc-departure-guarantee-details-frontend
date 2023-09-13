@@ -16,7 +16,7 @@
 
 package generators
 
-import models.GuaranteeType._
+import config.Constants._
 import models._
 import models.reference._
 import org.scalacheck.{Arbitrary, Gen}
@@ -28,57 +28,56 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryGuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
-      Gen.oneOf(GuaranteeType.values)
+      Gen.oneOf(guaranteeTypeValues)
     }
 
   lazy val arbitraryNonOption4GuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
-      Gen.oneOf(GuaranteeType.values.filterNot(_ == TIRGuarantee))
+      Gen.oneOf(guaranteeTypeValues.filterNot(_ == tirGuarantee))
     }
 
   lazy val arbitraryNonOption3Or8GuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
       Gen.oneOf(
-        GuaranteeType.values
-          .filterNot(_ == CashDepositGuarantee)
-          .filterNot(_ == GuaranteeNotRequiredExemptPublicBody)
+        guaranteeTypeValues
+          .filterNot(_ == cashDepositGuarantee)
+          .filterNot(_ == notRequiredByPublicBodiesGuarantee)
       )
     }
 
   lazy val arbitrary012459GuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
       Gen.oneOf(
-        GuaranteeWaiver,
-        ComprehensiveGuarantee,
-        IndividualGuarantee,
-        FlatRateVoucher,
-        GuaranteeWaiverSecured,
-        IndividualGuaranteeMultiple
+        waiverGuarantee,
+        comprehensiveGuarantee,
+        individualInFormOfUndertakingGuarantee,
+        individualInFormOfVouchersGuarantee,
+        waiverImportExportGuarantee,
+        individualForMultipleUsagesGuarantee
       )
     }
 
   lazy val arbitrary01249GuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
       Gen.oneOf(
-        GuaranteeWaiver,
-        ComprehensiveGuarantee,
-        IndividualGuarantee,
-        FlatRateVoucher,
-        IndividualGuaranteeMultiple
+        waiverGuarantee,
+        comprehensiveGuarantee,
+        individualInFormOfUndertakingGuarantee,
+        individualInFormOfVouchersGuarantee,
+        individualForMultipleUsagesGuarantee
       )
     }
 
   lazy val arbitrary01234589GuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
       Gen.oneOf(
-        GuaranteeWaiver,
-        ComprehensiveGuarantee,
-        IndividualGuarantee,
-        CashDepositGuarantee,
-        FlatRateVoucher,
-        GuaranteeWaiverSecured,
-        GuaranteeNotRequiredExemptPublicBody,
-        IndividualGuaranteeMultiple
+        waiverGuarantee,
+        comprehensiveGuarantee,
+        individualInFormOfUndertakingGuarantee,
+        individualInFormOfVouchersGuarantee,
+        waiverImportExportGuarantee,
+        notRequiredByPublicBodiesGuarantee,
+        individualForMultipleUsagesGuarantee
       )
     }
 

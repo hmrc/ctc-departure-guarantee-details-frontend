@@ -55,7 +55,7 @@ class GuaranteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
           val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
           val initialAnswers = emptyUserAnswers
             .setValue(DeclarationTypePage, declarationType)
-            .setValue(GuaranteeTypePage(index), GuaranteeType.GuaranteeWaiverByAgreement)
+            .setValue(GuaranteeTypePage(index), waiverGuarantee)
 
           forAll(arbitraryGuaranteeAnswers(initialAnswers, index), arbitrary[Mode]) {
             (answers, mode) =>

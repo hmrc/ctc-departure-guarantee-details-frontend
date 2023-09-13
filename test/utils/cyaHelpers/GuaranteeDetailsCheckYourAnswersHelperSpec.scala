@@ -42,14 +42,14 @@ class GuaranteeDetailsCheckYourAnswersHelperSpec extends SpecBase with Generator
       val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
       val userAnswers = emptyUserAnswers
         .setValue(DeclarationTypePage, declarationType)
-        .setValue(GuaranteeTypePage(Index(0)), CashDepositGuarantee)
+        .setValue(GuaranteeTypePage(Index(0)), cashDepositGuarantee)
         .setValue(OtherReferenceYesNoPage(Index(0)), false)
 
       val helper = new GuaranteeDetailsCheckYourAnswersHelper(userAnswers, NormalMode)
       helper.listItems mustBe Seq(
         Right(
           ListItem(
-            name = "(3) Individual guarantee in cash or an equivalent recognised by the customs authorities",
+            name = "test3",
             changeUrl = routes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, Index(0)).url,
             removeUrl = Some(routes.RemoveGuaranteeYesNoController.onPageLoad(userAnswers.lrn, Index(0)).url)
           )
@@ -63,30 +63,30 @@ class GuaranteeDetailsCheckYourAnswersHelperSpec extends SpecBase with Generator
       val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
       val userAnswers = emptyUserAnswers
         .setValue(DeclarationTypePage, declarationType)
-        .setValue(GuaranteeTypePage(Index(0)), CashDepositGuarantee)
+        .setValue(GuaranteeTypePage(Index(0)), cashDepositGuarantee)
         .setValue(OtherReferenceYesNoPage(Index(0)), false)
-        .setValue(GuaranteeTypePage(Index(1)), GuaranteeWaiver)
-        .setValue(GuaranteeTypePage(Index(2)), GuaranteeWaiverByAgreement)
+        .setValue(GuaranteeTypePage(Index(1)), waiverGuarantee)
+        .setValue(GuaranteeTypePage(Index(2)), waiverByAgreementuarantee)
 
       val helper = new GuaranteeDetailsCheckYourAnswersHelper(userAnswers, NormalMode)
       helper.listItems mustBe Seq(
         Right(
           ListItem(
-            name = "(3) Individual guarantee in cash or an equivalent recognised by the customs authorities",
+            name = "test3",
             changeUrl = routes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, Index(0)).url,
             removeUrl = Some(routes.RemoveGuaranteeYesNoController.onPageLoad(userAnswers.lrn, Index(0)).url)
           )
         ),
         Left(
           ListItem(
-            name = "(0) Guarantee waiver",
+            name = "test0",
             changeUrl = routes.ReferenceNumberController.onPageLoad(userAnswers.lrn, NormalMode, Index(1)).url,
             removeUrl = Some(routes.RemoveGuaranteeYesNoController.onPageLoad(userAnswers.lrn, Index(1)).url)
           )
         ),
         Right(
           ListItem(
-            name = "(A) Guarantee waiver by agreement",
+            name = "testA",
             changeUrl = routes.GuaranteeTypeController.onPageLoad(userAnswers.lrn, CheckMode, Index(2)).url,
             removeUrl = Some(routes.RemoveGuaranteeYesNoController.onPageLoad(userAnswers.lrn, Index(2)).url)
           )

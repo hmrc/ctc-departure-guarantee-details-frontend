@@ -56,7 +56,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
               mode =>
                 val answers = emptyUserAnswers
                   .setValue(DeclarationTypePage, Option4)
-                  .setValue(GuaranteeTypePage(index), TIRGuarantee)
+                  .setValue(GuaranteeTypePage(index), tirGuarantee)
 
                 val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
                 val result = helper.guaranteeType
@@ -228,7 +228,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
             forAll(Gen.alphaNumStr, arbitrary[Mode]) {
               (referenceNumber, mode) =>
                 val answers = emptyUserAnswers
-                  .setValue(GuaranteeTypePage(index), CashDepositGuarantee)
+                  .setValue(GuaranteeTypePage(index), cashDepositGuarantee)
                   .setValue(OtherReferencePage(index), referenceNumber)
 
                 val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
@@ -259,7 +259,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
             forAll(Gen.alphaNumStr, arbitrary[Mode]) {
               (referenceNumber, mode) =>
                 val answers = emptyUserAnswers
-                  .setValue(GuaranteeTypePage(index), GuaranteeNotRequiredExemptPublicBody)
+                  .setValue(GuaranteeTypePage(index), notRequiredByPublicBodiesGuarantee)
                   .setValue(OtherReferencePage(index), referenceNumber)
 
                 val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
