@@ -101,10 +101,10 @@ package object domain {
       UserAnswersReader(fn)
     }
 
-    def mandatoryReader(predicate: A => Boolean)(implicit reads: Reads[A]): UserAnswersReader[A] = {
+    def mandatoryReader(predicate: A => Boolean, message: String)(implicit reads: Reads[A]): UserAnswersReader[A] = {
       val fn: UserAnswers => EitherType[A] = _.get(a) match {
         case Some(value) if predicate(value) => Right(value)
-        case _                               => Left(ReaderError(a))
+        case _                               => Left(ReaderError(a, Some(message)))
       }
       UserAnswersReader(fn)
     }

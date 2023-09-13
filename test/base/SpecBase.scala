@@ -118,5 +118,5 @@ trait SpecBase
   val notRequiredByPublicBodiesGuarantee     = GuaranteeType("8", "test8")
   val individualForMultipleUsagesGuarantee   = GuaranteeType("9", "test9")
   val waiverByAgreementuarantee              = GuaranteeType("A", "testA")
-  val tirGuarantee                           = GuaranteeType("B", "testB")
+  val tirGuarantee                           = GuaranteeType("B", "Guarantee for goods dispatched under TIR procedure")
 }

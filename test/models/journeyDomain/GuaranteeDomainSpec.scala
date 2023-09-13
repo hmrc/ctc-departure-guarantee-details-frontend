@@ -24,7 +24,7 @@ import models.GuaranteeType._
 import models.domain.{EitherType, UserAnswersReader}
 import models.journeyDomain.GuaranteeDomain._
 import models.reference.CurrencyCode
-import models.{DeclarationType, Phase}
+import models.{DeclarationType, GuaranteeType, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -43,130 +43,59 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
   "GuaranteeDomain" - {
 
     "can be parsed from UserAnswers" - {
-      "when 0,1,2,4,5,9 guarantee type" - {
-        "and during transition" in {
-          val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
-          when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
 
-          val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
-          val guaranteeType   = `0,1,2,4,9`.sample.value
-          val grn             = Gen.alphaNumStr.sample.value
-          val accessCode      = Gen.alphaNumStr.sample.value
-          val liabilityAmount = arbitrary[BigDecimal].sample.value
-          val currencyCode    = arbitrary[CurrencyCode].sample.value
+      "when TIR" in {
+        val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+        when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
 
-          val userAnswers = emptyUserAnswers
-            .setValue(DeclarationTypePage, declarationType)
-            .setValue(GuaranteeTypePage(index), guaranteeType)
-            .setValue(ReferenceNumberPage(index), grn)
-            .setValue(AddLiabilityYesNoPage(index), true)
-            .setValue(CurrencyPage(index), currencyCode)
-            .setValue(AccessCodePage(index), accessCode)
-            .setValue(LiabilityAmountPage(index), liabilityAmount)
+        val userAnswers = emptyUserAnswers
+          .setValue(DeclarationTypePage, Option4)
 
-          val expectedResult = TransitionGuaranteeOfTypes01249(
-            `type` = guaranteeType,
-            grn = grn,
-            liability = Some(
-              LiabilityDomain(
-                currencyCode = currencyCode,
-                amount = liabilityAmount
-              )
-            ),
-            accessCode = accessCode
-          )(index)
+        val expectedResult = GuaranteeOfTypesAB(
+          `type` = GuaranteeType("B", "Guarantee for goods dispatched under TIR procedure")
+        )(index)
 
-          val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
-            GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
-          ).run(userAnswers)
+        val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+          GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
+        ).run(userAnswers)
 
-          result.value mustBe expectedResult
-        }
+        result.value mustBe expectedResult
 
-        "and post transition" in {
-          val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
-          when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
-
-          val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
-          val guaranteeType   = `0,1,2,4,9`.sample.value
-          val grn             = Gen.alphaNumStr.sample.value
-          val accessCode      = Gen.alphaNumStr.sample.value
-          val liabilityAmount = arbitrary[BigDecimal].sample.value
-          val currencyCode    = arbitrary[CurrencyCode].sample.value
-
-          val userAnswers = emptyUserAnswers
-            .setValue(DeclarationTypePage, declarationType)
-            .setValue(GuaranteeTypePage(index), guaranteeType)
-            .setValue(ReferenceNumberPage(index), grn)
-            .setValue(CurrencyPage(index), currencyCode)
-            .setValue(AccessCodePage(index), accessCode)
-            .setValue(LiabilityAmountPage(index), liabilityAmount)
-
-          val expectedResult = PostTransitionGuaranteeOfTypes01249(
-            `type` = guaranteeType,
-            grn = grn,
-            liability = LiabilityDomain(
-              currencyCode = currencyCode,
-              amount = liabilityAmount
-            ),
-            accessCode = accessCode
-          )(index)
-
-          val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
-            GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
-          ).run(userAnswers)
-
-          result.value mustBe expectedResult
-        }
       }
 
-      "when 5 guarantee type" - {
-        val guaranteeType = `5`.sample.value
+      "when non-TIR" - {
 
-        "when post transition" in {
-          val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
-          when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+        "when 0,1,2,4,5,9 guarantee type" - {
+          "and during transition" in {
+            val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+            when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
 
-          val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
-          val liabilityAmount = arbitrary[BigDecimal].sample.value
-          val currencyCode    = arbitrary[CurrencyCode].sample.value
-
-          val userAnswers = emptyUserAnswers
-            .setValue(DeclarationTypePage, declarationType)
-            .setValue(GuaranteeTypePage(index), guaranteeType)
-            .setValue(CurrencyPage(index), currencyCode)
-            .setValue(LiabilityAmountPage(index), liabilityAmount)
-
-          val expectedResult = PostTransitionGuaranteeOfType5(
-            `type` = guaranteeType,
-            liability = LiabilityDomain(
-              currencyCode = currencyCode,
-              amount = liabilityAmount
-            )
-          )(index)
-
-          val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
-            GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
-          ).run(userAnswers)
-
-          result.value mustBe expectedResult
-        }
-
-        "when transition" - {
-          val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
-          when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
-
-          "and not adding liability" in {
             val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+            val guaranteeType   = `0,1,2,4,9`.sample.value
+            val grn             = Gen.alphaNumStr.sample.value
+            val accessCode      = Gen.alphaNumStr.sample.value
+            val liabilityAmount = arbitrary[BigDecimal].sample.value
+            val currencyCode    = arbitrary[CurrencyCode].sample.value
 
             val userAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
               .setValue(GuaranteeTypePage(index), guaranteeType)
-              .setValue(AddLiabilityYesNoPage(index), false)
+              .setValue(ReferenceNumberPage(index), grn)
+              .setValue(AddLiabilityYesNoPage(index), true)
+              .setValue(CurrencyPage(index), currencyCode)
+              .setValue(AccessCodePage(index), accessCode)
+              .setValue(LiabilityAmountPage(index), liabilityAmount)
 
-            val expectedResult = TransitionGuaranteeOfType5(
+            val expectedResult = TransitionGuaranteeOfTypes01249(
               `type` = guaranteeType,
-              liability = None
+              grn = grn,
+              liability = Some(
+                LiabilityDomain(
+                  currencyCode = currencyCode,
+                  amount = liabilityAmount
+                )
+              ),
+              accessCode = accessCode
             )(index)
 
             val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
@@ -176,7 +105,50 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             result.value mustBe expectedResult
           }
 
-          "and adding liability" in {
+          "and post transition" in {
+            val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+            when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+
+            val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+            val guaranteeType   = `0,1,2,4,9`.sample.value
+            val grn             = Gen.alphaNumStr.sample.value
+            val accessCode      = Gen.alphaNumStr.sample.value
+            val liabilityAmount = arbitrary[BigDecimal].sample.value
+            val currencyCode    = arbitrary[CurrencyCode].sample.value
+
+            val userAnswers = emptyUserAnswers
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(GuaranteeTypePage(index), guaranteeType)
+              .setValue(ReferenceNumberPage(index), grn)
+              .setValue(CurrencyPage(index), currencyCode)
+              .setValue(AccessCodePage(index), accessCode)
+              .setValue(LiabilityAmountPage(index), liabilityAmount)
+
+            val expectedResult = PostTransitionGuaranteeOfTypes01249(
+              `type` = guaranteeType,
+              grn = grn,
+              liability = LiabilityDomain(
+                currencyCode = currencyCode,
+                amount = liabilityAmount
+              ),
+              accessCode = accessCode
+            )(index)
+
+            val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+              GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
+            ).run(userAnswers)
+
+            result.value mustBe expectedResult
+          }
+        }
+
+        "when 5 guarantee type" - {
+          val guaranteeType = `5`.sample.value
+
+          "when post transition" in {
+            val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+            when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+
             val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
             val liabilityAmount = arbitrary[BigDecimal].sample.value
             val currencyCode    = arbitrary[CurrencyCode].sample.value
@@ -184,17 +156,14 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             val userAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
               .setValue(GuaranteeTypePage(index), guaranteeType)
-              .setValue(AddLiabilityYesNoPage(index), true)
               .setValue(CurrencyPage(index), currencyCode)
               .setValue(LiabilityAmountPage(index), liabilityAmount)
 
-            val expectedResult = TransitionGuaranteeOfType5(
+            val expectedResult = PostTransitionGuaranteeOfType5(
               `type` = guaranteeType,
-              liability = Some(
-                LiabilityDomain(
-                  currencyCode = currencyCode,
-                  amount = liabilityAmount
-                )
+              liability = LiabilityDomain(
+                currencyCode = currencyCode,
+                amount = liabilityAmount
               )
             )(index)
 
@@ -204,95 +173,96 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
 
             result.value mustBe expectedResult
           }
+
+          "when transition" - {
+            val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+            when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+
+            "and not adding liability" in {
+              val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+
+              val userAnswers = emptyUserAnswers
+                .setValue(DeclarationTypePage, declarationType)
+                .setValue(GuaranteeTypePage(index), guaranteeType)
+                .setValue(AddLiabilityYesNoPage(index), false)
+
+              val expectedResult = TransitionGuaranteeOfType5(
+                `type` = guaranteeType,
+                liability = None
+              )(index)
+
+              val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+                GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+            }
+
+            "and adding liability" in {
+              val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+              val liabilityAmount = arbitrary[BigDecimal].sample.value
+              val currencyCode    = arbitrary[CurrencyCode].sample.value
+
+              val userAnswers = emptyUserAnswers
+                .setValue(DeclarationTypePage, declarationType)
+                .setValue(GuaranteeTypePage(index), guaranteeType)
+                .setValue(AddLiabilityYesNoPage(index), true)
+                .setValue(CurrencyPage(index), currencyCode)
+                .setValue(LiabilityAmountPage(index), liabilityAmount)
+
+              val expectedResult = TransitionGuaranteeOfType5(
+                `type` = guaranteeType,
+                liability = Some(
+                  LiabilityDomain(
+                    currencyCode = currencyCode,
+                    amount = liabilityAmount
+                  )
+                )
+              )(index)
+
+              val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+                GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+            }
+          }
         }
-      }
 
-      "when A guarantee type" in {
-        val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
-        val guaranteeType   = `A`.sample.value
+        "when A guarantee type" in {
+          val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+          val guaranteeType   = `A`.sample.value
 
-        val userAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, declarationType)
-          .setValue(GuaranteeTypePage(index), guaranteeType)
-
-        val expectedResult = GuaranteeOfTypesAB(
-          `type` = guaranteeType
-        )(index)
-
-        val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
-          GuaranteeDomain.userAnswersReader(index)
-        ).run(userAnswers)
-
-        result.value mustBe expectedResult
-      }
-
-      "when B guarantee type" in {
-        val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
-        val guaranteeType   = `B`.sample.value
-
-        val userAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, declarationType)
-          .setValue(DeclarationTypePage, Option4)
-          .setValue(GuaranteeTypePage(index), guaranteeType)
-
-        val expectedResult = GuaranteeOfTypesAB(
-          `type` = guaranteeType
-        )(index)
-
-        val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
-          GuaranteeDomain.userAnswersReader(index)
-        ).run(userAnswers)
-
-        result.value mustBe expectedResult
-      }
-
-      "when 8 guarantee type" in {
-        val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
-        val guaranteeType   = `8`.sample.value
-        val otherReference  = Gen.alphaNumStr.sample.value
-        val liabilityAmount = arbitrary[BigDecimal].sample.value
-        val currencyCode    = arbitrary[CurrencyCode].sample.value
-
-        val userAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, declarationType)
-          .setValue(GuaranteeTypePage(index), guaranteeType)
-          .setValue(OtherReferencePage(index), otherReference)
-          .setValue(CurrencyPage(index), currencyCode)
-          .setValue(LiabilityAmountPage(index), liabilityAmount)
-
-        val expectedResult = GuaranteeOfType8(
-          `type` = guaranteeType,
-          otherReference = otherReference,
-          liability = LiabilityDomain(
-            currencyCode = currencyCode,
-            amount = liabilityAmount
-          )
-        )(index)
-
-        val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
-          GuaranteeDomain.userAnswersReader(index)
-        ).run(userAnswers)
-
-        result.value mustBe expectedResult
-      }
-
-      "when 3 guarantee type" - {
-        val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
-        val guaranteeType   = `3`.sample.value
-        val otherReference  = Gen.alphaNumStr.sample.value
-        val liabilityAmount = arbitrary[BigDecimal].sample.value
-        val currencyCode    = arbitrary[CurrencyCode].sample.value
-
-        "when with reference" in {
           val userAnswers = emptyUserAnswers
             .setValue(DeclarationTypePage, declarationType)
             .setValue(GuaranteeTypePage(index), guaranteeType)
-            .setValue(OtherReferenceYesNoPage(index), true)
+
+          val expectedResult = GuaranteeOfTypesAB(
+            `type` = guaranteeType
+          )(index)
+
+          val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+            GuaranteeDomain.userAnswersReader(index)
+          ).run(userAnswers)
+
+          result.value mustBe expectedResult
+        }
+
+        "when 8 guarantee type" in {
+          val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+          val guaranteeType   = `8`.sample.value
+          val otherReference  = Gen.alphaNumStr.sample.value
+          val liabilityAmount = arbitrary[BigDecimal].sample.value
+          val currencyCode    = arbitrary[CurrencyCode].sample.value
+
+          val userAnswers = emptyUserAnswers
+            .setValue(DeclarationTypePage, declarationType)
+            .setValue(GuaranteeTypePage(index), guaranteeType)
             .setValue(OtherReferencePage(index), otherReference)
             .setValue(CurrencyPage(index), currencyCode)
             .setValue(LiabilityAmountPage(index), liabilityAmount)
 
-          val expectedResult = GuaranteeOfType3WithReference(
+          val expectedResult = GuaranteeOfType8(
             `type` = guaranteeType,
             otherReference = otherReference,
             liability = LiabilityDomain(
@@ -308,23 +278,56 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           result.value mustBe expectedResult
         }
 
-        "when without reference" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(DeclarationTypePage, declarationType)
-            .setValue(GuaranteeTypePage(index), guaranteeType)
-            .setValue(OtherReferenceYesNoPage(index), false)
+        "when 3 guarantee type" - {
+          val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+          val guaranteeType   = `3`.sample.value
+          val otherReference  = Gen.alphaNumStr.sample.value
+          val liabilityAmount = arbitrary[BigDecimal].sample.value
+          val currencyCode    = arbitrary[CurrencyCode].sample.value
 
-          val expectedResult = GuaranteeOfType3WithoutReference(
-            `type` = guaranteeType
-          )(index)
+          "when with reference" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(GuaranteeTypePage(index), guaranteeType)
+              .setValue(OtherReferenceYesNoPage(index), true)
+              .setValue(OtherReferencePage(index), otherReference)
+              .setValue(CurrencyPage(index), currencyCode)
+              .setValue(LiabilityAmountPage(index), liabilityAmount)
 
-          val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
-            GuaranteeDomain.userAnswersReader(index)
-          ).run(userAnswers)
+            val expectedResult = GuaranteeOfType3WithReference(
+              `type` = guaranteeType,
+              otherReference = otherReference,
+              liability = LiabilityDomain(
+                currencyCode = currencyCode,
+                amount = liabilityAmount
+              )
+            )(index)
 
-          result.value mustBe expectedResult
+            val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+              GuaranteeDomain.userAnswersReader(index)
+            ).run(userAnswers)
+
+            result.value mustBe expectedResult
+          }
+
+          "when without reference" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(GuaranteeTypePage(index), guaranteeType)
+              .setValue(OtherReferenceYesNoPage(index), false)
+
+            val expectedResult = GuaranteeOfType3WithoutReference(
+              `type` = guaranteeType
+            )(index)
+
+            val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+              GuaranteeDomain.userAnswersReader(index)
+            ).run(userAnswers)
+
+            result.value mustBe expectedResult
+          }
+
         }
-
       }
     }
 

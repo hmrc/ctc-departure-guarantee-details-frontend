@@ -42,9 +42,10 @@ object GuaranteeDomain {
   implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[GuaranteeDomain] =
     DeclarationTypePage.reader.flatMap {
       case Option4 =>
-        GuaranteeTypePage(index)
-          .mandatoryReader(_ == GuaranteeType("B", "Guarantee for goods dispatched under TIR procedure"))
-          .map(GuaranteeOfTypesAB(_)(index))
+        GuaranteeType("B", "Guarantee for goods dispatched under TIR procedure").pure[UserAnswersReader].map(GuaranteeOfTypesAB(_)(index))
+//        GuaranteeTypePage(index)
+//          .mandatoryReader(_ == GuaranteeType("B", "Guarantee for goods dispatched under TIR procedure"), "I failed here for sure")
+//          .map(GuaranteeOfTypesAB(_)(index))
       case _ =>
         GuaranteeTypePage(index).reader.flatMap {
           guaranteeType =>
@@ -59,8 +60,8 @@ object GuaranteeDomain {
                 GuaranteeOfType8.userAnswersReader(index, guaranteeType)
               case GuaranteeType("3", _) =>
                 GuaranteeOfType3.userAnswersReader(index, guaranteeType)
-              case GuaranteeType(_, _) =>
-                UserAnswersReader.fail[GuaranteeDomain](GuaranteeTypePage(index))
+              case GuaranteeType(code, _) =>
+                UserAnswersReader.fail[GuaranteeDomain](GuaranteeTypePage(index), Some(s"Guarantee type of $code not valid"))
             }
         }
     }

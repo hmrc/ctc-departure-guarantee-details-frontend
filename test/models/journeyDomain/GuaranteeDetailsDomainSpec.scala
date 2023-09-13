@@ -55,12 +55,12 @@ class GuaranteeDetailsDomainSpec extends SpecBase with Generators {
 
         val userAnswers = emptyUserAnswers
           .setValue(DeclarationTypePage, declarationType)
-          .setValue(GuaranteeTypePage(Index(0)), waiverGuarantee)
+          .setValue(GuaranteeTypePage(Index(0)), waiverByAgreementuarantee)
 
         val expectedResult = GuaranteeDetailsDomain(
           Seq(
             GuaranteeOfTypesAB(
-              `type` = waiverGuarantee
+              `type` = waiverByAgreementuarantee
             )(Index(0))
           )
         )
@@ -73,7 +73,7 @@ class GuaranteeDetailsDomainSpec extends SpecBase with Generators {
 
     "cannot be parsed from user answers" - {
       "when guarantees empty" in {
-        val declarationType = arbitrary[DeclarationType].sample.value
+        val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
 
         val userAnswers = emptyUserAnswers
           .setValue(DeclarationTypePage, declarationType)

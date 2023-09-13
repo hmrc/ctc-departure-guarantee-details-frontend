@@ -51,26 +51,6 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
 
       "must return Some(Row)" - {
         "when GuaranteeTypePage defined" - {
-          "when TIR" in {
-            forAll(arbitrary[Mode]) {
-              mode =>
-                val answers = emptyUserAnswers
-                  .setValue(DeclarationTypePage, Option4)
-                  .setValue(GuaranteeTypePage(index), tirGuarantee)
-
-                val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
-                val result = helper.guaranteeType
-
-                result mustBe Some(
-                  SummaryListRow(
-                    key = Key("Guarantee type".toText),
-                    value = Value("(B) Guarantee for goods dispatched under TIR procedure".toText),
-                    actions = None
-                  )
-                )
-            }
-          }
-
           "when not TIR" in {
             forAll(
               arbitrary[DeclarationType](arbitraryNonOption4DeclarationType),
@@ -88,7 +68,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
                 result mustBe Some(
                   SummaryListRow(
                     key = Key("Guarantee type".toText),
-                    value = Value(messages(s"guarantee.guaranteeType.$guaranteeType").toText),
+                    value = Value(messages(s"$guaranteeType").toText),
                     actions = Some(
                       Actions(
                         items = List(
