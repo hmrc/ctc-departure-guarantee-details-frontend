@@ -39,6 +39,8 @@ trait ModelGenerators {
     TIRGuarantee
   )
 
+  def guaranteeTypeGen(code: String): Gen[GuaranteeType] = nonEmptyString.map(GuaranteeType(code, _))
+
   implicit lazy val arbitraryGuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
       for {

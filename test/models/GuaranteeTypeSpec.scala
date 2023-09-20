@@ -59,7 +59,7 @@ class GuaranteeTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val guaranteeType = GuaranteeType(code, description)
-          guaranteeType.toString mustBe s"$description"
+          guaranteeType.toString mustBe s"($code) $description"
       }
     }
 

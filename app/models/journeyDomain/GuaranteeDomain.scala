@@ -17,6 +17,7 @@
 package models.journeyDomain
 
 import cats.implicits._
+import config.Constants._
 import config.PhaseConfig
 import models.DeclarationType.Option4
 import models.GuaranteeType._
@@ -42,25 +43,23 @@ object GuaranteeDomain {
   implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[GuaranteeDomain] =
     DeclarationTypePage.reader.flatMap {
       case Option4 =>
-        GuaranteeType("B", "Guarantee for goods dispatched under TIR procedure").pure[UserAnswersReader].map(GuaranteeOfTypesAB(_)(index))
-//        GuaranteeTypePage(index)
-//          .mandatoryReader(_ == GuaranteeType("B", "Guarantee for goods dispatched under TIR procedure"), "I failed here for sure")
-//          .map(GuaranteeOfTypesAB(_)(index))
+        GuaranteeTypePage(index).mandatoryReader(_.code == TIRGuarantee).map(GuaranteeOfTypesAB(_)(index))
       case _ =>
         GuaranteeTypePage(index).reader.flatMap {
           guaranteeType =>
-            guaranteeType match {
-              case GuaranteeType("A", _) =>
+            guaranteeType.code match {
+              case WaiverByAgreementGuarantee =>
                 GuaranteeOfTypesAB.userAnswersReader(index, guaranteeType)
-              case GuaranteeType("0", _) | GuaranteeType("1", _) | GuaranteeType("2", _) | GuaranteeType("4", _) | GuaranteeType("9", _) =>
+              case WaiverGuarantee | ComprehensiveGuarantee | IndividualInFormOfUndertakingGuarantee | IndividualInFormOfVouchersGuarantee |
+                  IndividualForMultipleUsagesGuarantee =>
                 GuaranteeOfTypes01249.userAnswersReader(index, guaranteeType)
-              case GuaranteeType("5", _) =>
+              case WaiverImportExportGuarantee =>
                 GuaranteeOfType5.userAnswersReader(index, guaranteeType)
-              case GuaranteeType("8", _) =>
+              case NotRequiredByPublicBodiesGuarantee =>
                 GuaranteeOfType8.userAnswersReader(index, guaranteeType)
-              case GuaranteeType("3", _) =>
+              case CashDepositGuarantee =>
                 GuaranteeOfType3.userAnswersReader(index, guaranteeType)
-              case GuaranteeType(code, _) =>
+              case code =>
                 UserAnswersReader.fail[GuaranteeDomain](GuaranteeTypePage(index), Some(s"Guarantee type of $code not valid"))
             }
         }
@@ -105,7 +104,7 @@ object GuaranteeDomain {
     liability: Option[LiabilityDomain],
     accessCode: String
   )(override val index: Index)
-      extends GuaranteeDomain
+      extends GuaranteeOfTypes01249
 
   object TransitionGuaranteeOfTypes01249 {
 
@@ -124,7 +123,7 @@ object GuaranteeDomain {
     liability: LiabilityDomain,
     accessCode: String
   )(override val index: Index)
-      extends GuaranteeDomain
+      extends GuaranteeOfTypes01249
 
   object PostTransitionGuaranteeOfTypes01249 {
 

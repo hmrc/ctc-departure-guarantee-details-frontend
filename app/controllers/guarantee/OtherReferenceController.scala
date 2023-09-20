@@ -16,6 +16,7 @@
 
 package controllers.guarantee
 
+import config.Constants._
 import config.PhaseConfig
 import controllers.actions.{Actions, SpecificDataRequiredActionProvider}
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
@@ -53,10 +54,10 @@ class OtherReferenceController @Inject() (
   private def form(prefix: String): Form[String] = formProvider(prefix)
 
   private def getValidPrefixOrRedirect(implicit request: Request): Either[(LocalReferenceNumber, Mode, Index) => Result, String] =
-    request.arg match {
-      case GuaranteeType("3", _) =>
+    request.arg.code match {
+      case CashDepositGuarantee =>
         Right("guarantee.otherReference.option3")
-      case GuaranteeType("8", _) =>
+      case NotRequiredByPublicBodiesGuarantee =>
         Right("guarantee.otherReference.option8")
       case _ =>
         Left(

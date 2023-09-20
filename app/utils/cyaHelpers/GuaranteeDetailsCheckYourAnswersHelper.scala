@@ -18,7 +18,7 @@ package utils.cyaHelpers
 
 import config.{FrontendAppConfig, PhaseConfig}
 import models.journeyDomain.GuaranteeDomain
-import models.{GuaranteeType, Mode, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.guarantee.GuaranteeTypePage
 import pages.sections.GuaranteeDetailsSection
 import play.api.i18n.Messages
@@ -34,8 +34,8 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mod
     buildListItems(GuaranteeDetailsSection) {
       index =>
         buildListItem[GuaranteeDomain](
-          nameWhenComplete = x => formatEnumAsString(GuaranteeType.messageKeyPrefix)(x.`type`),
-          nameWhenInProgress = userAnswers.get(GuaranteeTypePage(index)).map(formatEnumAsString(GuaranteeType.messageKeyPrefix)),
+          nameWhenComplete = _.`type`.toString,
+          nameWhenInProgress = userAnswers.get(GuaranteeTypePage(index)).map(_.toString),
           removeRoute = Some(controllers.guarantee.routes.RemoveGuaranteeYesNoController.onPageLoad(lrn, index))
         )(GuaranteeDomain.userAnswersReader(index))
     }

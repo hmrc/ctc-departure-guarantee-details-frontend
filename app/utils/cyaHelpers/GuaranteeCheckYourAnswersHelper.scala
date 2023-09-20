@@ -16,6 +16,7 @@
 
 package utils.cyaHelpers
 
+import config.Constants._
 import config.FrontendAppConfig
 import models.GuaranteeType._
 import models.reference.CurrencyCode
@@ -32,7 +33,7 @@ class GuaranteeCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode, inde
     formatAnswer = formatAsText,
     prefix = "guarantee.guaranteeType",
     id = Some("change-type")
-  )(_ == GuaranteeType("B", "Guarantee for goods dispatched under TIR procedure"))
+  )(_.code == TIRGuarantee)
 
   def guaranteeReferenceNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ReferenceNumberPage(index),
@@ -49,10 +50,10 @@ class GuaranteeCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode, inde
   )
 
   def otherReference: Option[SummaryListRow] =
-    (userAnswers.get(GuaranteeTypePage(index)) match {
-      case Some(GuaranteeType("3", _)) => Some("option3")
-      case Some(GuaranteeType("8", _)) => Some("option8")
-      case _                           => None
+    (userAnswers.get(GuaranteeTypePage(index)).map(_.code) match {
+      case Some(CashDepositGuarantee)               => Some("option3")
+      case Some(NotRequiredByPublicBodiesGuarantee) => Some("option8")
+      case _                                        => None
     }).flatMap {
       key =>
         getAnswerAndBuildRow[String](
