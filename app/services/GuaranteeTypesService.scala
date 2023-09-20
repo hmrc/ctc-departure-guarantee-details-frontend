@@ -18,7 +18,8 @@ package services
 
 import config.Constants._
 import connectors.ReferenceDataConnector
-import models.GuaranteeType
+import models.{GuaranteeType, UserAnswers}
+import pages.external.OfficeOfDeparturePage
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -31,15 +32,18 @@ class GuaranteeTypesService @Inject() (
   private def sort(guaranteeType: Seq[GuaranteeType]): Seq[GuaranteeType] =
     guaranteeType.sortBy(_.code.toLowerCase)
 
-  private def filter(guaranteeTypes: Seq[GuaranteeType]): Seq[GuaranteeType] =
+  private def filter(guaranteeTypes: Seq[GuaranteeType], userAnswers: UserAnswers): Seq[GuaranteeType] = {
+    lazy val isXiOfficeOfDeparture = userAnswers.get(OfficeOfDeparturePage).map(_.countryCode).contains(XI)
     guaranteeTypes
       .filterNot(_.code == Article102BGuarantee)
       .filterNot(_.code == Article898AGuarantee)
+      .filterNot(_.code == IndividualForMultipleUsagesGuarantee && isXiOfficeOfDeparture)
+  }
 
-  def getGuaranteeTypes()(implicit hc: HeaderCarrier): Future[Seq[GuaranteeType]] =
+  def getGuaranteeTypes(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Seq[GuaranteeType]] =
     referenceDataConnector
       .getGuaranteeTypes()
-      .map(filter)
+      .map(filter(_, userAnswers))
       .map(sort)
 
   def getGuaranteeType(code: String)(implicit hc: HeaderCarrier): Future[Option[GuaranteeType]] =

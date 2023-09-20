@@ -53,7 +53,7 @@ class GuaranteeTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockGuaranteeTypesService)
-    when(mockGuaranteeTypesService.getGuaranteeTypes()(any())).thenReturn(Future.successful(gts))
+    when(mockGuaranteeTypesService.getGuaranteeTypes(any())(any())).thenReturn(Future.successful(gts))
   }
 
   "GuaranteeType Controller" - {

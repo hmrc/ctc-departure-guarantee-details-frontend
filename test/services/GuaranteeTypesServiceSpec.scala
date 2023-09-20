@@ -18,15 +18,19 @@ package services
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
+import generators.Generators
 import models.GuaranteeType
+import models.reference.CustomsOffice
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.BeforeAndAfterEach
+import pages.external.OfficeOfDeparturePage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class GuaranteeTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
+class GuaranteeTypesServiceSpec extends SpecBase with BeforeAndAfterEach with Generators {
 
   private val mockConnector = mock[ReferenceDataConnector]
 
@@ -34,6 +38,7 @@ class GuaranteeTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val guaranteeType0 = GuaranteeType("0", "Guarantee waiver")
   private val guaranteeType1 = GuaranteeType("1", "Comprehensive guarantee")
+  private val guaranteeType9 = GuaranteeType("9", "Individual guarantee with multiple usage (for CTC only)")
   private val guaranteeTypeR = GuaranteeType("R", "Guarantee not required for goods carried on the Rhine...")
   private val guaranteeTypeJ = GuaranteeType("J", "Guarantee not required for the journey between...")
 
@@ -43,14 +48,32 @@ class GuaranteeTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
   }
 
   "getGuaranteeTypes" - {
-    "must return filtered and sorted guarantee types" in {
-      val guaranteeTypes = Seq(guaranteeTypeR, guaranteeTypeJ, guaranteeType1, guaranteeType0)
+    val guaranteeTypes = Seq(guaranteeTypeR, guaranteeTypeJ, guaranteeType9, guaranteeType1, guaranteeType0)
 
-      when(mockConnector.getGuaranteeTypes()(any(), any())).thenReturn(Future.successful(guaranteeTypes))
+    "when office of departure is in GB" - {
+      "must return filtered and sorted guarantee types" in {
+        when(mockConnector.getGuaranteeTypes()(any(), any())).thenReturn(Future.successful(guaranteeTypes))
 
-      val result = service.getGuaranteeTypes().futureValue
+        val officeOfDeparture = arbitrary[CustomsOffice](arbitraryGbCustomsOffice).sample.value
+        val userAnswers       = emptyUserAnswers.setValue(OfficeOfDeparturePage, officeOfDeparture)
 
-      result mustBe Seq(guaranteeType0, guaranteeType1)
+        val result = service.getGuaranteeTypes(userAnswers).futureValue
+
+        result mustBe Seq(guaranteeType0, guaranteeType1, guaranteeType9)
+      }
+    }
+
+    "when office of departure is in XI" - {
+      "must return filtered and sorted guarantee types without IndividualForMultipleUsagesGuarantee (9)" in {
+        when(mockConnector.getGuaranteeTypes()(any(), any())).thenReturn(Future.successful(guaranteeTypes))
+
+        val officeOfDeparture = arbitrary[CustomsOffice](arbitraryXiCustomsOffice).sample.value
+        val userAnswers       = emptyUserAnswers.setValue(OfficeOfDeparturePage, officeOfDeparture)
+
+        val result = service.getGuaranteeTypes(userAnswers).futureValue
+
+        result mustBe Seq(guaranteeType0, guaranteeType1)
+      }
     }
   }
 

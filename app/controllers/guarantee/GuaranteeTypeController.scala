@@ -54,7 +54,7 @@ class GuaranteeTypeController @Inject() (
     .requireData(lrn)
     .async {
       implicit request =>
-        guaranteeTypesService.getGuaranteeTypes().map {
+        guaranteeTypesService.getGuaranteeTypes(request.userAnswers).map {
           guaranteeTypes =>
             val preparedForm = request.userAnswers.get(GuaranteeTypePage(index)) match {
               case None        => form(guaranteeTypes)
@@ -67,7 +67,7 @@ class GuaranteeTypeController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      guaranteeTypesService.getGuaranteeTypes().flatMap {
+      guaranteeTypesService.getGuaranteeTypes(request.userAnswers).flatMap {
         guaranteeTypes =>
           form(guaranteeTypes)
             .bindFromRequest()
