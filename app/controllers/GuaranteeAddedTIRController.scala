@@ -16,19 +16,22 @@
 
 package controllers
 
+import config.Constants.TIRGuarantee
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions.Actions
 import models.GuaranteeType._
-import models.{GuaranteeType, Index, LocalReferenceNumber}
+import models.{Index, LocalReferenceNumber}
 import pages.guarantee.GuaranteeTypePage
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.GuaranteeTypesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.GuaranteeAddedTIRView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class GuaranteeAddedTIRController @Inject() (
   override val messagesApi: MessagesApi,
@@ -36,10 +39,12 @@ class GuaranteeAddedTIRController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: GuaranteeAddedTIRView,
-  config: FrontendAppConfig
+  config: FrontendAppConfig,
+  service: GuaranteeTypesService
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
@@ -48,10 +53,16 @@ class GuaranteeAddedTIRController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      GuaranteeTypePage(Index(0))
-        .writeToUserAnswers(GuaranteeType("B", "Guarantee for goods dispatched under TIR procedure"))
-        .updateTask()
-        .writeToSession()
-        .navigateTo(config.taskListUrl(lrn))
+      service.getGuaranteeType(TIRGuarantee).flatMap {
+        case Some(guaranteeType) =>
+          GuaranteeTypePage(Index(0))
+            .writeToUserAnswers(guaranteeType)
+            .updateTask()
+            .writeToSession()
+            .navigateTo(config.taskListUrl(lrn))
+        case None =>
+          logger.warn("'B' guarantee type not found in reference data")
+          Future.successful(Redirect(config.technicalDifficultiesUrl))
+      }
   }
 }

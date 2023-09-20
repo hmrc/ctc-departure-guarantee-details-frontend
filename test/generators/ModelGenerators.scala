@@ -26,59 +26,94 @@ import uk.gov.hmrc.http.HttpVerbs._
 trait ModelGenerators {
   self: Generators =>
 
+  private val guaranteeTypeValues = Seq(
+    WaiverGuarantee,
+    ComprehensiveGuarantee,
+    IndividualInFormOfUndertakingGuarantee,
+    CashDepositGuarantee,
+    IndividualInFormOfVouchersGuarantee,
+    WaiverImportExportGuarantee,
+    NotRequiredByPublicBodiesGuarantee,
+    IndividualForMultipleUsagesGuarantee,
+    WaiverByAgreementGuarantee,
+    TIRGuarantee
+  )
+
   implicit lazy val arbitraryGuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
-      Gen.oneOf(guaranteeTypeValues)
+      for {
+        code        <- Gen.oneOf(guaranteeTypeValues)
+        description <- nonEmptyString
+      } yield GuaranteeType(code, description)
     }
 
   lazy val arbitraryNonOption4GuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
-      Gen.oneOf(guaranteeTypeValues.filterNot(_ == tirGuarantee))
+      for {
+        code        <- Gen.oneOf(guaranteeTypeValues.filterNot(_ == TIRGuarantee))
+        description <- nonEmptyString
+      } yield GuaranteeType(code, description)
     }
 
   lazy val arbitraryNonOption3Or8GuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
-      Gen.oneOf(
+      val codeGen = Gen.oneOf(
         guaranteeTypeValues
-          .filterNot(_ == cashDepositGuarantee)
-          .filterNot(_ == notRequiredByPublicBodiesGuarantee)
+          .filterNot(_ == CashDepositGuarantee)
+          .filterNot(_ == NotRequiredByPublicBodiesGuarantee)
       )
+      for {
+        code        <- codeGen
+        description <- nonEmptyString
+      } yield GuaranteeType(code, description)
     }
 
   lazy val arbitrary012459GuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
-      Gen.oneOf(
-        waiverGuarantee,
-        comprehensiveGuarantee,
-        individualInFormOfUndertakingGuarantee,
-        individualInFormOfVouchersGuarantee,
-        waiverImportExportGuarantee,
-        individualForMultipleUsagesGuarantee
+      val codeGen = Gen.oneOf(
+        WaiverGuarantee,
+        ComprehensiveGuarantee,
+        IndividualInFormOfUndertakingGuarantee,
+        IndividualInFormOfVouchersGuarantee,
+        WaiverImportExportGuarantee,
+        IndividualForMultipleUsagesGuarantee
       )
+      for {
+        code        <- codeGen
+        description <- nonEmptyString
+      } yield GuaranteeType(code, description)
     }
 
   lazy val arbitrary01249GuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
-      Gen.oneOf(
-        waiverGuarantee,
-        comprehensiveGuarantee,
-        individualInFormOfUndertakingGuarantee,
-        individualInFormOfVouchersGuarantee,
-        individualForMultipleUsagesGuarantee
+      val codeGen = Gen.oneOf(
+        WaiverGuarantee,
+        ComprehensiveGuarantee,
+        IndividualInFormOfUndertakingGuarantee,
+        IndividualInFormOfVouchersGuarantee,
+        IndividualForMultipleUsagesGuarantee
       )
+      for {
+        code        <- codeGen
+        description <- nonEmptyString
+      } yield GuaranteeType(code, description)
     }
 
   lazy val arbitrary01234589GuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
-      Gen.oneOf(
-        waiverGuarantee,
-        comprehensiveGuarantee,
-        individualInFormOfUndertakingGuarantee,
-        individualInFormOfVouchersGuarantee,
-        waiverImportExportGuarantee,
-        notRequiredByPublicBodiesGuarantee,
-        individualForMultipleUsagesGuarantee
+      val codeGen = Gen.oneOf(
+        WaiverGuarantee,
+        ComprehensiveGuarantee,
+        IndividualInFormOfUndertakingGuarantee,
+        IndividualInFormOfVouchersGuarantee,
+        WaiverImportExportGuarantee,
+        NotRequiredByPublicBodiesGuarantee,
+        IndividualForMultipleUsagesGuarantee
       )
+      for {
+        code        <- codeGen
+        description <- nonEmptyString
+      } yield GuaranteeType(code, description)
     }
 
   implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =

@@ -16,9 +16,9 @@
 
 package services
 
+import config.Constants._
 import connectors.ReferenceDataConnector
 import models.GuaranteeType
-import services.GuaranteeTypesService.filterUserAnswers
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -31,20 +31,18 @@ class GuaranteeTypesService @Inject() (
   private def sort(guaranteeType: Seq[GuaranteeType]): Seq[GuaranteeType] =
     guaranteeType.sortBy(_.code.toLowerCase)
 
+  private def filter(guaranteeTypes: Seq[GuaranteeType]): Seq[GuaranteeType] =
+    guaranteeTypes
+      .filterNot(_.code == Article102BGuarantee)
+      .filterNot(_.code == Article898AGuarantee)
+
   def getGuaranteeTypes()(implicit hc: HeaderCarrier): Future[Seq[GuaranteeType]] =
-    referenceDataConnector.getGuaranteeTypes
+    referenceDataConnector
+      .getGuaranteeTypes()
+      .map(filter)
       .map(sort)
-      .map {
-        x =>
-          filterUserAnswers(x)
 
-      }
-}
+  def getGuaranteeType(code: String)(implicit hc: HeaderCarrier): Future[Option[GuaranteeType]] =
+    referenceDataConnector.getGuaranteeType(code).map(_.headOption)
 
-object GuaranteeTypesService {
-
-  def filterUserAnswers(foo: Seq[GuaranteeType]): Seq[GuaranteeType] =
-    foo.filterNot(
-      x => x.code == "J" || x.code == "R"
-    )
 }

@@ -20,7 +20,6 @@ import base.SpecBase
 import controllers.guarantee.routes
 import forms.Constants.accessCodeLength
 import generators.Generators
-import models.DeclarationType.Option4
 import models.GuaranteeType._
 import models.reference.CurrencyCode
 import models.{DeclarationType, GuaranteeType, Mode}

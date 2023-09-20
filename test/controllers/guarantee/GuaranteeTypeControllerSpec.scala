@@ -23,14 +23,14 @@ import models.{GuaranteeType, NormalMode}
 import navigation.GuaranteeNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.guarantee.GuaranteeTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.guarantee.GuaranteeTypeView
-import org.scalacheck.Arbitrary.arbitrary
 import services.GuaranteeTypesService
+import views.html.guarantee.GuaranteeTypeView
 
 import scala.concurrent.Future
 

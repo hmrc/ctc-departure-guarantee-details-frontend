@@ -16,32 +16,20 @@
 
 package config
 
-import models.GuaranteeType
-
 object Constants {
   val GB = "GB"
   val XI = "XI"
 
-  val waiverGuarantee                        = GuaranteeType("0", "test0")
-  val comprehensiveGuarantee                 = GuaranteeType("1", "test1")
-  val individualInFormOfUndertakingGuarantee = GuaranteeType("2", "test2")
-  val cashDepositGuarantee                   = GuaranteeType("3", "test3")
-  val individualInFormOfVouchersGuarantee    = GuaranteeType("4", "test4")
-  val waiverImportExportGuarantee            = GuaranteeType("5", "test5")
-  val notRequiredByPublicBodiesGuarantee     = GuaranteeType("8", "test8")
-  val individualForMultipleUsagesGuarantee   = GuaranteeType("9", "test9")
-  val waiverByAgreementuarantee              = GuaranteeType("A", "testA")
-  val tirGuarantee                           = GuaranteeType("B", "testB")
-
-  val guaranteeTypeValues: Seq[GuaranteeType] = Seq(
-    GuaranteeType("1", "test1"),
-    GuaranteeType("2", "test3"),
-    GuaranteeType("3", "test3"),
-    GuaranteeType("4", "test4"),
-    GuaranteeType("5", "test5"),
-    GuaranteeType("8", "test8"),
-    GuaranteeType("9", "test9"),
-    GuaranteeType("A", "testA"),
-    GuaranteeType("B", "testB")
-  )
+  val WaiverGuarantee                        = "0"
+  val ComprehensiveGuarantee                 = "1"
+  val IndividualInFormOfUndertakingGuarantee = "2"
+  val CashDepositGuarantee                   = "3"
+  val IndividualInFormOfVouchersGuarantee    = "4"
+  val WaiverImportExportGuarantee            = "5"
+  val NotRequiredByPublicBodiesGuarantee     = "8"
+  val IndividualForMultipleUsagesGuarantee   = "9"
+  val WaiverByAgreementGuarantee             = "A"
+  val TIRGuarantee                           = "B"
+  val Article102BGuarantee                   = "J"
+  val Article898AGuarantee                   = "R"
 }

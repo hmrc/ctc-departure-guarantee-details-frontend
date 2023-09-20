@@ -18,10 +18,8 @@ package viewModels
 
 import base.SpecBase
 import generators.Generators
-import models.DeclarationType.Option4
 import models.{DeclarationType, Index}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.DeclarationTypePage
 import viewModels.AddAnotherGuaranteeViewModel.AddAnotherGuaranteeViewModelProvider

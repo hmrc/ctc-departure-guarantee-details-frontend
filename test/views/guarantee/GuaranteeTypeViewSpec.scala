@@ -16,7 +16,6 @@
 
 package views.guarantee
 
-import config.Constants.guaranteeTypeValues
 import forms.EnumerableFormProvider
 import models.{GuaranteeType, NormalMode}
 import play.api.data.Form
