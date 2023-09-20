@@ -204,10 +204,10 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
       "must return Some(Row)" - {
         "when OtherReferencePage defined" - {
           "and guarantee type 3" in {
-            forAll(Gen.alphaNumStr, arbitrary[Mode]) {
-              (referenceNumber, mode) =>
+            forAll(Gen.alphaNumStr, arbitrary[Mode], arbitrary[GuaranteeType](arbitrary3GuaranteeType)) {
+              (referenceNumber, mode, guaranteeType) =>
                 val answers = emptyUserAnswers
-                  .setValue(GuaranteeTypePage(index), cashDepositGuarantee)
+                  .setValue(GuaranteeTypePage(index), guaranteeType)
                   .setValue(OtherReferencePage(index), referenceNumber)
 
                 val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
@@ -235,10 +235,10 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
           }
 
           "and guarantee type 8" in {
-            forAll(Gen.alphaNumStr, arbitrary[Mode]) {
-              (referenceNumber, mode) =>
+            forAll(Gen.alphaNumStr, arbitrary[Mode], arbitrary[GuaranteeType](arbitrary8GuaranteeType)) {
+              (referenceNumber, mode, guaranteeType) =>
                 val answers = emptyUserAnswers
-                  .setValue(GuaranteeTypePage(index), notRequiredByPublicBodiesGuarantee)
+                  .setValue(GuaranteeTypePage(index), guaranteeType)
                   .setValue(OtherReferencePage(index), referenceNumber)
 
                 val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)

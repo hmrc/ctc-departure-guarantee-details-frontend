@@ -25,7 +25,6 @@ import navigation.GuaranteeNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import pages.guarantee.{GuaranteeTypePage, OtherReferencePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -58,7 +57,8 @@ class OtherReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     "must return OK and the correct view for a GET" - {
 
       "when Guarantee is type 3" in {
-        val userAnswers = emptyUserAnswers.setValue(GuaranteeTypePage(index), cashDepositGuarantee)
+        val guaranteeType = arbitrary[GuaranteeType](arbitrary3GuaranteeType).sample.value
+        val userAnswers   = emptyUserAnswers.setValue(GuaranteeTypePage(index), guaranteeType)
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(GET, otherReferenceRoute)
@@ -74,7 +74,8 @@ class OtherReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       }
 
       "when Guarantee is type 8" in {
-        val userAnswers = emptyUserAnswers.setValue(GuaranteeTypePage(index), notRequiredByPublicBodiesGuarantee)
+        val guaranteeType = arbitrary[GuaranteeType](arbitrary8GuaranteeType).sample.value
+        val userAnswers   = emptyUserAnswers.setValue(GuaranteeTypePage(index), guaranteeType)
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(GET, otherReferenceRoute)
@@ -92,8 +93,9 @@ class OtherReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must populate the view correctly on a GET when the question has previously been answered" - {
       "when Guarantee is type3" in {
+        val guaranteeType = arbitrary[GuaranteeType](arbitrary3GuaranteeType).sample.value
         val userAnswers = emptyUserAnswers
-          .setValue(GuaranteeTypePage(index), cashDepositGuarantee)
+          .setValue(GuaranteeTypePage(index), guaranteeType)
           .setValue(OtherReferencePage(index), validAnswer)
         setExistingUserAnswers(userAnswers)
 
@@ -112,8 +114,9 @@ class OtherReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       }
 
       "when Guarantee is type8" in {
+        val guaranteeType = arbitrary[GuaranteeType](arbitrary8GuaranteeType).sample.value
         val userAnswers = emptyUserAnswers
-          .setValue(GuaranteeTypePage(index), notRequiredByPublicBodiesGuarantee)
+          .setValue(GuaranteeTypePage(index), guaranteeType)
           .setValue(OtherReferencePage(index), validAnswer)
         setExistingUserAnswers(userAnswers)
 
@@ -166,7 +169,7 @@ class OtherReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      val guaranteeType = Gen.oneOf(cashDepositGuarantee, notRequiredByPublicBodiesGuarantee).sample.value
+      val guaranteeType = arbitrary[GuaranteeType](arbitrary3Or8GuaranteeType).sample.value
       val userAnswers   = emptyUserAnswers.setValue(GuaranteeTypePage(index), guaranteeType)
       setExistingUserAnswers(userAnswers)
 
@@ -184,8 +187,8 @@ class OtherReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must return a Bad Request and errors when invalid data is submitted" - {
       "when guarantee is type 3" in {
-
-        setExistingUserAnswers(emptyUserAnswers.setValue(GuaranteeTypePage(index), cashDepositGuarantee))
+        val guaranteeType = arbitrary[GuaranteeType](arbitrary3GuaranteeType).sample.value
+        setExistingUserAnswers(emptyUserAnswers.setValue(GuaranteeTypePage(index), guaranteeType))
 
         val request    = FakeRequest(POST, otherReferenceRoute).withFormUrlEncodedBody(("value", invalidAnswer))
         val filledForm = form3.bind(Map("value" -> invalidAnswer))
@@ -202,8 +205,8 @@ class OtherReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       }
 
       "when guarantee is type 8" in {
-
-        setExistingUserAnswers(emptyUserAnswers.setValue(GuaranteeTypePage(index), notRequiredByPublicBodiesGuarantee))
+        val guaranteeType = arbitrary[GuaranteeType](arbitrary8GuaranteeType).sample.value
+        setExistingUserAnswers(emptyUserAnswers.setValue(GuaranteeTypePage(index), guaranteeType))
 
         val request    = FakeRequest(POST, otherReferenceRoute).withFormUrlEncodedBody(("value", invalidAnswer))
         val filledForm = form8.bind(Map("value" -> invalidAnswer))

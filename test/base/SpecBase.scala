@@ -17,7 +17,7 @@
 package base
 
 import config.{FrontendAppConfig, PhaseConfig}
-import models.{EoriNumber, GuaranteeType, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
+import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -108,15 +108,4 @@ trait SpecBase
   }
 
   def response(status: Int): Future[HttpResponse] = Future.successful(HttpResponse(status, ""))
-
-  val waiverGuarantee                        = GuaranteeType("0", "test0")
-  val comprehensiveGuarantee                 = GuaranteeType("1", "test1")
-  val individualInFormOfUndertakingGuarantee = GuaranteeType("2", "test2")
-  val cashDepositGuarantee                   = GuaranteeType("3", "test3")
-  val individualInFormOfVouchersGuarantee    = GuaranteeType("4", "test4")
-  val waiverImportExportGuarantee            = GuaranteeType("5", "test5")
-  val notRequiredByPublicBodiesGuarantee     = GuaranteeType("8", "test8")
-  val individualForMultipleUsagesGuarantee   = GuaranteeType("9", "test9")
-  val waiverByAgreementuarantee              = GuaranteeType("A", "testA")
-  val tirGuarantee                           = GuaranteeType("B", "Guarantee for goods dispatched under TIR procedure")
 }

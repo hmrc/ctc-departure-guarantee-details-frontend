@@ -49,6 +49,21 @@ trait ModelGenerators {
       } yield GuaranteeType(code, description)
     }
 
+  lazy val arbitrary3GuaranteeType: Arbitrary[GuaranteeType] =
+    Arbitrary {
+      guaranteeTypeGen(CashDepositGuarantee)
+    }
+
+  lazy val arbitrary8GuaranteeType: Arbitrary[GuaranteeType] =
+    Arbitrary {
+      guaranteeTypeGen(NotRequiredByPublicBodiesGuarantee)
+    }
+
+  lazy val arbitraryBGuaranteeType: Arbitrary[GuaranteeType] =
+    Arbitrary {
+      guaranteeTypeGen(TIRGuarantee)
+    }
+
   lazy val arbitraryNonOption4GuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
       for {
@@ -63,6 +78,18 @@ trait ModelGenerators {
         guaranteeTypeValues
           .filterNot(_ == CashDepositGuarantee)
           .filterNot(_ == NotRequiredByPublicBodiesGuarantee)
+      )
+      for {
+        code        <- codeGen
+        description <- nonEmptyString
+      } yield GuaranteeType(code, description)
+    }
+
+  lazy val arbitrary3Or8GuaranteeType: Arbitrary[GuaranteeType] =
+    Arbitrary {
+      val codeGen = Gen.oneOf(
+        CashDepositGuarantee,
+        NotRequiredByPublicBodiesGuarantee
       )
       for {
         code        <- codeGen
