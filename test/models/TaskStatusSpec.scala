@@ -51,6 +51,11 @@ class TaskStatusSpec extends SpecBase {
       val result = Json.toJson[TaskStatus](TaskStatus.Amended)
       result mustBe JsString("amended")
     }
+
+    "when unavailable" in {
+      val result = Json.toJson[TaskStatus](TaskStatus.Unavailable)
+      result mustBe JsString("unavailable")
+    }
   }
 
   "must deserialise from json" - {
@@ -82,6 +87,11 @@ class TaskStatusSpec extends SpecBase {
     "when amended" in {
       val result = JsString("amended").as[TaskStatus]
       result mustBe TaskStatus.Amended
+    }
+
+    "when unavailable" in {
+      val result = JsString("unavailable").as[TaskStatus]
+      result mustBe TaskStatus.Unavailable
     }
 
     "when something else" in {
