@@ -20,12 +20,11 @@ import base.SpecBase
 import config.Constants._
 import config.PhaseConfig
 import generators.Generators
-import models.DeclarationType.Option4
 import models.GuaranteeType._
+import models.{GuaranteeType, Phase}
 import models.domain.{EitherType, UserAnswersReader}
 import models.journeyDomain.GuaranteeDomain._
 import models.reference.CurrencyCode
-import models.{DeclarationType, GuaranteeType, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -49,7 +48,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
           when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
 
-          val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+          val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
           val guaranteeType   = `0,1,2,4,9`.sample.value
           val grn             = Gen.alphaNumStr.sample.value
           val accessCode      = Gen.alphaNumStr.sample.value
@@ -88,7 +87,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
           when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
-          val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+          val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
           val guaranteeType   = `0,1,2,4,9`.sample.value
           val grn             = Gen.alphaNumStr.sample.value
           val accessCode      = Gen.alphaNumStr.sample.value
@@ -128,7 +127,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
           when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
-          val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+          val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
           val liabilityAmount = arbitrary[BigDecimal].sample.value
           val currencyCode    = arbitrary[CurrencyCode].sample.value
 
@@ -158,7 +157,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
 
           "and not adding liability" in {
-            val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+            val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
 
             val userAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
@@ -178,7 +177,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           }
 
           "and adding liability" in {
-            val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+            val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
             val liabilityAmount = arbitrary[BigDecimal].sample.value
             val currencyCode    = arbitrary[CurrencyCode].sample.value
 
@@ -209,7 +208,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
       }
 
       "when A guarantee type" in {
-        val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+        val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
         val guaranteeType   = `A`.sample.value
 
         val userAnswers = emptyUserAnswers
@@ -228,12 +227,12 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
       }
 
       "when B guarantee type" in {
-        val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+        val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
         val guaranteeType   = `B`.sample.value
 
         val userAnswers = emptyUserAnswers
           .setValue(DeclarationTypePage, declarationType)
-          .setValue(DeclarationTypePage, Option4)
+          .setValue(DeclarationTypePage, TIR)
           .setValue(GuaranteeTypePage(index), guaranteeType)
 
         val expectedResult = GuaranteeOfTypesAB(
@@ -248,7 +247,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
       }
 
       "when 8 guarantee type" in {
-        val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+        val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
         val guaranteeType   = `8`.sample.value
         val otherReference  = Gen.alphaNumStr.sample.value
         val liabilityAmount = arbitrary[BigDecimal].sample.value
@@ -278,7 +277,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
       }
 
       "when 3 guarantee type" - {
-        val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+        val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
         val guaranteeType   = `3`.sample.value
         val otherReference  = Gen.alphaNumStr.sample.value
         val liabilityAmount = arbitrary[BigDecimal].sample.value
@@ -332,7 +331,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
     "cannot be parsed from user answers" - {
 
       "when non-TIR" - {
-        val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+        val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
         "when 0,1,2,4,9 guarantee type" - {
           val guaranteeType = `0,1,2,4,9`.sample.value
           "when transition" - {

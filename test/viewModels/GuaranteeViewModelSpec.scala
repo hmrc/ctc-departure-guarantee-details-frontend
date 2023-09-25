@@ -20,9 +20,8 @@ import base.SpecBase
 import config.Constants._
 import config.PhaseConfig
 import generators.Generators
-import models.DeclarationType.Option4
 import models.GuaranteeType._
-import models.{DeclarationType, GuaranteeType, Phase}
+import models.{GuaranteeType, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -36,7 +35,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
     "must return row for each answer" - {
       "when TIR" - {
         "must return 1 row" in {
-          val initialAnswers = emptyUserAnswers.setValue(DeclarationTypePage, Option4)
+          val initialAnswers = emptyUserAnswers.setValue(DeclarationTypePage, TIR)
 
           forAll(arbitraryGuaranteeAnswers(initialAnswers, index)) {
             answers =>
@@ -49,7 +48,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
       }
 
       "when not TIR" - {
-        val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+        val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
 
         "when 0,1,2,4,9 guarantee type" - {
           val guaranteeType = arbitrary[GuaranteeType](arbitrary01249GuaranteeType).sample.value
@@ -115,7 +114,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
         }
 
         "when 5 guarantee type" - {
-          val guaranteeType = nonEmptyString.map(GuaranteeType(WaiverImportExportGuarantee, _)).sample.value
+          val guaranteeType = guaranteeTypeGen(WaiverImportExportGuarantee).sample.value
 
           "when transition" - {
             val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
@@ -177,10 +176,9 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
         }
 
         "when A guarantee type" - {
-          val guaranteeType = nonEmptyString.map(GuaranteeType(WaiverByAgreementGuarantee, _)).sample.value
+          val guaranteeType = guaranteeTypeGen(WaiverByAgreementGuarantee).sample.value
 
           "must return 1 row" in {
-            val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
             val initialAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
               .setValue(GuaranteeTypePage(index), guaranteeType)
@@ -196,7 +194,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
         }
 
         "when 8 guarantee type" - {
-          val guaranteeType = nonEmptyString.map(GuaranteeType(NotRequiredByPublicBodiesGuarantee, _)).sample.value
+          val guaranteeType = guaranteeTypeGen(NotRequiredByPublicBodiesGuarantee).sample.value
 
           "must return 4 rows" in {
             val initialAnswers = emptyUserAnswers
@@ -214,7 +212,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
         }
 
         "when 3 guarantee type" - {
-          val guaranteeType = nonEmptyString.map(GuaranteeType(CashDepositGuarantee, _)).sample.value
+          val guaranteeType = guaranteeTypeGen(CashDepositGuarantee).sample.value
 
           "when other ref answered" - {
             "must return 5 rows" in {

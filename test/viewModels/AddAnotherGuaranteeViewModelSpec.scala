@@ -18,7 +18,7 @@ package viewModels
 
 import base.SpecBase
 import generators.Generators
-import models.{DeclarationType, Index}
+import models.Index
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.DeclarationTypePage
@@ -30,7 +30,7 @@ class AddAnotherGuaranteeViewModelSpec extends SpecBase with Generators with Sca
 
     "when there is one guarantee" in {
 
-      val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+      val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
 
       val popUa = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
 
@@ -47,7 +47,7 @@ class AddAnotherGuaranteeViewModelSpec extends SpecBase with Generators with Sca
 
     "when there are multiple guarantees" in {
 
-      val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+      val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
 
       val popUa = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
 

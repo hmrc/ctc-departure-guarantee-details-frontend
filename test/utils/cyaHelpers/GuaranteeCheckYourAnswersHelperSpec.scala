@@ -17,12 +17,13 @@
 package utils.cyaHelpers
 
 import base.SpecBase
+import config.Constants.{TIR, TIRGuarantee}
 import controllers.guarantee.routes
 import forms.Constants.accessCodeLength
 import generators.Generators
 import models.GuaranteeType._
 import models.reference.CurrencyCode
-import models.{DeclarationType, GuaranteeType, Mode}
+import models.{GuaranteeType, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -50,9 +51,29 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
 
       "must return Some(Row)" - {
         "when GuaranteeTypePage defined" - {
+          "when TIR" in {
+            forAll(arbitrary[Mode], guaranteeTypeGen(TIRGuarantee)) {
+              (mode, guaranteeType) =>
+                val answers = emptyUserAnswers
+                  .setValue(DeclarationTypePage, TIR)
+                  .setValue(GuaranteeTypePage(index), guaranteeType)
+
+                val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
+                val result = helper.guaranteeType
+
+                result mustBe Some(
+                  SummaryListRow(
+                    key = Key("Guarantee type".toText),
+                    value = Value(guaranteeType.toString.toText),
+                    actions = None
+                  )
+                )
+            }
+          }
+
           "when not TIR" in {
             forAll(
-              arbitrary[DeclarationType](arbitraryNonOption4DeclarationType),
+              arbitrary[String](arbitraryNonTIRDeclarationType),
               arbitrary[GuaranteeType](arbitraryNonOption4GuaranteeType),
               arbitrary[Mode]
             ) {

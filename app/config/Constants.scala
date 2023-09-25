@@ -20,6 +20,8 @@ object Constants {
   val GB = "GB"
   val XI = "XI"
 
+  val TIR = "TIR"
+
   val WaiverGuarantee                        = "0"
   val ComprehensiveGuarantee                 = "1"
   val IndividualInFormOfUndertakingGuarantee = "2"

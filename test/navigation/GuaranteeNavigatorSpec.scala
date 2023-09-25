@@ -33,7 +33,7 @@ class GuaranteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
     "when answers complete" - {
       "when not a single-page journey" - {
         "must redirect to check your answers" in {
-          val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+          val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
           val guaranteeType   = arbitrary[GuaranteeType](arbitrary01234589GuaranteeType).sample.value
           val initialAnswers = emptyUserAnswers
             .setValue(DeclarationTypePage, declarationType)
@@ -53,7 +53,7 @@ class GuaranteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
       "when a single-page journey" - {
         "must redirect to add another" in {
-          val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+          val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
           val guaranteeType   = guaranteeTypeGen(WaiverByAgreementGuarantee).sample.value
           val initialAnswers = emptyUserAnswers
             .setValue(DeclarationTypePage, declarationType)
