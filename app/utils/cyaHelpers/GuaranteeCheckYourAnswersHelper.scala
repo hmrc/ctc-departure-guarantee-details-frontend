@@ -30,7 +30,7 @@ class GuaranteeCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode, inde
 
   def guaranteeType: Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicLink[GuaranteeType](
     page = GuaranteeTypePage(index),
-    formatAnswer = formatAsText,
+    formatAnswer = formatDynamicEnumAsText(_),
     prefix = "guarantee.guaranteeType",
     id = Some("change-type")
   )(_.code == TIRGuarantee)

@@ -21,10 +21,10 @@ import models.{GuaranteeType, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.RadioViewBehaviours
+import views.behaviours.EnumerableViewBehaviours
 import views.html.guarantee.GuaranteeTypeView
 
-class GuaranteeTypeViewSpec extends RadioViewBehaviours[GuaranteeType] {
+class GuaranteeTypeViewSpec extends EnumerableViewBehaviours[GuaranteeType] {
 
   override def form: Form[GuaranteeType] = new EnumerableFormProvider()(prefix, values)
 

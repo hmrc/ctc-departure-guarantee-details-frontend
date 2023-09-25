@@ -34,8 +34,8 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mod
     buildListItems(GuaranteeDetailsSection) {
       index =>
         buildListItem[GuaranteeDomain](
-          nameWhenComplete = _.`type`.toString,
-          nameWhenInProgress = userAnswers.get(GuaranteeTypePage(index)).map(_.toString),
+          nameWhenComplete = x => formatDynamicEnumAsString(x.`type`),
+          nameWhenInProgress = userAnswers.get(GuaranteeTypePage(index)).map(formatDynamicEnumAsString(_)),
           removeRoute = Some(controllers.guarantee.routes.RemoveGuaranteeYesNoController.onPageLoad(lrn, index))
         )(GuaranteeDomain.userAnswersReader(index))
     }

@@ -64,7 +64,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
                 result mustBe Some(
                   SummaryListRow(
                     key = Key("Guarantee type".toText),
-                    value = Value(guaranteeType.toString.toText),
+                    value = Value(guaranteeType.asString.toText),
                     actions = None
                   )
                 )
@@ -88,7 +88,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
                 result mustBe Some(
                   SummaryListRow(
                     key = Key("Guarantee type".toText),
-                    value = Value(messages(s"$guaranteeType").toText),
+                    value = Value(guaranteeType.asString.toText),
                     actions = Some(
                       Actions(
                         items = List(

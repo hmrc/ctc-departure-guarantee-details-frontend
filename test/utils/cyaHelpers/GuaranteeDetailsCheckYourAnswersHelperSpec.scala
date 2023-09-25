@@ -51,7 +51,7 @@ class GuaranteeDetailsCheckYourAnswersHelperSpec extends SpecBase with Generator
       helper.listItems mustBe Seq(
         Right(
           ListItem(
-            name = guaranteeType.toString,
+            name = guaranteeType.asString,
             changeUrl = routes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, Index(0)).url,
             removeUrl = Some(routes.RemoveGuaranteeYesNoController.onPageLoad(userAnswers.lrn, Index(0)).url)
           )
@@ -78,21 +78,21 @@ class GuaranteeDetailsCheckYourAnswersHelperSpec extends SpecBase with Generator
       helper.listItems mustBe Seq(
         Right(
           ListItem(
-            name = guaranteeType3.toString,
+            name = guaranteeType3.asString,
             changeUrl = routes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, Index(0)).url,
             removeUrl = Some(routes.RemoveGuaranteeYesNoController.onPageLoad(userAnswers.lrn, Index(0)).url)
           )
         ),
         Left(
           ListItem(
-            name = guaranteeType0.toString,
+            name = guaranteeType0.asString,
             changeUrl = routes.ReferenceNumberController.onPageLoad(userAnswers.lrn, NormalMode, Index(1)).url,
             removeUrl = Some(routes.RemoveGuaranteeYesNoController.onPageLoad(userAnswers.lrn, Index(1)).url)
           )
         ),
         Right(
           ListItem(
-            name = guaranteeTypeA.toString,
+            name = guaranteeTypeA.asString,
             changeUrl = routes.GuaranteeTypeController.onPageLoad(userAnswers.lrn, CheckMode, Index(2)).url,
             removeUrl = Some(routes.RemoveGuaranteeYesNoController.onPageLoad(userAnswers.lrn, Index(2)).url)
           )

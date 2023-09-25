@@ -83,7 +83,7 @@ class GuaranteeTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> gt1.toString))
+      val filledForm = form.bind(Map("value" -> gt1.code))
 
       val view = injector.instanceOf[GuaranteeTypeView]
 
@@ -100,7 +100,7 @@ class GuaranteeTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, guaranteeTypeRoute)
-        .withFormUrlEncodedBody(("value", gt1.toString))
+        .withFormUrlEncodedBody(("value", gt1.code))
 
       val result = route(app, request).value
 
@@ -142,7 +142,7 @@ class GuaranteeTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, guaranteeTypeRoute)
-        .withFormUrlEncodedBody(("value", gt1.toString))
+        .withFormUrlEncodedBody(("value", gt1.code))
 
       val result = route(app, request).value
 

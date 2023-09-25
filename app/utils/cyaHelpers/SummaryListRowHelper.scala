@@ -16,6 +16,7 @@
 
 package utils.cyaHelpers
 
+import models.Radioable
 import models.reference.CurrencyCode
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -35,6 +36,10 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
     }
 
   protected def formatAsText[T](answer: T): Content = s"$answer".toText
+
+  protected def formatDynamicEnumAsString[T <: Radioable[T]](answer: T): String = answer.asString
+
+  protected def formatDynamicEnumAsText[T <: Radioable[T]](answer: T): Content = formatDynamicEnumAsString(answer).toText
 
   protected def formatAsPassword(answer: String): Content = ("•" * answer.length).toText
 
