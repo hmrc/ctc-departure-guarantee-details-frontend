@@ -17,6 +17,7 @@
 package generators
 
 import models.GuaranteeType._
+import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
 import models._
 import models.reference._
 import org.scalacheck.{Arbitrary, Gen}
@@ -172,5 +173,10 @@ trait ModelGenerators {
   lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }
+
+  implicit lazy val arbitraryLockCheck: Arbitrary[LockCheck] =
+    Arbitrary {
+      Gen.oneOf(Locked, Unlocked, LockCheckFailure)
+    }
 
 }
