@@ -17,6 +17,6 @@
 package config
 
 object Constants {
-  val GB = "GB"
-  val XI = "XI"
+  val XI  = "XI"
+  val TIR = "TIR"
 }

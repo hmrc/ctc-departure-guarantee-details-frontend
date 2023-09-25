@@ -17,8 +17,8 @@
 package models.journeyDomain
 
 import cats.implicits._
+import config.Constants._
 import config.PhaseConfig
-import models.DeclarationType.Option4
 import models.GuaranteeType._
 import models.domain._
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
@@ -41,7 +41,7 @@ object GuaranteeDomain {
   // scalastyle:off cyclomatic.complexity
   implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[GuaranteeDomain] =
     DeclarationTypePage.reader.flatMap {
-      case Option4 =>
+      case TIR =>
         GuaranteeTypePage(index).mandatoryReader(_ == TIRGuarantee).map(GuaranteeOfTypesAB(_)(index))
       case _ =>
         GuaranteeTypePage(index).reader.flatMap {

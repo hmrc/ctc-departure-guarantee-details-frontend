@@ -16,8 +16,8 @@
 
 package pages.guarantee
 
+import config.Constants._
 import controllers.guarantee.routes
-import models.DeclarationType.Option4
 import models.{GuaranteeType, Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.external.DeclarationTypePage
@@ -49,7 +49,7 @@ case class GuaranteeTypePage(index: Index) extends QuestionPage[GuaranteeType] {
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     userAnswers.get(DeclarationTypePage) map {
-      case Option4 => controllers.routes.GuaranteeAddedTIRController.onPageLoad(userAnswers.lrn)
-      case _       => routes.GuaranteeTypeController.onPageLoad(userAnswers.lrn, mode, index)
+      case TIR => controllers.routes.GuaranteeAddedTIRController.onPageLoad(userAnswers.lrn)
+      case _   => routes.GuaranteeTypeController.onPageLoad(userAnswers.lrn, mode, index)
     }
 }

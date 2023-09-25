@@ -16,9 +16,9 @@
 
 package pages.guarantee
 
-import models.DeclarationType.Option4
+import config.Constants.TIR
 import models.reference.CurrencyCode
-import models.{DeclarationType, GuaranteeType, Index, Mode}
+import models.{GuaranteeType, Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.external.DeclarationTypePage
@@ -97,7 +97,7 @@ class GuaranteeTypePageSpec extends PageBehaviours {
         "must point to GuaranteeAddedTIRController" in {
           forAll(arbitrary[Index], arbitrary[Mode]) {
             (index, mode) =>
-              val userAnswers = emptyUserAnswers.setValue(DeclarationTypePage, Option4)
+              val userAnswers = emptyUserAnswers.setValue(DeclarationTypePage, TIR)
               GuaranteeTypePage(index).route(userAnswers, mode).get.url mustBe
                 controllers.routes.GuaranteeAddedTIRController.onPageLoad(userAnswers.lrn).url
           }
@@ -106,7 +106,7 @@ class GuaranteeTypePageSpec extends PageBehaviours {
 
       "when non-TIR declaration type" - {
         "must point to GuaranteeTypeController" in {
-          forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType), arbitrary[Index], arbitrary[Mode]) {
+          forAll(arbitrary[String](arbitraryNonTIRDeclarationType), arbitrary[Index], arbitrary[Mode]) {
             (declarationType, index, mode) =>
               val userAnswers = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
               GuaranteeTypePage(index).route(userAnswers, mode).get.url mustBe

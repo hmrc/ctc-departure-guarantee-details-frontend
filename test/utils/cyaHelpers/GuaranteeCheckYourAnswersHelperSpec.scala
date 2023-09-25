@@ -17,13 +17,13 @@
 package utils.cyaHelpers
 
 import base.SpecBase
+import config.Constants.TIR
 import controllers.guarantee.routes
 import forms.Constants.accessCodeLength
 import generators.Generators
-import models.DeclarationType.Option4
 import models.GuaranteeType._
 import models.reference.CurrencyCode
-import models.{DeclarationType, GuaranteeType, Mode}
+import models.{GuaranteeType, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -55,7 +55,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
             forAll(arbitrary[Mode]) {
               mode =>
                 val answers = emptyUserAnswers
-                  .setValue(DeclarationTypePage, Option4)
+                  .setValue(DeclarationTypePage, TIR)
                   .setValue(GuaranteeTypePage(index), TIRGuarantee)
 
                 val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
@@ -73,7 +73,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
 
           "when not TIR" in {
             forAll(
-              arbitrary[DeclarationType](arbitraryNonOption4DeclarationType),
+              arbitrary[String](arbitraryNonTIRDeclarationType),
               arbitrary[GuaranteeType](arbitraryNonOption4GuaranteeType),
               arbitrary[Mode]
             ) {
