@@ -35,9 +35,10 @@ import views.html.guarantee.GuaranteeTypeView
 import scala.concurrent.Future
 
 class GuaranteeTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
-  private val gt1                                              = arbitrary[GuaranteeType].sample.value
-  private val gt2                                              = arbitrary[GuaranteeType].sample.value
-  private val gts                                              = Seq(gt1, gt2)
+
+  private val gts = arbitrary[Seq[GuaranteeType]].sample.value
+  private val gt1 = gts.head
+
   private val formProvider                                     = new EnumerableFormProvider()
   private val form                                             = formProvider[GuaranteeType]("guarantee.guaranteeType", gts)
   private val mode                                             = NormalMode

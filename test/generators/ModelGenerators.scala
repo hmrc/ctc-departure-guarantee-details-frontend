@@ -17,6 +17,7 @@
 package generators
 
 import config.Constants._
+import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
 import models._
 import models.reference._
 import org.scalacheck.{Arbitrary, Gen}
@@ -232,8 +233,19 @@ trait ModelGenerators {
     } yield SelectableList(values.distinctBy(_.value))
   }
 
+  implicit def arbitraryRadioableList[T <: Radioable[T]](implicit arbitrary: Arbitrary[T]): Arbitrary[Seq[T]] = Arbitrary {
+    for {
+      values <- listWithMaxLength[T]()
+    } yield values.distinctBy(_.code)
+  }
+
   lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }
+
+  implicit lazy val arbitraryLockCheck: Arbitrary[LockCheck] =
+    Arbitrary {
+      Gen.oneOf(Locked, Unlocked, LockCheckFailure)
+    }
 
 }
