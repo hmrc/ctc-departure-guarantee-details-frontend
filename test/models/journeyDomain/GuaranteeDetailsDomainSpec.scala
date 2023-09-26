@@ -17,12 +17,12 @@
 package models.journeyDomain
 
 import base.SpecBase
+import config.Constants.TIR
 import generators.Generators
-import models.DeclarationType.Option4
 import models.GuaranteeType._
+import models.Index
 import models.domain._
 import models.journeyDomain.GuaranteeDomain.GuaranteeOfTypesAB
-import models.{DeclarationType, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.external.DeclarationTypePage
 import pages.guarantee.GuaranteeTypePage
@@ -34,7 +34,7 @@ class GuaranteeDetailsDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers" - {
       "when TIR declaration type" in {
         val userAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, Option4)
+          .setValue(DeclarationTypePage, TIR)
           .setValue(GuaranteeTypePage(Index(0)), tirGuarantee)
 
         val expectedResult = GuaranteeDetailsDomain(
@@ -51,7 +51,7 @@ class GuaranteeDetailsDomainSpec extends SpecBase with Generators {
       }
 
       "when non-TIR declaration type" in {
-        val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+        val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
 
         val userAnswers = emptyUserAnswers
           .setValue(DeclarationTypePage, declarationType)
@@ -73,7 +73,7 @@ class GuaranteeDetailsDomainSpec extends SpecBase with Generators {
 
     "cannot be parsed from user answers" - {
       "when guarantees empty" in {
-        val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+        val declarationType = arbitrary[String](arbitraryDeclarationType).sample.value
 
         val userAnswers = emptyUserAnswers
           .setValue(DeclarationTypePage, declarationType)

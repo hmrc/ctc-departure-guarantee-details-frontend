@@ -17,9 +17,9 @@
 package models.journeyDomain
 
 import cats.implicits._
+import config.Constants._
 import config.PhaseConfig
 import controllers.routes
-import models.DeclarationType.Option4
 import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.{Index, Mode, RichJsArray, UserAnswers}
 import pages.external.DeclarationTypePage
@@ -32,8 +32,8 @@ case class GuaranteeDetailsDomain(
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     userAnswers.get(DeclarationTypePage) map {
-      case Option4 => routes.GuaranteeAddedTIRController.onPageLoad(userAnswers.lrn)
-      case _       => routes.AddAnotherGuaranteeController.onPageLoad(userAnswers.lrn)
+      case TIR => routes.GuaranteeAddedTIRController.onPageLoad(userAnswers.lrn)
+      case _   => routes.AddAnotherGuaranteeController.onPageLoad(userAnswers.lrn)
     }
 }
 

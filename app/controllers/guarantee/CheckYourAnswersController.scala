@@ -17,9 +17,9 @@
 package controllers.guarantee
 
 import com.google.inject.Inject
+import config.Constants._
 import config.FrontendAppConfig
 import controllers.actions.{Actions, SpecificDataRequiredActionProvider}
-import models.DeclarationType.Option4
 import models.{Index, LocalReferenceNumber}
 import pages.external.DeclarationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -50,8 +50,8 @@ class CheckYourAnswersController @Inject() (
     .andThen(getMandatoryPage(DeclarationTypePage)) {
       implicit request =>
         request.arg match {
-          case Option4 => Redirect(config.taskListUrl(lrn))
-          case _       => Redirect(controllers.routes.AddAnotherGuaranteeController.onPageLoad(lrn))
+          case TIR => Redirect(config.taskListUrl(lrn))
+          case _   => Redirect(controllers.routes.AddAnotherGuaranteeController.onPageLoad(lrn))
         }
     }
 }

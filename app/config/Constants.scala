@@ -19,8 +19,9 @@ package config
 import models.GuaranteeType
 
 object Constants {
-  val GB = "GB"
-  val XI = "XI"
+  val TIR = "TIR"
+  val GB  = "GB"
+  val XI  = "XI"
 
   val waiverGuarantee                        = GuaranteeType("0", "test0")
   val comprehensiveGuarantee                 = GuaranteeType("1", "test1")

@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.guarantee.routes
 import generators.Generators
 import models.GuaranteeType._
-import models.{CheckMode, DeclarationType, Index, NormalMode}
+import models.{CheckMode, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.external.DeclarationTypePage
 import pages.guarantee._
@@ -39,7 +39,7 @@ class GuaranteeDetailsCheckYourAnswersHelperSpec extends SpecBase with Generator
 
   "when user answers populated with a complete guarantee" - {
     "must return one list item" in {
-      val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+      val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
       val userAnswers = emptyUserAnswers
         .setValue(DeclarationTypePage, declarationType)
         .setValue(GuaranteeTypePage(Index(0)), cashDepositGuarantee)
@@ -60,7 +60,7 @@ class GuaranteeDetailsCheckYourAnswersHelperSpec extends SpecBase with Generator
 
   "when user answers populated with a complete guarantee and in progress guarantee" - {
     "must return two list items" in {
-      val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+      val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
       val userAnswers = emptyUserAnswers
         .setValue(DeclarationTypePage, declarationType)
         .setValue(GuaranteeTypePage(Index(0)), cashDepositGuarantee)

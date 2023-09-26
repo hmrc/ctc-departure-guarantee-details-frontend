@@ -19,7 +19,7 @@ package controllers.guarantee
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
-import models.{DeclarationType, UserAnswers}
+import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, verify, when}
@@ -42,7 +42,7 @@ class RemoveGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
   "RemoveGuaranteeYesNoController" - {
 
     "must return OK and the correct view for a GET" in {
-      val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+      val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
       val updatedUA       = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
 
       forAll(arbitraryGuaranteeAnswers(updatedUA, index)) {
@@ -63,7 +63,7 @@ class RemoveGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "when yes submitted" - {
       "must redirect to add another guarantee and remove guarantee at specified index" in {
-        val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+        val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
         val updatedUA       = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
         forAll(arbitraryGuaranteeAnswers(updatedUA, index)) {
           userAnswers =>
@@ -114,7 +114,7 @@ class RemoveGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+      val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
       val updatedUA       = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
       forAll(arbitraryGuaranteeAnswers(updatedUA, index)) {
         userAnswers =>

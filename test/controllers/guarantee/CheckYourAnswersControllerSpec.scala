@@ -17,9 +17,8 @@
 package controllers.guarantee
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.Constants.TIR
 import generators.Generators
-import models.DeclarationType
-import models.DeclarationType.Option4
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -79,7 +78,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "when TIR declaration type" - {
       "must redirect to task list" in {
-        setExistingUserAnswers(emptyUserAnswers.setValue(DeclarationTypePage, Option4))
+        setExistingUserAnswers(emptyUserAnswers.setValue(DeclarationTypePage, TIR))
 
         when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
@@ -95,7 +94,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "when non-TIR declaration type" - {
       "must redirect to add another guarantee" in {
-        val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+        val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
         setExistingUserAnswers(emptyUserAnswers.setValue(DeclarationTypePage, declarationType))
 
         when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))

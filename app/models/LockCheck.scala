@@ -16,21 +16,13 @@
 
 package models
 
-sealed trait DeclarationType
+sealed trait LockCheck
 
-object DeclarationType extends EnumerableType[DeclarationType] {
+object LockCheck {
 
-  case object Option1 extends WithName("T1") with DeclarationType
-  case object Option2 extends WithName("T2") with DeclarationType
-  case object Option3 extends WithName("T2F") with DeclarationType
-  case object Option4 extends WithName("TIR") with DeclarationType
-  case object Option5 extends WithName("T") with DeclarationType
+  sealed trait LockCheckSuccess extends LockCheck
 
-  override val values: Seq[DeclarationType] = Seq(
-    Option1,
-    Option2,
-    Option3,
-    Option4,
-    Option5
-  )
+  case object LockCheckFailure extends LockCheck
+  case object Locked extends LockCheckSuccess
+  case object Unlocked extends LockCheckSuccess
 }

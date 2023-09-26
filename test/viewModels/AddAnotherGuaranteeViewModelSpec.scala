@@ -18,8 +18,7 @@ package viewModels
 
 import base.SpecBase
 import generators.Generators
-import models.DeclarationType.Option4
-import models.{DeclarationType, Index}
+import models.Index
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -32,9 +31,8 @@ class AddAnotherGuaranteeViewModelSpec extends SpecBase with Generators with Sca
 
     "when there is one guarantee" in {
 
-      val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
-
-      val popUa = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
+      val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
+      val popUa           = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
 
       val userAnswers = arbitraryGuaranteeAnswers(popUa, index).sample.value
 
@@ -48,12 +46,9 @@ class AddAnotherGuaranteeViewModelSpec extends SpecBase with Generators with Sca
     }
 
     "when there are multiple guarantees" in {
-
-      val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
-
-      val popUa = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
-
-      val formatter = java.text.NumberFormat.getIntegerInstance
+      val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
+      val popUa           = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
+      val formatter       = java.text.NumberFormat.getIntegerInstance
 
       (2 until frontendAppConfig.maxGuarantees).map {
         count =>
@@ -69,11 +64,8 @@ class AddAnotherGuaranteeViewModelSpec extends SpecBase with Generators with Sca
           result.heading mustBe s"You have added ${formatter.format(count)} guarantees"
           result.legend mustBe "Do you want to add another guarantee?"
           result.maxLimitLabel mustBe "You cannot add any more guarantees. To add another guarantee, you need to remove one first."
-
       }
-
     }
-
   }
 
 }
