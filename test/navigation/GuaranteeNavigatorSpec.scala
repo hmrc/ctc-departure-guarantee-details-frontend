@@ -17,6 +17,7 @@
 package navigation
 
 import base.SpecBase
+import config.Constants.WaiverByAgreementGuarantee
 import generators.Generators
 import models.GuaranteeType._
 import models._
@@ -53,9 +54,10 @@ class GuaranteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
       "when a single-page journey" - {
         "must redirect to add another" in {
           val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
+          val guaranteeType   = guaranteeTypeGen(WaiverByAgreementGuarantee).sample.value
           val initialAnswers = emptyUserAnswers
             .setValue(DeclarationTypePage, declarationType)
-            .setValue(GuaranteeTypePage(index), GuaranteeType.GuaranteeWaiverByAgreement)
+            .setValue(GuaranteeTypePage(index), guaranteeType)
 
           forAll(arbitraryGuaranteeAnswers(initialAnswers, index), arbitrary[Mode]) {
             (answers, mode) =>

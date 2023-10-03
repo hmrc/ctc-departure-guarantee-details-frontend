@@ -17,7 +17,7 @@
 package viewModels
 
 import base.SpecBase
-import config.Constants.TIR
+import config.Constants._
 import config.PhaseConfig
 import generators.Generators
 import models.GuaranteeType._
@@ -48,15 +48,18 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
       }
 
       "when not TIR" - {
+        val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
+
         "when 0,1,2,4,9 guarantee type" - {
+          val guaranteeType = arbitrary[GuaranteeType](arbitrary01249GuaranteeType).sample.value
+
           "when transition" - {
             val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
             when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
 
             "when adding liability" - {
               "must return 6 rows" in {
-                val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
-                val guaranteeType   = arbitrary[GuaranteeType](arbitrary01249GuaranteeType).sample.value
+                val guaranteeType = arbitrary[GuaranteeType](arbitrary01249GuaranteeType).sample.value
                 val initialAnswers = emptyUserAnswers
                   .setValue(DeclarationTypePage, declarationType)
                   .setValue(GuaranteeTypePage(index), guaranteeType)
@@ -74,8 +77,6 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
 
             "when not adding liability" - {
               "must return 4 rows" in {
-                val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
-                val guaranteeType   = arbitrary[GuaranteeType](arbitrary01249GuaranteeType).sample.value
                 val initialAnswers = emptyUserAnswers
                   .setValue(DeclarationTypePage, declarationType)
                   .setValue(GuaranteeTypePage(index), guaranteeType)
@@ -97,8 +98,6 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
             when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
             "must return 5 rows" in {
-              val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
-              val guaranteeType   = arbitrary[GuaranteeType](arbitrary01249GuaranteeType).sample.value
               val initialAnswers = emptyUserAnswers
                 .setValue(DeclarationTypePage, declarationType)
                 .setValue(GuaranteeTypePage(index), guaranteeType)
@@ -115,16 +114,17 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
         }
 
         "when 5 guarantee type" - {
+          val guaranteeType = guaranteeTypeGen(WaiverImportExportGuarantee).sample.value
+
           "when transition" - {
             val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
             when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
 
             "when adding liability" - {
               "must return 4 rows" in {
-                val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
                 val initialAnswers = emptyUserAnswers
                   .setValue(DeclarationTypePage, declarationType)
-                  .setValue(GuaranteeTypePage(index), GuaranteeWaiverSecured)
+                  .setValue(GuaranteeTypePage(index), guaranteeType)
                   .setValue(AddLiabilityYesNoPage(index), true)
 
                 forAll(arbitraryGuaranteeAnswers(initialAnswers, index)(mockPhaseConfig)) {
@@ -139,10 +139,9 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
 
             "when not adding liability" - {
               "must return 2 rows" in {
-                val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
                 val initialAnswers = emptyUserAnswers
                   .setValue(DeclarationTypePage, declarationType)
-                  .setValue(GuaranteeTypePage(index), GuaranteeWaiverSecured)
+                  .setValue(GuaranteeTypePage(index), guaranteeType)
                   .setValue(AddLiabilityYesNoPage(index), false)
 
                 forAll(arbitraryGuaranteeAnswers(initialAnswers, index)(mockPhaseConfig)) {
@@ -161,10 +160,9 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
             when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
             "must return 3 rows" in {
-              val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
               val initialAnswers = emptyUserAnswers
                 .setValue(DeclarationTypePage, declarationType)
-                .setValue(GuaranteeTypePage(index), GuaranteeWaiverSecured)
+                .setValue(GuaranteeTypePage(index), guaranteeType)
 
               forAll(arbitraryGuaranteeAnswers(initialAnswers, index)(mockPhaseConfig)) {
                 answers =>
@@ -178,11 +176,12 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
         }
 
         "when A guarantee type" - {
+          val guaranteeType = guaranteeTypeGen(WaiverByAgreementGuarantee).sample.value
+
           "must return 1 row" in {
-            val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
             val initialAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
-              .setValue(GuaranteeTypePage(index), GuaranteeType.GuaranteeWaiverByAgreement)
+              .setValue(GuaranteeTypePage(index), guaranteeType)
 
             forAll(arbitraryGuaranteeAnswers(initialAnswers, index)) {
               answers =>
@@ -195,11 +194,12 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
         }
 
         "when 8 guarantee type" - {
+          val guaranteeType = guaranteeTypeGen(NotRequiredByPublicBodiesGuarantee).sample.value
+
           "must return 4 rows" in {
-            val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
             val initialAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
-              .setValue(GuaranteeTypePage(index), GuaranteeNotRequiredExemptPublicBody)
+              .setValue(GuaranteeTypePage(index), guaranteeType)
 
             forAll(arbitraryGuaranteeAnswers(initialAnswers, index)) {
               answers =>
@@ -212,12 +212,13 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
         }
 
         "when 3 guarantee type" - {
+          val guaranteeType = guaranteeTypeGen(CashDepositGuarantee).sample.value
+
           "when other ref answered" - {
             "must return 5 rows" in {
-              val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
               val initialAnswers = emptyUserAnswers
                 .setValue(DeclarationTypePage, declarationType)
-                .setValue(GuaranteeTypePage(index), CashDepositGuarantee)
+                .setValue(GuaranteeTypePage(index), guaranteeType)
                 .setValue(OtherReferenceYesNoPage(index), true)
 
               forAll(arbitraryGuaranteeAnswers(initialAnswers, index)) {
@@ -232,10 +233,9 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
 
           "when other ref unanswered" - {
             "must return 2 rows" in {
-              val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
               val initialAnswers = emptyUserAnswers
                 .setValue(DeclarationTypePage, declarationType)
-                .setValue(GuaranteeTypePage(index), CashDepositGuarantee)
+                .setValue(GuaranteeTypePage(index), guaranteeType)
                 .setValue(OtherReferenceYesNoPage(index), false)
 
               forAll(arbitraryGuaranteeAnswers(initialAnswers, index)) {

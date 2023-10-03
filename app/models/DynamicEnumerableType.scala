@@ -16,16 +16,12 @@
 
 package models
 
-import play.api.libs.json.{Format, Json}
+trait DynamicEnumerableType[T <: Radioable[T]] extends Enumerable.Implicits {
 
-case class GuaranteeType(code: String, description: String) extends Radioable[GuaranteeType] {
-  override val messageKeyPrefix: String = GuaranteeType.messageKeyPrefix
-  override def toString: String         = s"($code) $description"
-}
-
-object GuaranteeType extends DynamicEnumerableType[GuaranteeType] {
-  implicit val format: Format[GuaranteeType] = Json.format[GuaranteeType]
-
-  val messageKeyPrefix = "guarantee.guaranteeType"
-
+  implicit def enumerable(values: Seq[T]): Enumerable[T] =
+    Enumerable(
+      values.map(
+        v => v.code -> v
+      ): _*
+    )
 }

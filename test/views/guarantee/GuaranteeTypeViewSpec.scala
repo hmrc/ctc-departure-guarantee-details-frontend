@@ -21,12 +21,12 @@ import models.{GuaranteeType, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.RadioViewBehaviours
+import views.behaviours.EnumerableViewBehaviours
 import views.html.guarantee.GuaranteeTypeView
 
-class GuaranteeTypeViewSpec extends RadioViewBehaviours[GuaranteeType] {
+class GuaranteeTypeViewSpec extends EnumerableViewBehaviours[GuaranteeType] {
 
-  override def form: Form[GuaranteeType] = new EnumerableFormProvider()(prefix)
+  override def form: Form[GuaranteeType] = new EnumerableFormProvider()(prefix, values)
 
   override def applyView(form: Form[GuaranteeType]): HtmlFormat.Appendable =
     injector.instanceOf[GuaranteeTypeView].apply(form, lrn, values, NormalMode, index)(fakeRequest, messages)
@@ -36,7 +36,10 @@ class GuaranteeTypeViewSpec extends RadioViewBehaviours[GuaranteeType] {
   override def radioItems(fieldId: String, checkedValue: Option[GuaranteeType] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[GuaranteeType] = GuaranteeType.values
+  override def values: Seq[GuaranteeType] = Seq(
+    GuaranteeType("A", "TestA"),
+    GuaranteeType("B", "TestB")
+  )
 
   behave like pageWithTitle()
 

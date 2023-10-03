@@ -41,16 +41,6 @@ checkYourAnswers.heading = Check your answers
 
 guarantee.guaranteeType.title = Which type of guarantee is it?
 guarantee.guaranteeType.heading = Which type of guarantee is it?
-guarantee.guaranteeType.0 = (0) Guarantee waiver
-guarantee.guaranteeType.1 = (1) Comprehensive guarantee
-guarantee.guaranteeType.2 = (2) Individual guarantee as an undertaking by a guarantor
-guarantee.guaranteeType.3 = (3) Individual guarantee in cash or an equivalent recognised by the customs authorities
-guarantee.guaranteeType.4 = (4) Individual guarantee in the form of vouchers
-guarantee.guaranteeType.5 = (5) Guarantee waiver – secured for 500 euros or less
-guarantee.guaranteeType.8 = (8) Guarantee not required – exempt public body
-guarantee.guaranteeType.9 = (9) Individual guarantee with multiple usage
-guarantee.guaranteeType.A = (A) Guarantee waiver by agreement
-guarantee.guaranteeType.B = (B) Guarantee for goods dispatched under TIR procedure
 guarantee.guaranteeType.checkYourAnswersLabel = Guarantee type
 guarantee.guaranteeType.change.hidden = type of guarantee
 guarantee.guaranteeType.error.required = Select which type of guarantee you are using

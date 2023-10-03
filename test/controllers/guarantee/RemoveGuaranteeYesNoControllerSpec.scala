@@ -23,7 +23,9 @@ import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.external.DeclarationTypePage
 import pages.sections.GuaranteeSection
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -40,7 +42,10 @@ class RemoveGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
   "RemoveGuaranteeYesNoController" - {
 
     "must return OK and the correct view for a GET" in {
-      forAll(arbitraryGuaranteeAnswers(emptyUserAnswers, index)) {
+      val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
+      val updatedUA       = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
+
+      forAll(arbitraryGuaranteeAnswers(updatedUA, index)) {
         userAnswers =>
           setExistingUserAnswers(userAnswers)
 
@@ -58,7 +63,9 @@ class RemoveGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "when yes submitted" - {
       "must redirect to add another guarantee and remove guarantee at specified index" in {
-        forAll(arbitraryGuaranteeAnswers(emptyUserAnswers, index)) {
+        val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
+        val updatedUA       = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
+        forAll(arbitraryGuaranteeAnswers(updatedUA, index)) {
           userAnswers =>
             reset(mockSessionRepository)
             when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
@@ -84,6 +91,7 @@ class RemoveGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "when no submitted" - {
       "must redirect to add another guarantee and not remove guarantee at specified index" in {
+
         forAll(arbitraryGuaranteeAnswers(emptyUserAnswers, index)) {
           userAnswers =>
             reset(mockSessionRepository)
@@ -106,7 +114,9 @@ class RemoveGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      forAll(arbitraryGuaranteeAnswers(emptyUserAnswers, index)) {
+      val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
+      val updatedUA       = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
+      forAll(arbitraryGuaranteeAnswers(updatedUA, index)) {
         userAnswers =>
           setExistingUserAnswers(userAnswers)
 

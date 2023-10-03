@@ -17,7 +17,7 @@
 package utils.cyaHelpers
 
 import base.SpecBase
-import config.Constants.TIR
+import config.Constants.{TIR, TIRGuarantee}
 import controllers.guarantee.routes
 import forms.Constants.accessCodeLength
 import generators.Generators
@@ -52,11 +52,11 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
       "must return Some(Row)" - {
         "when GuaranteeTypePage defined" - {
           "when TIR" in {
-            forAll(arbitrary[Mode]) {
-              mode =>
+            forAll(arbitrary[Mode], guaranteeTypeGen(TIRGuarantee)) {
+              (mode, guaranteeType) =>
                 val answers = emptyUserAnswers
                   .setValue(DeclarationTypePage, TIR)
-                  .setValue(GuaranteeTypePage(index), TIRGuarantee)
+                  .setValue(GuaranteeTypePage(index), guaranteeType)
 
                 val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
                 val result = helper.guaranteeType
@@ -64,7 +64,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
                 result mustBe Some(
                   SummaryListRow(
                     key = Key("Guarantee type".toText),
-                    value = Value("(B) Guarantee for goods dispatched under TIR procedure".toText),
+                    value = Value(guaranteeType.asString.toText),
                     actions = None
                   )
                 )
@@ -88,7 +88,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
                 result mustBe Some(
                   SummaryListRow(
                     key = Key("Guarantee type".toText),
-                    value = Value(messages(s"guarantee.guaranteeType.$guaranteeType").toText),
+                    value = Value(guaranteeType.asString.toText),
                     actions = Some(
                       Actions(
                         items = List(
@@ -225,10 +225,10 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
       "must return Some(Row)" - {
         "when OtherReferencePage defined" - {
           "and guarantee type 3" in {
-            forAll(Gen.alphaNumStr, arbitrary[Mode]) {
-              (referenceNumber, mode) =>
+            forAll(Gen.alphaNumStr, arbitrary[Mode], arbitrary[GuaranteeType](arbitrary3GuaranteeType)) {
+              (referenceNumber, mode, guaranteeType) =>
                 val answers = emptyUserAnswers
-                  .setValue(GuaranteeTypePage(index), CashDepositGuarantee)
+                  .setValue(GuaranteeTypePage(index), guaranteeType)
                   .setValue(OtherReferencePage(index), referenceNumber)
 
                 val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
@@ -256,10 +256,10 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
           }
 
           "and guarantee type 8" in {
-            forAll(Gen.alphaNumStr, arbitrary[Mode]) {
-              (referenceNumber, mode) =>
+            forAll(Gen.alphaNumStr, arbitrary[Mode], arbitrary[GuaranteeType](arbitrary8GuaranteeType)) {
+              (referenceNumber, mode, guaranteeType) =>
                 val answers = emptyUserAnswers
-                  .setValue(GuaranteeTypePage(index), GuaranteeNotRequiredExemptPublicBody)
+                  .setValue(GuaranteeTypePage(index), guaranteeType)
                   .setValue(OtherReferencePage(index), referenceNumber)
 
                 val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)

@@ -14,18 +14,10 @@
  * limitations under the License.
  */
 
-package models
+package views.behaviours
 
-import play.api.libs.json.{Format, Json}
+import models.Radioable
 
-case class GuaranteeType(code: String, description: String) extends Radioable[GuaranteeType] {
-  override val messageKeyPrefix: String = GuaranteeType.messageKeyPrefix
-  override def toString: String         = s"($code) $description"
-}
-
-object GuaranteeType extends DynamicEnumerableType[GuaranteeType] {
-  implicit val format: Format[GuaranteeType] = Json.format[GuaranteeType]
-
-  val messageKeyPrefix = "guarantee.guaranteeType"
-
+trait EnumerableViewBehaviours[T <: Radioable[T]] extends RadioViewBehaviours[T] {
+  override val getValue: T => String = _.code
 }

@@ -17,6 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
+import models.GuaranteeType
 import models.reference._
 import play.api.Logging
 import play.api.http.Status._
@@ -30,8 +31,19 @@ import scala.concurrent.{ExecutionContext, Future}
 class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient) extends Logging {
 
   def getCurrencyCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CurrencyCode]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/CurrencyCodes"
-    http.GET[Seq[CurrencyCode]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/CurrencyCodes"
+    http.GET[Seq[CurrencyCode]](url, headers = version2Header)
+  }
+
+  def getGuaranteeTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[GuaranteeType]] = {
+    val url = s"${config.referenceDataUrl}/lists/GuaranteeType"
+    http.GET[Seq[GuaranteeType]](url, headers = version2Header)
+  }
+
+  def getGuaranteeType(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[GuaranteeType]] = {
+    val url                                = s"${config.referenceDataUrl}/filtered-lists/GuaranteeType"
+    val queryParams: Seq[(String, String)] = Seq("data.code" -> code)
+    http.GET[Seq[GuaranteeType]](url, headers = version2Header, queryParams = queryParams)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(

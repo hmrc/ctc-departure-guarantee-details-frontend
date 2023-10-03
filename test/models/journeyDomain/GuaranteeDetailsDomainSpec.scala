@@ -17,10 +17,10 @@
 package models.journeyDomain
 
 import base.SpecBase
-import config.Constants.TIR
+import config.Constants._
 import generators.Generators
 import models.GuaranteeType._
-import models.Index
+import models.{GuaranteeType, Index}
 import models.domain._
 import models.journeyDomain.GuaranteeDomain.GuaranteeOfTypesAB
 import org.scalacheck.Arbitrary.arbitrary
@@ -33,14 +33,15 @@ class GuaranteeDetailsDomainSpec extends SpecBase with Generators {
 
     "can be parsed from UserAnswers" - {
       "when TIR declaration type" in {
+        val guaranteeType = arbitrary[GuaranteeType](arbitraryBGuaranteeType).sample.value
         val userAnswers = emptyUserAnswers
           .setValue(DeclarationTypePage, TIR)
-          .setValue(GuaranteeTypePage(Index(0)), TIRGuarantee)
+          .setValue(GuaranteeTypePage(Index(0)), guaranteeType)
 
         val expectedResult = GuaranteeDetailsDomain(
           Seq(
             GuaranteeOfTypesAB(
-              `type` = TIRGuarantee
+              `type` = guaranteeType
             )(Index(0))
           )
         )
@@ -52,15 +53,16 @@ class GuaranteeDetailsDomainSpec extends SpecBase with Generators {
 
       "when non-TIR declaration type" in {
         val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
+        val guaranteeType   = guaranteeTypeGen(WaiverByAgreementGuarantee).sample.value
 
         val userAnswers = emptyUserAnswers
           .setValue(DeclarationTypePage, declarationType)
-          .setValue(GuaranteeTypePage(Index(0)), GuaranteeWaiverByAgreement)
+          .setValue(GuaranteeTypePage(Index(0)), guaranteeType)
 
         val expectedResult = GuaranteeDetailsDomain(
           Seq(
             GuaranteeOfTypesAB(
-              `type` = GuaranteeWaiverByAgreement
+              `type` = guaranteeType
             )(Index(0))
           )
         )

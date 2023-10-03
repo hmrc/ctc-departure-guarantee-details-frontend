@@ -17,6 +17,21 @@
 package config
 
 object Constants {
-  val XI  = "XI"
+  val GB = "GB"
+  val XI = "XI"
+
   val TIR = "TIR"
+
+  val WaiverGuarantee                        = "0"
+  val ComprehensiveGuarantee                 = "1"
+  val IndividualInFormOfUndertakingGuarantee = "2"
+  val CashDepositGuarantee                   = "3"
+  val IndividualInFormOfVouchersGuarantee    = "4"
+  val WaiverImportExportGuarantee            = "5"
+  val NotRequiredByPublicBodiesGuarantee     = "8"
+  val IndividualForMultipleUsagesGuarantee   = "9"
+  val WaiverByAgreementGuarantee             = "A"
+  val TIRGuarantee                           = "B"
+  val Article102BGuarantee                   = "J"
+  val Article898AGuarantee                   = "R"
 }

@@ -19,8 +19,9 @@ package viewModels
 import base.SpecBase
 import generators.Generators
 import models.Index
-import org.scalacheck.Gen
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.external.DeclarationTypePage
 import viewModels.AddAnotherGuaranteeViewModel.AddAnotherGuaranteeViewModelProvider
 
 class AddAnotherGuaranteeViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
@@ -28,7 +29,12 @@ class AddAnotherGuaranteeViewModelSpec extends SpecBase with Generators with Sca
   "must get list items" - {
 
     "when there is one guarantee" in {
-      val userAnswers = arbitraryGuaranteeAnswers(emptyUserAnswers, index).sample.value
+
+      val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
+
+      val popUa = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
+
+      val userAnswers = arbitraryGuaranteeAnswers(popUa, index).sample.value
 
       val result = new AddAnotherGuaranteeViewModelProvider()(userAnswers)
 
@@ -40,11 +46,16 @@ class AddAnotherGuaranteeViewModelSpec extends SpecBase with Generators with Sca
     }
 
     "when there are multiple guarantees" in {
+
+      val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
+
+      val popUa = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
+
       val formatter = java.text.NumberFormat.getIntegerInstance
 
-      forAll(Gen.choose(2, frontendAppConfig.maxGuarantees)) {
+      (2 until frontendAppConfig.maxGuarantees).map {
         count =>
-          val userAnswers = (0 until count).foldLeft(emptyUserAnswers) {
+          val userAnswers = (0 until count).foldLeft(popUa) {
             (acc, i) =>
               arbitraryGuaranteeAnswers(acc, Index(i)).sample.value
           }
@@ -56,8 +67,11 @@ class AddAnotherGuaranteeViewModelSpec extends SpecBase with Generators with Sca
           result.heading mustBe s"You have added ${formatter.format(count)} guarantees"
           result.legend mustBe "Do you want to add another guarantee?"
           result.maxLimitLabel mustBe "You cannot add any more guarantees. To add another guarantee, you need to remove one first."
+
       }
+
     }
+
   }
 
 }

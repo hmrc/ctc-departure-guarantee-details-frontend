@@ -17,11 +17,11 @@
 package models.journeyDomain
 
 import base.SpecBase
-import config.Constants.TIR
+import config.Constants._
 import config.PhaseConfig
 import generators.Generators
 import models.GuaranteeType._
-import models.Phase
+import models.{GuaranteeType, Phase}
 import models.domain.{EitherType, UserAnswersReader}
 import models.journeyDomain.GuaranteeDomain._
 import models.reference.CurrencyCode
@@ -34,11 +34,11 @@ import pages.guarantee._
 class GuaranteeDomainSpec extends SpecBase with Generators {
 
   private val `0,1,2,4,9` = arbitrary01249GuaranteeType.arbitrary
-  private val `3`         = Gen.const(CashDepositGuarantee)
-  private val `5`         = Gen.const(GuaranteeWaiverSecured)
-  private val `8`         = Gen.const(GuaranteeNotRequiredExemptPublicBody)
-  private val `A`         = Gen.const(GuaranteeWaiverByAgreement)
-  private val `B`         = Gen.const(TIRGuarantee)
+  private val `3`         = nonEmptyString.map(GuaranteeType(CashDepositGuarantee, _))
+  private val `5`         = nonEmptyString.map(GuaranteeType(WaiverImportExportGuarantee, _))
+  private val `8`         = nonEmptyString.map(GuaranteeType(NotRequiredByPublicBodiesGuarantee, _))
+  private val `A`         = nonEmptyString.map(GuaranteeType(WaiverByAgreementGuarantee, _))
+  private val `B`         = nonEmptyString.map(GuaranteeType(TIRGuarantee, _))
 
   "GuaranteeDomain" - {
 

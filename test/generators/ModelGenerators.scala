@@ -16,7 +16,7 @@
 
 package generators
 
-import models.GuaranteeType._
+import config.Constants._
 import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
 import models._
 import models.reference._
@@ -27,60 +27,123 @@ import uk.gov.hmrc.http.HttpVerbs._
 trait ModelGenerators {
   self: Generators =>
 
+  private val guaranteeTypeValues = Seq(
+    WaiverGuarantee,
+    ComprehensiveGuarantee,
+    IndividualInFormOfUndertakingGuarantee,
+    CashDepositGuarantee,
+    IndividualInFormOfVouchersGuarantee,
+    WaiverImportExportGuarantee,
+    NotRequiredByPublicBodiesGuarantee,
+    IndividualForMultipleUsagesGuarantee,
+    WaiverByAgreementGuarantee,
+    TIRGuarantee
+  )
+
+  def guaranteeTypeGen(code: String): Gen[GuaranteeType] = nonEmptyString.map(GuaranteeType(code, _))
+
   implicit lazy val arbitraryGuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
-      Gen.oneOf(GuaranteeType.values)
+      for {
+        code        <- Gen.oneOf(guaranteeTypeValues)
+        description <- nonEmptyString
+      } yield GuaranteeType(code, description)
+    }
+
+  lazy val arbitrary3GuaranteeType: Arbitrary[GuaranteeType] =
+    Arbitrary {
+      guaranteeTypeGen(CashDepositGuarantee)
+    }
+
+  lazy val arbitrary8GuaranteeType: Arbitrary[GuaranteeType] =
+    Arbitrary {
+      guaranteeTypeGen(NotRequiredByPublicBodiesGuarantee)
+    }
+
+  lazy val arbitraryBGuaranteeType: Arbitrary[GuaranteeType] =
+    Arbitrary {
+      guaranteeTypeGen(TIRGuarantee)
     }
 
   lazy val arbitraryNonOption4GuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
-      Gen.oneOf(GuaranteeType.values.filterNot(_ == TIRGuarantee))
+      for {
+        code        <- Gen.oneOf(guaranteeTypeValues.filterNot(_ == TIRGuarantee))
+        description <- nonEmptyString
+      } yield GuaranteeType(code, description)
     }
 
   lazy val arbitraryNonOption3Or8GuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
-      Gen.oneOf(
-        GuaranteeType.values
+      val codeGen = Gen.oneOf(
+        guaranteeTypeValues
           .filterNot(_ == CashDepositGuarantee)
-          .filterNot(_ == GuaranteeNotRequiredExemptPublicBody)
+          .filterNot(_ == NotRequiredByPublicBodiesGuarantee)
       )
+      for {
+        code        <- codeGen
+        description <- nonEmptyString
+      } yield GuaranteeType(code, description)
+    }
+
+  lazy val arbitrary3Or8GuaranteeType: Arbitrary[GuaranteeType] =
+    Arbitrary {
+      val codeGen = Gen.oneOf(
+        CashDepositGuarantee,
+        NotRequiredByPublicBodiesGuarantee
+      )
+      for {
+        code        <- codeGen
+        description <- nonEmptyString
+      } yield GuaranteeType(code, description)
     }
 
   lazy val arbitrary012459GuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
-      Gen.oneOf(
-        GuaranteeWaiver,
+      val codeGen = Gen.oneOf(
+        WaiverGuarantee,
         ComprehensiveGuarantee,
-        IndividualGuarantee,
-        FlatRateVoucher,
-        GuaranteeWaiverSecured,
-        IndividualGuaranteeMultiple
+        IndividualInFormOfUndertakingGuarantee,
+        IndividualInFormOfVouchersGuarantee,
+        WaiverImportExportGuarantee,
+        IndividualForMultipleUsagesGuarantee
       )
+      for {
+        code        <- codeGen
+        description <- nonEmptyString
+      } yield GuaranteeType(code, description)
     }
 
   lazy val arbitrary01249GuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
-      Gen.oneOf(
-        GuaranteeWaiver,
+      val codeGen = Gen.oneOf(
+        WaiverGuarantee,
         ComprehensiveGuarantee,
-        IndividualGuarantee,
-        FlatRateVoucher,
-        IndividualGuaranteeMultiple
+        IndividualInFormOfUndertakingGuarantee,
+        IndividualInFormOfVouchersGuarantee,
+        IndividualForMultipleUsagesGuarantee
       )
+      for {
+        code        <- codeGen
+        description <- nonEmptyString
+      } yield GuaranteeType(code, description)
     }
 
   lazy val arbitrary01234589GuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
-      Gen.oneOf(
-        GuaranteeWaiver,
+      val codeGen = Gen.oneOf(
+        WaiverGuarantee,
         ComprehensiveGuarantee,
-        IndividualGuarantee,
-        CashDepositGuarantee,
-        FlatRateVoucher,
-        GuaranteeWaiverSecured,
-        GuaranteeNotRequiredExemptPublicBody,
-        IndividualGuaranteeMultiple
+        IndividualInFormOfUndertakingGuarantee,
+        IndividualInFormOfVouchersGuarantee,
+        WaiverImportExportGuarantee,
+        NotRequiredByPublicBodiesGuarantee,
+        IndividualForMultipleUsagesGuarantee
       )
+      for {
+        code        <- codeGen
+        description <- nonEmptyString
+      } yield GuaranteeType(code, description)
     }
 
   lazy val arbitraryDeclarationType: Arbitrary[String] =
@@ -122,7 +185,7 @@ trait ModelGenerators {
         id          <- stringsWithMaxLength(stringMaxLength)
         name        <- stringsWithMaxLength(stringMaxLength)
         phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
-      } yield CustomsOffice(id, name, phoneNumber)
+      } yield CustomsOffice(s"$XI$id", name, phoneNumber)
     }
 
   lazy val arbitraryGbCustomsOffice: Arbitrary[CustomsOffice] =
@@ -131,7 +194,7 @@ trait ModelGenerators {
         id          <- stringsWithMaxLength(stringMaxLength)
         name        <- stringsWithMaxLength(stringMaxLength)
         phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
-      } yield CustomsOffice(id, name, phoneNumber)
+      } yield CustomsOffice(s"$GB$id", name, phoneNumber)
     }
 
   lazy val arbitraryOfficeOfDeparture: Arbitrary[CustomsOffice] =
@@ -168,6 +231,12 @@ trait ModelGenerators {
     for {
       values <- listWithMaxLength[T]()
     } yield SelectableList(values.distinctBy(_.value))
+  }
+
+  implicit def arbitraryRadioableList[T <: Radioable[T]](implicit arbitrary: Arbitrary[T]): Arbitrary[Seq[T]] = Arbitrary {
+    for {
+      values <- listWithMaxLength[T]()
+    } yield values.distinctBy(_.code)
   }
 
   lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {

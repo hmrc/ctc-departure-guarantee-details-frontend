@@ -17,21 +17,36 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import models.GuaranteeType.TIRGuarantee
-import models.{Index, UserAnswers}
+import models.GuaranteeType._
+import models.{GuaranteeType, Index, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{never, reset, verify, when}
 import pages.guarantee.GuaranteeTypePage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.GuaranteeTypesService
 import views.html.GuaranteeAddedTIRView
 
 import scala.concurrent.Future
 
 class GuaranteeAddedTIRControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
+  private lazy val mockService = mock[GuaranteeTypesService]
+
   private lazy val guaranteeAddedTIRRoute = routes.GuaranteeAddedTIRController.onPageLoad(lrn).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[GuaranteeTypesService]).toInstance(mockService))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockService)
+  }
 
   "GuaranteeAddedTIR Controller" - {
 
@@ -50,22 +65,50 @@ class GuaranteeAddedTIRControllerSpec extends SpecBase with AppWithDefaultMockFi
         view(lrn)(request, messages).toString
     }
 
-    "must redirect to check your answers" in {
-      setExistingUserAnswers(emptyUserAnswers)
+    "for a POST" - {
+      "when guarantee type found" - {
+        "must save guarantee type and redirect to task list" in {
+          val guaranteeType = GuaranteeType("B", "Guarantee for goods dispatched under TIR procedure")
 
-      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
+          setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, routes.GuaranteeAddedTIRController.onSubmit(lrn).url)
+          when(mockService.getGuaranteeType(any())(any())).thenReturn(Future.successful(Some(guaranteeType)))
+          when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
-      val result = route(app, request).value
+          val request = FakeRequest(POST, routes.GuaranteeAddedTIRController.onSubmit(lrn).url)
 
-      status(result) mustEqual SEE_OTHER
+          val result = route(app, request).value
 
-      redirectLocation(result).value mustEqual frontendAppConfig.taskListUrl(lrn)
+          status(result) mustEqual SEE_OTHER
 
-      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-      userAnswersCaptor.getValue.get(GuaranteeTypePage(Index(0))).get mustBe TIRGuarantee
+          redirectLocation(result).value mustEqual frontendAppConfig.taskListUrl(lrn)
+
+          verify(mockService).getGuaranteeType(eqTo("B"))(any())
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+          userAnswersCaptor.getValue.get(GuaranteeTypePage(Index(0))).get mustBe guaranteeType
+        }
+      }
+
+      "when guarantee type not found" - {
+        "must redirect to technical difficulties" in {
+          setExistingUserAnswers(emptyUserAnswers)
+
+          when(mockService.getGuaranteeType(any())(any())).thenReturn(Future.successful(None))
+          when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
+
+          val request = FakeRequest(POST, routes.GuaranteeAddedTIRController.onSubmit(lrn).url)
+
+          val result = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual frontendAppConfig.technicalDifficultiesUrl
+
+          verify(mockService).getGuaranteeType(eqTo("B"))(any())
+          verify(mockSessionRepository, never()).set(any())(any())
+        }
+      }
     }
   }
 }

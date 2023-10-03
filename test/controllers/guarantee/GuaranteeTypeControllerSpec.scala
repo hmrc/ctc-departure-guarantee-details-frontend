@@ -18,30 +18,44 @@ package controllers.guarantee
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
+import generators.Generators
 import models.{GuaranteeType, NormalMode}
 import navigation.GuaranteeNavigatorProvider
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.guarantee.GuaranteeTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.GuaranteeTypesService
 import views.html.guarantee.GuaranteeTypeView
 
 import scala.concurrent.Future
 
-class GuaranteeTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class GuaranteeTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider            = new EnumerableFormProvider()
-  private val form                    = formProvider[GuaranteeType]("guarantee.guaranteeType")
-  private val mode                    = NormalMode
-  private lazy val guaranteeTypeRoute = routes.GuaranteeTypeController.onPageLoad(lrn, mode, index).url
+  private val gts = arbitrary[Seq[GuaranteeType]].sample.value
+  private val gt1 = gts.head
+
+  private val formProvider                                     = new EnumerableFormProvider()
+  private val form                                             = formProvider[GuaranteeType]("guarantee.guaranteeType", gts)
+  private val mode                                             = NormalMode
+  private lazy val guaranteeTypeRoute                          = routes.GuaranteeTypeController.onPageLoad(lrn, mode, index).url
+  private val mockGuaranteeTypesService: GuaranteeTypesService = mock[GuaranteeTypesService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[GuaranteeNavigatorProvider]).toInstance(fakeGuaranteeNavigatorProvider))
+      .overrides(bind(classOf[GuaranteeTypesService]).toInstance(mockGuaranteeTypesService))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockGuaranteeTypesService)
+    when(mockGuaranteeTypesService.getGuaranteeTypes(any())(any())).thenReturn(Future.successful(gts))
+  }
 
   "GuaranteeType Controller" - {
 
@@ -59,26 +73,25 @@ class GuaranteeTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, GuaranteeType.values(userAnswers), mode, index)(request, messages).toString
+        view(form, lrn, gts, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.setValue(GuaranteeTypePage(index), GuaranteeType.values.head)
+      val userAnswers = emptyUserAnswers.setValue(GuaranteeTypePage(index), gt1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, guaranteeTypeRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> GuaranteeType.values.head.toString))
+      val filledForm = form.bind(Map("value" -> gt1.code))
 
       val view = injector.instanceOf[GuaranteeTypeView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, GuaranteeType.values(userAnswers), mode, index)(request, messages).toString
+        view(filledForm, lrn, gts, mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -88,7 +101,7 @@ class GuaranteeTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, guaranteeTypeRoute)
-        .withFormUrlEncodedBody(("value", GuaranteeType.values.head.toString))
+        .withFormUrlEncodedBody(("value", gt1.code))
 
       val result = route(app, request).value
 
@@ -98,8 +111,7 @@ class GuaranteeTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val userAnswers = emptyUserAnswers
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, guaranteeTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -111,7 +123,7 @@ class GuaranteeTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, GuaranteeType.values(userAnswers), mode, index)(request, messages).toString
+        view(boundForm, lrn, gts, mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -131,7 +143,7 @@ class GuaranteeTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, guaranteeTypeRoute)
-        .withFormUrlEncodedBody(("value", GuaranteeType.values.head.toString))
+        .withFormUrlEncodedBody(("value", gt1.code))
 
       val result = route(app, request).value
 

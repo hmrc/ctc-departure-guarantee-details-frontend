@@ -17,6 +17,7 @@
 package utils.cyaHelpers
 
 import base.SpecBase
+import config.Constants._
 import controllers.guarantee.routes
 import generators.Generators
 import models.GuaranteeType._
@@ -40,16 +41,17 @@ class GuaranteeDetailsCheckYourAnswersHelperSpec extends SpecBase with Generator
   "when user answers populated with a complete guarantee" - {
     "must return one list item" in {
       val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
+      val guaranteeType   = guaranteeTypeGen(CashDepositGuarantee).sample.value
       val userAnswers = emptyUserAnswers
         .setValue(DeclarationTypePage, declarationType)
-        .setValue(GuaranteeTypePage(Index(0)), CashDepositGuarantee)
+        .setValue(GuaranteeTypePage(Index(0)), guaranteeType)
         .setValue(OtherReferenceYesNoPage(Index(0)), false)
 
       val helper = new GuaranteeDetailsCheckYourAnswersHelper(userAnswers, NormalMode)
       helper.listItems mustBe Seq(
         Right(
           ListItem(
-            name = "(3) Individual guarantee in cash or an equivalent recognised by the customs authorities",
+            name = guaranteeType.asString,
             changeUrl = routes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, Index(0)).url,
             removeUrl = Some(routes.RemoveGuaranteeYesNoController.onPageLoad(userAnswers.lrn, Index(0)).url)
           )
@@ -61,32 +63,36 @@ class GuaranteeDetailsCheckYourAnswersHelperSpec extends SpecBase with Generator
   "when user answers populated with a complete guarantee and in progress guarantee" - {
     "must return two list items" in {
       val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
+      val guaranteeType3  = guaranteeTypeGen(CashDepositGuarantee).sample.value
+      val guaranteeType0  = guaranteeTypeGen(WaiverGuarantee).sample.value
+      val guaranteeTypeA  = guaranteeTypeGen(WaiverByAgreementGuarantee).sample.value
+
       val userAnswers = emptyUserAnswers
         .setValue(DeclarationTypePage, declarationType)
-        .setValue(GuaranteeTypePage(Index(0)), CashDepositGuarantee)
+        .setValue(GuaranteeTypePage(Index(0)), guaranteeType3)
         .setValue(OtherReferenceYesNoPage(Index(0)), false)
-        .setValue(GuaranteeTypePage(Index(1)), GuaranteeWaiver)
-        .setValue(GuaranteeTypePage(Index(2)), GuaranteeWaiverByAgreement)
+        .setValue(GuaranteeTypePage(Index(1)), guaranteeType0)
+        .setValue(GuaranteeTypePage(Index(2)), guaranteeTypeA)
 
       val helper = new GuaranteeDetailsCheckYourAnswersHelper(userAnswers, NormalMode)
       helper.listItems mustBe Seq(
         Right(
           ListItem(
-            name = "(3) Individual guarantee in cash or an equivalent recognised by the customs authorities",
+            name = guaranteeType3.asString,
             changeUrl = routes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, Index(0)).url,
             removeUrl = Some(routes.RemoveGuaranteeYesNoController.onPageLoad(userAnswers.lrn, Index(0)).url)
           )
         ),
         Left(
           ListItem(
-            name = "(0) Guarantee waiver",
+            name = guaranteeType0.asString,
             changeUrl = routes.ReferenceNumberController.onPageLoad(userAnswers.lrn, NormalMode, Index(1)).url,
             removeUrl = Some(routes.RemoveGuaranteeYesNoController.onPageLoad(userAnswers.lrn, Index(1)).url)
           )
         ),
         Right(
           ListItem(
-            name = "(A) Guarantee waiver by agreement",
+            name = guaranteeTypeA.asString,
             changeUrl = routes.GuaranteeTypeController.onPageLoad(userAnswers.lrn, CheckMode, Index(2)).url,
             removeUrl = Some(routes.RemoveGuaranteeYesNoController.onPageLoad(userAnswers.lrn, Index(2)).url)
           )

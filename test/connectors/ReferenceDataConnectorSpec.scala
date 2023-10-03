@@ -18,6 +18,7 @@ package connectors
 
 import base._
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
+import models.GuaranteeType
 import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
@@ -39,52 +40,147 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
 
-  private val currencyCodesResponseJson: String =
-    """
-      |{
-      |  "_links": {
-      |    "self": {
-      |      "href": "/customs-reference-data/lists/CurrencyCodes"
-      |    }
-      |  },
-      |  "meta": {
-      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-      |    "snapshotDate": "2023-01-01"
-      |  },
-      |  "id": "CurrencyCodes",
-      |  "data": [
-      | {
-      |   "currency":"GBP",
-      |   "description":"Sterling"
-      | },
-      | {
-      |   "currency":"CHF",
-      |   "description":"Swiss Franc"
-      | }
-      |]
-      |}
-      |""".stripMargin
-
   "Reference Data" - {
 
     "getCurrencyCodes" - {
+
+      val url = s"/$baseUrl/lists/CurrencyCodes"
+
+      val responseJson: String =
+        s"""
+          |{
+          |  "_links": {
+          |    "self": {
+          |      "href": "$url"
+          |    }
+          |  },
+          |  "meta": {
+          |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+          |    "snapshotDate": "2023-01-01"
+          |  },
+          |  "id": "CurrencyCodes",
+          |  "data": [
+          |    {
+          |      "currency": "GBP",
+          |      "description": "Sterling"
+          |    },
+          |    {
+          |      "currency": "CHF",
+          |      "description": "Swiss Franc"
+          |    }
+          |  ]
+          |}
+          |""".stripMargin
+
       "must return a successful future response with a sequence of currency codes" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/lists/CurrencyCodes"))
-            .willReturn(okJson(currencyCodesResponseJson))
+          get(urlEqualTo(url))
+            .willReturn(okJson(responseJson))
         )
 
-        val expectedResult =
-          Seq(
-            CurrencyCode("GBP", Some("Sterling")),
-            CurrencyCode("CHF", Some("Swiss Franc"))
-          )
+        val expectedResult = Seq(
+          CurrencyCode("GBP", Some("Sterling")),
+          CurrencyCode("CHF", Some("Swiss Franc"))
+        )
 
         connector.getCurrencyCodes().futureValue mustBe expectedResult
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/lists/CurrencyCodes", connector.getCurrencyCodes())
+        checkErrorResponse(url, connector.getCurrencyCodes())
+      }
+    }
+
+    "getGuaranteeTypes" - {
+
+      val url = s"/$baseUrl/lists/GuaranteeType"
+
+      val responseJson: String =
+        s"""
+          |{
+          |  "_links": {
+          |    "self": {
+          |      "href": "$url"
+          |    }
+          |  },
+          |  "meta": {
+          |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+          |    "snapshotDate": "2023-01-01"
+          |  },
+          |  "id": "GuaranteeType",
+          |  "data": [
+          |    {
+          |      "code": "0",
+          |      "description": "Description 0"
+          |    },
+          |    {
+          |      "code": "1",
+          |      "description": "Description 1"
+          |    }
+          |  ]
+          |}
+          |""".stripMargin
+
+      "must return a successful future response with a sequence of guarantee types" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(responseJson))
+        )
+
+        val expectedResult = Seq(
+          GuaranteeType("0", "Description 0"),
+          GuaranteeType("1", "Description 1")
+        )
+
+        connector.getGuaranteeTypes().futureValue mustBe expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getGuaranteeTypes())
+      }
+    }
+
+    "getGuaranteeType" - {
+
+      val url = s"/$baseUrl/filtered-lists/GuaranteeType?data.code=0"
+
+      val responseJson: String =
+        s"""
+          |{
+          |  "_links": {
+          |    "self": {
+          |      "href": "$url"
+          |    }
+          |  },
+          |  "meta": {
+          |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+          |    "snapshotDate": "2023-01-01"
+          |  },
+          |  "id": "GuaranteeType",
+          |  "data": [
+          |    {
+          |      "code": "0",
+          |      "description": "Description 0"
+          |    }
+          |  ]
+          |}
+          |""".stripMargin
+
+      "must return a successful future response with a sequence of guarantee types" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(responseJson))
+        )
+
+        val expectedResult = Seq(
+          GuaranteeType("0", "Description 0")
+        )
+
+        connector.getGuaranteeType("0").futureValue mustBe expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getGuaranteeType("0"))
       }
     }
   }

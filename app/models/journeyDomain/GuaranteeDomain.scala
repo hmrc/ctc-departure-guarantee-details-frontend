@@ -42,23 +42,24 @@ object GuaranteeDomain {
   implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[GuaranteeDomain] =
     DeclarationTypePage.reader.flatMap {
       case TIR =>
-        GuaranteeTypePage(index).mandatoryReader(_ == TIRGuarantee).map(GuaranteeOfTypesAB(_)(index))
+        GuaranteeTypePage(index).mandatoryReader(_.code == TIRGuarantee).map(GuaranteeOfTypesAB(_)(index))
       case _ =>
         GuaranteeTypePage(index).reader.flatMap {
           guaranteeType =>
-            guaranteeType match {
-              case GuaranteeWaiverByAgreement =>
+            guaranteeType.code match {
+              case WaiverByAgreementGuarantee =>
                 GuaranteeOfTypesAB.userAnswersReader(index, guaranteeType)
-              case GuaranteeWaiver | ComprehensiveGuarantee | IndividualGuarantee | FlatRateVoucher | IndividualGuaranteeMultiple =>
+              case WaiverGuarantee | ComprehensiveGuarantee | IndividualInFormOfUndertakingGuarantee | IndividualInFormOfVouchersGuarantee |
+                  IndividualForMultipleUsagesGuarantee =>
                 GuaranteeOfTypes01249.userAnswersReader(index, guaranteeType)
-              case GuaranteeWaiverSecured =>
+              case WaiverImportExportGuarantee =>
                 GuaranteeOfType5.userAnswersReader(index, guaranteeType)
-              case GuaranteeNotRequiredExemptPublicBody =>
+              case NotRequiredByPublicBodiesGuarantee =>
                 GuaranteeOfType8.userAnswersReader(index, guaranteeType)
               case CashDepositGuarantee =>
                 GuaranteeOfType3.userAnswersReader(index, guaranteeType)
-              case TIRGuarantee =>
-                UserAnswersReader.fail[GuaranteeDomain](GuaranteeTypePage(index))
+              case code =>
+                UserAnswersReader.fail[GuaranteeDomain](GuaranteeTypePage(index), Some(s"Guarantee type of $code not valid"))
             }
         }
     }
@@ -102,7 +103,7 @@ object GuaranteeDomain {
     liability: Option[LiabilityDomain],
     accessCode: String
   )(override val index: Index)
-      extends GuaranteeDomain
+      extends GuaranteeOfTypes01249
 
   object TransitionGuaranteeOfTypes01249 {
 
@@ -121,7 +122,7 @@ object GuaranteeDomain {
     liability: LiabilityDomain,
     accessCode: String
   )(override val index: Index)
-      extends GuaranteeDomain
+      extends GuaranteeOfTypes01249
 
   object PostTransitionGuaranteeOfTypes01249 {
 
