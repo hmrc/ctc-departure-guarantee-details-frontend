@@ -34,7 +34,7 @@ class DependentTasksActionImpl @Inject() (implicit val executionContext: Executi
       request.userAnswers.tasks
         .get(_)
         .exists(
-          result => result.isCompleted | result.isUnavailable
+          result => result.isCompleted
         )
     )
     incompleteTasks match {
