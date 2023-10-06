@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers
 
-import config.Constants._
+import config.Constants.GuaranteeType._
 import config.FrontendAppConfig
 import models.GuaranteeType._
 import models.reference.CurrencyCode

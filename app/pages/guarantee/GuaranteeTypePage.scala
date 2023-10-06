@@ -16,7 +16,7 @@
 
 package pages.guarantee
 
-import config.Constants._
+import config.Constants.DeclarationType._
 import controllers.guarantee.routes
 import models.{GuaranteeType, Index, Mode, UserAnswers}
 import pages.QuestionPage

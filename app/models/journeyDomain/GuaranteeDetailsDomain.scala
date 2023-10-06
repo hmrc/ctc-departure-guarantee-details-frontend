@@ -17,7 +17,7 @@
 package models.journeyDomain
 
 import cats.implicits._
-import config.Constants._
+import config.Constants.DeclarationType._
 import config.PhaseConfig
 import controllers.routes
 import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}

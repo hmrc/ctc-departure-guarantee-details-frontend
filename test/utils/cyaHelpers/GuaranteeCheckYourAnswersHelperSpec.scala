@@ -17,7 +17,8 @@
 package utils.cyaHelpers
 
 import base.SpecBase
-import config.Constants.{TIR, TIRGuarantee}
+import config.Constants.DeclarationType.TIR
+import config.Constants.GuaranteeType.TIRGuarantee
 import controllers.guarantee.routes
 import forms.Constants.accessCodeLength
 import generators.Generators

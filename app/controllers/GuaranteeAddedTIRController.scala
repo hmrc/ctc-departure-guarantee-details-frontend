@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.Constants.TIRGuarantee
+import config.Constants.GuaranteeType.TIRGuarantee
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions.Actions
 import models.GuaranteeType._

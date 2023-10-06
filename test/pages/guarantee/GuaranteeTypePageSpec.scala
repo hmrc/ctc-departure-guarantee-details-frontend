@@ -16,7 +16,7 @@
 
 package pages.guarantee
 
-import config.Constants.TIR
+import config.Constants.DeclarationType.TIR
 import models.reference.CurrencyCode
 import models.{GuaranteeType, Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary

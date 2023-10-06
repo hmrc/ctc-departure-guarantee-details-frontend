@@ -17,7 +17,7 @@
 package utils.cyaHelpers
 
 import base.SpecBase
-import config.Constants._
+import config.Constants.GuaranteeType._
 import controllers.guarantee.routes
 import generators.Generators
 import models.GuaranteeType._

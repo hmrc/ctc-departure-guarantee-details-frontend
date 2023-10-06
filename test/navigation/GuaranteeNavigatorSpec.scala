@@ -17,7 +17,7 @@
 package navigation
 
 import base.SpecBase
-import config.Constants.WaiverByAgreementGuarantee
+import config.Constants.GuaranteeType.WaiverByAgreementGuarantee
 import generators.Generators
 import models.GuaranteeType._
 import models._
