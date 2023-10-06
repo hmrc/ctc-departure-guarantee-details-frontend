@@ -17,7 +17,7 @@
 package controllers.guarantee
 
 import com.google.inject.Inject
-import config.Constants._
+import config.Constants.DeclarationType._
 import config.FrontendAppConfig
 import controllers.actions.{Actions, SpecificDataRequiredActionProvider}
 import models.{Index, LocalReferenceNumber}

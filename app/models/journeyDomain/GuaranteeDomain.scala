@@ -17,7 +17,8 @@
 package models.journeyDomain
 
 import cats.implicits._
-import config.Constants._
+import config.Constants.DeclarationType._
+import config.Constants.GuaranteeType._
 import config.PhaseConfig
 import models.GuaranteeType._
 import models.domain._

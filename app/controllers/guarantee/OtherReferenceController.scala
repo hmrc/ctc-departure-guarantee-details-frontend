@@ -16,7 +16,7 @@
 
 package controllers.guarantee
 
-import config.Constants._
+import config.Constants.GuaranteeType._
 import config.PhaseConfig
 import controllers.actions.{Actions, SpecificDataRequiredActionProvider}
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}

@@ -17,7 +17,7 @@
 package navigation
 
 import base.SpecBase
-import config.Constants.TIR
+import config.Constants.DeclarationType.TIR
 import controllers.routes
 import generators.Generators
 import models._

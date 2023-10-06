@@ -17,12 +17,13 @@
 package models.journeyDomain
 
 import base.SpecBase
-import config.Constants._
+import config.Constants.DeclarationType._
+import config.Constants.GuaranteeType._
 import generators.Generators
 import models.GuaranteeType._
-import models.{GuaranteeType, Index}
 import models.domain._
 import models.journeyDomain.GuaranteeDomain.GuaranteeOfTypesAB
+import models.{GuaranteeType, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.external.DeclarationTypePage
 import pages.guarantee.GuaranteeTypePage

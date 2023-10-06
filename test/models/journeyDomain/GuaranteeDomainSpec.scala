@@ -17,14 +17,15 @@
 package models.journeyDomain
 
 import base.SpecBase
-import config.Constants._
+import config.Constants.DeclarationType._
+import config.Constants.GuaranteeType._
 import config.PhaseConfig
 import generators.Generators
 import models.GuaranteeType._
-import models.{GuaranteeType, Phase}
 import models.domain.{EitherType, UserAnswersReader}
 import models.journeyDomain.GuaranteeDomain._
 import models.reference.CurrencyCode
+import models.{GuaranteeType, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen

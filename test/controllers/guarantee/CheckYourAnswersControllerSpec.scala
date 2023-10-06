@@ -17,7 +17,7 @@
 package controllers.guarantee
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.Constants.TIR
+import config.Constants.DeclarationType.TIR
 import generators.Generators
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

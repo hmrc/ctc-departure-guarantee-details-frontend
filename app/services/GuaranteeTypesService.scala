@@ -16,7 +16,8 @@
 
 package services
 
-import config.Constants._
+import config.Constants.CountryCode._
+import config.Constants.GuaranteeType._
 import connectors.ReferenceDataConnector
 import models.{GuaranteeType, UserAnswers}
 import pages.external.OfficeOfDeparturePage
