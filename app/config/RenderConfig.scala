@@ -19,7 +19,7 @@ package config
 import com.google.inject.{Inject, Singleton}
 import play.api.Configuration
 import play.api.mvc.RequestHeader
-import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
+import uk.gov.hmrc.http.StringContextOps
 
 @Singleton
 class RenderConfig @Inject() (configuration: Configuration) {
@@ -29,7 +29,7 @@ class RenderConfig @Inject() (configuration: Configuration) {
   private val host: String                         = configuration.get[String]("host")
 
   def feedbackUrl(implicit request: RequestHeader): String =
-    s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
+    s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${url"${host + request.uri}"}"
 
   val timeoutSeconds: Int   = configuration.get[Int]("session.timeoutSeconds")
   val countdownSeconds: Int = configuration.get[Int]("session.countdownSeconds")
