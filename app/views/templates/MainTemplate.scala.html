@@ -15,6 +15,7 @@
  *@
 
 @import config.{RenderConfig, FrontendAppConfig}
+@import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.timeoutdialog.TimeoutDialog
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.footer.{Footer, FooterItem, Meta}
@@ -34,7 +35,7 @@
     javascripts: Javascripts,
     govukBackLink: GovukBackLink,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
-)
+)(implicit cfConfig: ContactFrontendConfig)
 
 @(
     title: String,
@@ -71,7 +72,7 @@
         signOutUrl = if (canSignOut) Some(appConfig.signOutUrl(lrn)) else None
     ),
     banners = Banners(
-        phaseBanner = Some(standardBetaBanner(url = renderConfig.feedbackUrl)),
+        phaseBanner = Some(standardBetaBanner()),
         userResearchBanner = if (renderConfig.showUserResearchBanner) Some(UserResearchBanner(url = renderConfig.userResearchUrl)) else None
     ),
     templateOverrides = TemplateOverrides(
