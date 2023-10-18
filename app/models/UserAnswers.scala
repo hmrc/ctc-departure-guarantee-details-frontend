@@ -60,7 +60,6 @@ final case class UserAnswers(
 
   def updateTask(section: String, status: TaskStatus): UserAnswers = {
     val tasks       = this.tasks.updated(section, status)
-    val userAnswers = this.copy(tasks = tasks)
     this.copy(tasks = tasks)
   }
 }
