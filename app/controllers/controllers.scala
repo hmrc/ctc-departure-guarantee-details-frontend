@@ -16,8 +16,8 @@
 
 import cats.data.ReaderT
 import config.PhaseConfig
-import models.TaskStatus.{Completed, InProgress}
-import models.UserAnswers
+import models.TaskStatus._
+import models.{SubmissionState, TaskStatus, UserAnswers}
 import models.domain.UserAnswersReader
 import models.journeyDomain.GuaranteeDetailsDomain
 import models.journeyDomain.OpsError.WriterError
@@ -79,9 +79,13 @@ package object controllers {
         case (page, userAnswers) =>
           page.path.path.headOption.map(_.toJsonString) match {
             case Some(section) =>
-              val status = UserAnswersReader[GuaranteeDetailsDomain].run(userAnswers) match {
-                case Left(_)  => InProgress
-                case Right(_) => Completed
+              val status: TaskStatus = UserAnswersReader[GuaranteeDetailsDomain].run(userAnswers) match {
+                case Left(_) => InProgress
+                case Right(_) =>
+                  userAnswers.status match {
+                    case SubmissionState.Amendment => Amended
+                    case _                         => Completed
+                  }
               }
               Right((page, userAnswers.updateTask(section, status)))
             case None =>
