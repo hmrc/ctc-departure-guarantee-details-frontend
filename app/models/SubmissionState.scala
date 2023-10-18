@@ -78,4 +78,9 @@ object SubmissionState {
       override def unbind(key: String, value: SubmissionState): String = value.asString
     }
 
+  implicit class RichSubmissionState(value: SubmissionState) {
+
+    def showErrorContent: Boolean = value == RejectedPendingChanges
+  }
+
 }
