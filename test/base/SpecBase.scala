@@ -17,7 +17,7 @@
 package base
 
 import config.{FrontendAppConfig, PhaseConfig}
-import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
+import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, SubmissionState, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -46,14 +46,15 @@ trait SpecBase
     with IntegrationPatience
     with MockitoSugar {
 
-  val eoriNumber: EoriNumber    = EoriNumber("GB1234567891234")
-  val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123").get
+  val eoriNumber: EoriNumber           = EoriNumber("GB1234567891234")
+  val lrn: LocalReferenceNumber        = LocalReferenceNumber("ABCD1234567890123").get
+  val submissionState: SubmissionState = SubmissionState.NotSubmitted
 
   val index: Index = Index(0)
 
   def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
-  val emptyUserAnswers: UserAnswers = UserAnswers(lrn, eoriNumber, Json.obj())
+  val emptyUserAnswers: UserAnswers = UserAnswers(lrn, eoriNumber, SubmissionState.NotSubmitted, Json.obj())
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

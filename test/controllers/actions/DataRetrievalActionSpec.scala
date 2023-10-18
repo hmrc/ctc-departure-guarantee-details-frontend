@@ -61,7 +61,7 @@ class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       "when there are existing answers for this LRN" in {
 
-        when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(Some(UserAnswers(lrn, eoriNumber)))
+        when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(Some(UserAnswers(lrn, eoriNumber, submissionState)))
 
         harness(lrn) {
           _.userAnswers mustBe defined
