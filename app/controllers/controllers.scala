@@ -80,12 +80,8 @@ package object controllers {
           page.path.path.headOption.map(_.toJsonString) match {
             case Some(section) =>
               val status: TaskStatus = UserAnswersReader[GuaranteeDetailsDomain].run(userAnswers) match {
-                case Left(_) => InProgress
-                case Right(_) =>
-                  userAnswers.status match {
-                    case SubmissionState.Amendment => Amended
-                    case _                         => Completed
-                  }
+                case Left(_)  => InProgress
+                case Right(_) => userAnswers.status.taskStatus
               }
               Right((page, userAnswers.updateTask(section, status)))
             case None =>
