@@ -25,7 +25,9 @@ sealed trait SubmissionState {
 
   def taskStatus: TaskStatus = this match {
     case SubmissionState.Amendment => Amended
-    case _                         => Completed
+    case SubmissionState.GuaranteeAmendment => Amended
+    case SubmissionState.RejectedPendingChanges => Amended
+    case _ => Completed
   }
 }
 
