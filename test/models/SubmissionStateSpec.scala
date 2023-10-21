@@ -43,25 +43,23 @@ class SubmissionStateSpec extends AnyFreeSpec with Generators with Matchers with
       }
     }
 
-
-
-      "when status is non amendment" in {
-        forAll(
-          arbitrary[SubmissionState]
-        ) {
-          state =>
-            state.taskStatus mustBe TaskStatus.Completed
-        }
-      }
-
-      "when status is amendment" in {
-        forAll(
-          arbitrary[SubmissionState](arbitraryAmendedmentSubmissionState)
-        ) {
-          state =>
-            state.taskStatus mustBe TaskStatus.Amended
-        }
+    "when status is non amendment" in {
+      forAll(
+        arbitrary[SubmissionState]
+      ) {
+        state =>
+          state.taskStatus mustBe TaskStatus.Completed
       }
     }
+
+    "when status is amendment" in {
+      forAll(
+        arbitrary[SubmissionState](arbitraryAmendedmentSubmissionState)
+      ) {
+        state =>
+          state.taskStatus mustBe TaskStatus.Amended
+      }
+    }
+  }
 
 }
