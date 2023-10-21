@@ -24,10 +24,10 @@ sealed trait SubmissionState {
   val asString: String
 
   def taskStatus: TaskStatus = this match {
-    case SubmissionState.Amendment => Amended
-    case SubmissionState.GuaranteeAmendment => Amended
+    case SubmissionState.Amendment              => Amended
+    case SubmissionState.GuaranteeAmendment     => Amended
     case SubmissionState.RejectedPendingChanges => Amended
-    case _ => Completed
+    case _                                      => Completed
   }
 }
 
