@@ -20,7 +20,7 @@ import config.PhaseConfig
 import models.domain.UserAnswersReader
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.{GuaranteeDetailsDomain, GuaranteeDomain}
-import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
+import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, SubmissionState, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
@@ -30,9 +30,10 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   implicit def arbitraryUserAnswers(implicit phaseConfig: PhaseConfig): Arbitrary[UserAnswers] =
     Arbitrary {
       for {
-        lrn        <- arbitrary[LocalReferenceNumber]
-        eoriNumber <- arbitrary[EoriNumber]
-        answers    <- buildUserAnswers[GuaranteeDetailsDomain](UserAnswers(lrn, eoriNumber))
+        lrn             <- arbitrary[LocalReferenceNumber]
+        eoriNumber      <- arbitrary[EoriNumber]
+        submissionState <- arbitrary[SubmissionState]
+        answers         <- buildUserAnswers[GuaranteeDetailsDomain](UserAnswers(lrn, eoriNumber, submissionState))
       } yield answers
     }
 
