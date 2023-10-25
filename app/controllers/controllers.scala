@@ -17,11 +17,11 @@
 import cats.data.ReaderT
 import config.PhaseConfig
 import models.TaskStatus._
-import models.{SubmissionState, TaskStatus, UserAnswers}
 import models.domain.UserAnswersReader
 import models.journeyDomain.GuaranteeDetailsDomain
 import models.journeyDomain.OpsError.WriterError
 import models.requests.MandatoryDataRequest
+import models.{TaskStatus, UserAnswers}
 import navigation.UserAnswersNavigator
 import pages.QuestionPage
 import play.api.libs.json.Format
