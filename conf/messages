@@ -34,7 +34,7 @@ addGuaranteeYesNo.title = Do you want to add a guarantee?
 addGuaranteeYesNo.heading = Do you want to add a guarantee?
 addGuaranteeYesNo.error.required = Select yes if you want to add a guarantee
 
-checkYourAnswers.title = Check your answers
+checkYourAnswers.title = Check your answers - Guarantee details
 checkYourAnswers.heading = Check your answers
 
 # Guarantee
