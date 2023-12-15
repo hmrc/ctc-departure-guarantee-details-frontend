@@ -39,8 +39,9 @@ class GuaranteeTypesServiceSpec extends SpecBase with BeforeAndAfterEach with Ge
   private val guaranteeType0 = GuaranteeType("0", "Guarantee waiver")
   private val guaranteeType1 = GuaranteeType("1", "Comprehensive guarantee")
   private val guaranteeType9 = GuaranteeType("9", "Individual guarantee with multiple usage (for CTC only)")
-  private val guaranteeTypeR = GuaranteeType("R", "Guarantee not required for goods carried on the Rhine...")
+  private val guaranteeTypeB = GuaranteeType("B", "Guarantee for goods dispatched under TIR procedure")
   private val guaranteeTypeJ = GuaranteeType("J", "Guarantee not required for the journey between...")
+  private val guaranteeTypeR = GuaranteeType("R", "Guarantee not required for goods carried on the Rhine...")
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -48,7 +49,7 @@ class GuaranteeTypesServiceSpec extends SpecBase with BeforeAndAfterEach with Ge
   }
 
   "getGuaranteeTypes" - {
-    val guaranteeTypes = Seq(guaranteeTypeR, guaranteeTypeJ, guaranteeType9, guaranteeType1, guaranteeType0)
+    val guaranteeTypes = Seq(guaranteeTypeR, guaranteeTypeJ, guaranteeTypeB, guaranteeType9, guaranteeType1, guaranteeType0)
 
     "when office of departure is in GB" - {
       "must return filtered and sorted guarantee types" in {

@@ -39,6 +39,7 @@ class GuaranteeTypesService @Inject() (
       .filterNot(_.code == Article102BGuarantee)
       .filterNot(_.code == Article898AGuarantee)
       .filterNot(_.code == IndividualForMultipleUsagesGuarantee && isXiOfficeOfDeparture)
+      .filterNot(_.code == TIRGuarantee)
   }
 
   def getGuaranteeTypes(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Seq[GuaranteeType]] =
