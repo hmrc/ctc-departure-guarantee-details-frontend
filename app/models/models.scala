@@ -16,6 +16,7 @@
 
 import cats.implicits._
 import models.domain.UserAnswersReader
+import pages.Page
 import play.api.libs.json._
 
 import scala.annotation.nowarn
@@ -46,12 +47,18 @@ package object models {
 
     def nonEmpty: Boolean = !isEmpty
 
-    def traverse[T](implicit userAnswersReader: Index => UserAnswersReader[T]): UserAnswersReader[Seq[T]] =
+    def traverse[T](pages: Seq[Page])(implicit userAnswersReader: (Index, Seq[Page]) => UserAnswersReader[T]): UserAnswersReader[Seq[T]] =
       arr.zipWithIndex
-        .traverse[UserAnswersReader, T] {
-          case (_, index) => userAnswersReader(index)
-        }
-        .map(_.toSeq)
+        .foldLeft[UserAnswersReader[Seq[T]]](UserAnswersReader[Seq[T]](Nil, pages))({
+          case (acc, (_, index)) =>
+            acc.flatMap {
+              case (ts, pages) =>
+                userAnswersReader(index, pages).map {
+                  case (t, pages) =>
+                    (ts :+ t, pages)
+                }
+            }
+        })
   }
 
   implicit class RichOptionalJsArray(arr: Option[JsArray]) {

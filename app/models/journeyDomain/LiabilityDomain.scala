@@ -20,6 +20,7 @@ import cats.implicits._
 import models.Index
 import models.domain.{GettableAsReaderOps, UserAnswersReader}
 import models.reference.CurrencyCode
+import pages.Page
 import pages.guarantee.{CurrencyPage, LiabilityAmountPage}
 
 case class LiabilityDomain(
@@ -29,8 +30,12 @@ case class LiabilityDomain(
 
 object LiabilityDomain {
 
-  def userAnswersReader(index: Index): UserAnswersReader[LiabilityDomain] = (
-    CurrencyPage(index).reader,
-    LiabilityAmountPage(index).reader
-  ).tupled.map((LiabilityDomain.apply _).tupled)
+  def userAnswersReader(pages: Seq[Page], index: Index): UserAnswersReader[LiabilityDomain] =
+    CurrencyPage(index).reader(pages).flatMap {
+      case (currencyCode, pages) =>
+        LiabilityAmountPage(index).reader(pages).map {
+          case (liabilityAmount, pages) =>
+            (LiabilityDomain(currencyCode, liabilityAmount), pages)
+        }
+    }
 }

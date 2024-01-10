@@ -40,12 +40,18 @@ case class GuaranteeDetailsDomain(
 object GuaranteeDetailsDomain {
 
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[GuaranteeDetailsDomain] =
-    GuaranteeDetailsSection.arrayReader
+    GuaranteeDetailsSection
+      .arrayReader(Nil)
       .flatMap {
-        case x if x.isEmpty =>
-          UserAnswersReader[GuaranteeDomain](GuaranteeDomain.userAnswersReader(Index(0))).map(Seq(_))
-        case x =>
-          x.traverse[GuaranteeDomain](GuaranteeDomain.userAnswersReader)
+        case (x, pages) if x.isEmpty =>
+          UserAnswersReader[GuaranteeDomain](GuaranteeDomain.userAnswersReader(Index(0), pages)).map {
+            case (guarantee, pages) =>
+              (GuaranteeDetailsDomain(Seq(guarantee)), pages)
+          }
+        case (x, pages) =>
+          x.traverse[GuaranteeDomain](pages)(GuaranteeDomain.userAnswersReader).map {
+            case (guarantees, pages) =>
+              (GuaranteeDetailsDomain(guarantees), pages)
+          }
       }
-      .map(GuaranteeDetailsDomain(_))
 }

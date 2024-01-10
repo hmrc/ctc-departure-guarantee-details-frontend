@@ -94,17 +94,17 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
   )(implicit userAnswersReader: UserAnswersReader[A]): Option[SummaryListRow] =
     userAnswersReader
       .run(userAnswers)
-      .map(
-        x =>
+      .map {
+        case (x, _) =>
           buildSimpleRow(
             prefix = prefix,
             label = messages(s"$prefix.label", args: _*),
             answer = formatAnswer(x),
             id = id,
-            call = Some(UserAnswersNavigator.nextPage[A](userAnswers, mode, AccessingJourney)),
+            call = Some(UserAnswersNavigator.nextPage[A](userAnswers, None, mode, AccessingJourney)),
             args = args: _*
           )
-      )
+      }
       .toOption
 
   protected def buildListItems(
@@ -136,7 +136,7 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
               }
               .map(Left(_))
         }
-      case Right(journeyDomainModel) =>
+      case Right((journeyDomainModel, _)) =>
         journeyDomainModel.routeIfCompleted(userAnswers, mode, AccessingJourney).map {
           changeRoute =>
             Right(

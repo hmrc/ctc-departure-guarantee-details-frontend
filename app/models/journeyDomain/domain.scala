@@ -19,27 +19,30 @@ package models
 import cats.data.ReaderT
 import cats.implicits._
 import models.journeyDomain.OpsError.ReaderError
+import pages.Page
 import play.api.libs.json.{JsArray, Reads}
 import queries.Gettable
 
 package object domain {
 
+  private type Pages        = Seq[Page]
+  type ReaderSuccess[A]     = (A, Pages) // TODO - create case class ReaderSuccess
   type EitherType[A]        = Either[ReaderError, A]
-  type UserAnswersReader[A] = ReaderT[EitherType, UserAnswers, A]
+  type UserAnswersReader[A] = ReaderT[EitherType, UserAnswers, ReaderSuccess[A]]
 
   object UserAnswersReader {
     def apply[A](implicit ev: UserAnswersReader[A]): UserAnswersReader[A] = ev
 
-    def apply[A](fn: UserAnswers => EitherType[A]): UserAnswersReader[A] =
-      ReaderT[EitherType, UserAnswers, A](fn)
+    def apply[A](fn: UserAnswers => EitherType[ReaderSuccess[A]]): UserAnswersReader[A] =
+      ReaderT[EitherType, UserAnswers, ReaderSuccess[A]](fn)
 
-    def apply[A](a: A): UserAnswersReader[A] = {
-      val fn: UserAnswers => EitherType[A] = _ => Right(a)
+    def apply[A](a: A, pages: Pages): UserAnswersReader[A] = {
+      val fn: UserAnswers => EitherType[ReaderSuccess[A]] = _ => Right((a, pages))
       apply(fn)
     }
 
-    def fail[A](page: Gettable[_], message: Option[String] = None): UserAnswersReader[A] = {
-      val fn: UserAnswers => EitherType[A] = _ => Left(ReaderError(page, message))
+    def fail[A](page: Gettable[_], pages: Pages, message: Option[String] = None): UserAnswersReader[A] = {
+      val fn: UserAnswers => EitherType[ReaderSuccess[A]] = _ => Left(ReaderError(page, pages :+ page, message))
       apply(fn)
     }
   }
@@ -53,14 +56,14 @@ package object domain {
       * `next` will not be run
       */
 
-    def filterMandatoryDependent[B](predicate: A => Boolean)(next: => UserAnswersReader[B]): UserAnswersReader[B] =
-      a.reader(s"Reader for ${a.path} failed before reaching predicate")
+    def filterMandatoryDependent[B](pages: Pages)(predicate: A => Boolean)(next: => UserAnswersReader[B]): UserAnswersReader[B] =
+      a.reader(pages, s"Reader for ${a.path} failed before reaching predicate")
         .flatMap {
-          x =>
+          case (x, pages) =>
             if (predicate(x)) {
               next
             } else {
-              UserAnswersReader.fail[B](a, Some(s"Mandatory predicate failed for ${a.path}"))
+              UserAnswersReader.fail[B](a, pages :+ a, Some(s"Mandatory predicate failed for ${a.path}"))
             }
         }
 
@@ -70,14 +73,17 @@ package object domain {
       * will return None. If the result of UserAnswerReader[A] is not defined then the overall reader will fail and
       * `next` will not be run
       */
-    def filterOptionalDependent[B](predicate: A => Boolean)(next: => UserAnswersReader[B]): UserAnswersReader[Option[B]] =
-      a.reader(s"Reader for ${a.path} failed before reaching predicate")
+    def filterOptionalDependent[B](pages: Pages)(predicate: A => Boolean)(next: => UserAnswersReader[B]): UserAnswersReader[Option[B]] =
+      a.reader(pages, s"Reader for ${a.path} failed before reaching predicate")
         .flatMap {
-          x =>
+          case (x, pages) =>
             if (predicate(x)) {
-              next.map(Option(_))
+              next.map {
+                case (x, pages) =>
+                  (Some(x), pages)
+              }
             } else {
-              none[B].pure[UserAnswersReader]
+              UserAnswersReader(None, pages :+ a)
             }
         }
   }
@@ -89,47 +95,50 @@ package object domain {
       * and will fail if it is not defined
       */
 
-    def reader(implicit reads: Reads[A]): UserAnswersReader[A] = reader(None)
+    def reader(pages: Pages)(implicit reads: Reads[A]): UserAnswersReader[A] = reader(pages, None)
 
-    def reader(message: String)(implicit reads: Reads[A]): UserAnswersReader[A] = reader(Some(message))
+    def reader(pages: Pages, message: String)(implicit reads: Reads[A]): UserAnswersReader[A] = reader(pages, Some(message))
 
-    private def reader(message: Option[String])(implicit reads: Reads[A]): UserAnswersReader[A] = {
-      val fn: UserAnswers => EitherType[A] = _.get(a) match {
-        case Some(value) => Right(value)
-        case None        => Left(ReaderError(a, message))
+    private def reader(pages: Pages, message: Option[String])(implicit reads: Reads[A]): UserAnswersReader[A] = {
+      val fn: UserAnswers => EitherType[ReaderSuccess[A]] = _.get(a) match {
+        case Some(value) => Right((value, pages :+ a))
+        case None        => Left(ReaderError(a, pages :+ a, message))
       }
       UserAnswersReader(fn)
     }
 
-    def mandatoryReader(predicate: A => Boolean)(implicit reads: Reads[A]): UserAnswersReader[A] = {
-      val fn: UserAnswers => EitherType[A] = _.get(a) match {
-        case Some(value) if predicate(value) => Right(value)
-        case _                               => Left(ReaderError(a))
+    def mandatoryReader(pages: Pages)(predicate: A => Boolean)(implicit reads: Reads[A]): UserAnswersReader[A] = {
+      val fn: UserAnswers => EitherType[ReaderSuccess[A]] = _.get(a) match {
+        case Some(value) if predicate(value) => Right((value, pages :+ a))
+        case _                               => Left(ReaderError(a, pages :+ a))
       }
       UserAnswersReader(fn)
     }
 
-    def optionalReader(implicit reads: Reads[A]): UserAnswersReader[Option[A]] = {
-      val fn: UserAnswers => EitherType[Option[A]] = ua => Right(ua.get(a))
+    def optionalReader(pages: Pages)(implicit reads: Reads[A]): UserAnswersReader[Option[A]] = {
+      val fn: UserAnswers => EitherType[ReaderSuccess[Option[A]]] = ua => Right((ua.get(a), pages :+ a))
       UserAnswersReader(fn)
     }
   }
 
   implicit class JsArrayGettableAsReaderOps(jsArray: Gettable[JsArray]) {
 
-    def arrayReader(implicit reads: Reads[JsArray]): UserAnswersReader[JsArray] = {
-      val fn: UserAnswers => EitherType[JsArray] = ua => Right(ua.get(jsArray).getOrElse(JsArray()))
+    def arrayReader(pages: Pages)(implicit reads: Reads[JsArray]): UserAnswersReader[JsArray] = {
+      val fn: UserAnswers => EitherType[ReaderSuccess[JsArray]] =
+        ua => Right((ua.get(jsArray).getOrElse(JsArray()), pages :+ jsArray))
+
       UserAnswersReader(fn)
     }
 
-    def fieldReader[T](page: Index => Gettable[T])(implicit rds: Reads[T]): UserAnswersReader[Seq[T]] = {
-      val fn: UserAnswers => EitherType[Seq[T]] = ua => {
+    def fieldReader[T](pages: Pages)(page: Index => Gettable[T])(implicit rds: Reads[T]): UserAnswersReader[Seq[T]] = {
+      val fn: UserAnswers => EitherType[ReaderSuccess[Seq[T]]] = ua => {
         Right {
-          ua.get(jsArray).getOrElse(JsArray()).value.indices.foldLeft[Seq[T]](Nil) {
-            (acc, i) =>
-              ua.get(page(Index(i))) match {
-                case Some(value) => acc :+ value
-                case None        => acc
+          ua.get(jsArray).getOrElse(JsArray()).value.indices.foldLeft[ReaderSuccess[Seq[T]]]((Nil, pages)) {
+            case ((ts, pages), i) =>
+              val gettable = page(Index(i))
+              ua.get(gettable) match {
+                case Some(t) => (ts :+ t, pages :+ gettable)
+                case None    => (ts, pages :+ gettable)
               }
           }
         }

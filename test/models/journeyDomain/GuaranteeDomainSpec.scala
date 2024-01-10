@@ -22,7 +22,7 @@ import config.Constants.GuaranteeType._
 import config.PhaseConfig
 import generators.Generators
 import models.GuaranteeType._
-import models.domain.{EitherType, UserAnswersReader}
+import models.domain.UserAnswersReader
 import models.journeyDomain.GuaranteeDomain._
 import models.reference.CurrencyCode
 import models.{GuaranteeType, Phase}
@@ -77,11 +77,11 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             accessCode = accessCode
           )(index)
 
-          val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+          val result = UserAnswersReader[GuaranteeDomain](
             GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
           ).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value._1 mustBe expectedResult
         }
 
         "and post transition" in {
@@ -113,11 +113,11 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             accessCode = accessCode
           )(index)
 
-          val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+          val result = UserAnswersReader[GuaranteeDomain](
             GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
           ).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value._1 mustBe expectedResult
         }
       }
 
@@ -146,11 +146,11 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             )
           )(index)
 
-          val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+          val result = UserAnswersReader[GuaranteeDomain](
             GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
           ).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value._1 mustBe expectedResult
         }
 
         "when transition" - {
@@ -170,11 +170,11 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
               liability = None
             )(index)
 
-            val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+            val result = UserAnswersReader[GuaranteeDomain](
               GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
             ).run(userAnswers)
 
-            result.value mustBe expectedResult
+            result.value._1 mustBe expectedResult
           }
 
           "and adding liability" in {
@@ -199,11 +199,11 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
               )
             )(index)
 
-            val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+            val result = UserAnswersReader[GuaranteeDomain](
               GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
             ).run(userAnswers)
 
-            result.value mustBe expectedResult
+            result.value._1 mustBe expectedResult
           }
         }
       }
@@ -220,11 +220,11 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           `type` = guaranteeType
         )(index)
 
-        val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+        val result = UserAnswersReader[GuaranteeDomain](
           GuaranteeDomain.userAnswersReader(index)
         ).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value._1 mustBe expectedResult
       }
 
       "when B guarantee type" in {
@@ -240,11 +240,11 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           `type` = guaranteeType
         )(index)
 
-        val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+        val result = UserAnswersReader[GuaranteeDomain](
           GuaranteeDomain.userAnswersReader(index)
         ).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value._1 mustBe expectedResult
       }
 
       "when 8 guarantee type" in {
@@ -270,11 +270,11 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           )
         )(index)
 
-        val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+        val result = UserAnswersReader[GuaranteeDomain](
           GuaranteeDomain.userAnswersReader(index)
         ).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value._1 mustBe expectedResult
       }
 
       "when 3 guarantee type" - {
@@ -302,11 +302,11 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             )
           )(index)
 
-          val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+          val result = UserAnswersReader[GuaranteeDomain](
             GuaranteeDomain.userAnswersReader(index)
           ).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value._1 mustBe expectedResult
         }
 
         "when without reference" in {
@@ -319,11 +319,11 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             `type` = guaranteeType
           )(index)
 
-          val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+          val result = UserAnswersReader[GuaranteeDomain](
             GuaranteeDomain.userAnswersReader(index)
           ).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value._1 mustBe expectedResult
         }
 
       }
@@ -350,7 +350,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
                 .setValue(GuaranteeTypePage(index), guaranteeType)
                 .setValue(ReferenceNumberPage(index), grn)
 
-              val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+              val result = UserAnswersReader[GuaranteeDomain](
                 GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
               ).run(userAnswers)
 
@@ -367,7 +367,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
                 .setValue(DeclarationTypePage, declarationType)
                 .setValue(GuaranteeTypePage(index), guaranteeType)
 
-              val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+              val result = UserAnswersReader[GuaranteeDomain](
                 GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
               ).run(userAnswers)
 
@@ -382,7 +382,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
                 .setValue(GuaranteeTypePage(index), guaranteeType)
                 .setValue(ReferenceNumberPage(index), grn)
 
-              val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+              val result = UserAnswersReader[GuaranteeDomain](
                 GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
               ).run(userAnswers)
 
@@ -399,7 +399,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
                 .setValue(ReferenceNumberPage(index), grn)
                 .setValue(CurrencyPage(index), currencyCode)
 
-              val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+              val result = UserAnswersReader[GuaranteeDomain](
                 GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
               ).run(userAnswers)
 
@@ -418,7 +418,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
                 .setValue(CurrencyPage(index), currencyCode)
                 .setValue(LiabilityAmountPage(index), liabilityAmount)
 
-              val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+              val result = UserAnswersReader[GuaranteeDomain](
                 GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
               ).run(userAnswers)
 
@@ -434,7 +434,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             .setValue(DeclarationTypePage, declarationType)
             .setValue(GuaranteeTypePage(index), guaranteeType)
 
-          val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+          val result = UserAnswersReader[GuaranteeDomain](
             GuaranteeDomain.userAnswersReader(index)
           ).run(userAnswers)
 
@@ -448,7 +448,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             .setValue(DeclarationTypePage, declarationType)
             .setValue(GuaranteeTypePage(index), guaranteeType)
 
-          val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+          val result = UserAnswersReader[GuaranteeDomain](
             GuaranteeDomain.userAnswersReader(index)
           ).run(userAnswers)
 
@@ -464,7 +464,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
               .setValue(DeclarationTypePage, declarationType)
               .setValue(GuaranteeTypePage(index), guaranteeType)
 
-            val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+            val result = UserAnswersReader[GuaranteeDomain](
               GuaranteeDomain.userAnswersReader(index)
             ).run(userAnswers)
 
@@ -477,7 +477,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
               .setValue(GuaranteeTypePage(index), guaranteeType)
               .setValue(OtherReferenceYesNoPage(index), true)
 
-            val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+            val result = UserAnswersReader[GuaranteeDomain](
               GuaranteeDomain.userAnswersReader(index)
             ).run(userAnswers)
 
@@ -497,7 +497,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
                 .setValue(DeclarationTypePage, declarationType)
                 .setValue(GuaranteeTypePage(index), guaranteeType)
 
-              val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+              val result = UserAnswersReader[GuaranteeDomain](
                 GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
               ).run(userAnswers)
 
@@ -510,7 +510,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
                 .setValue(GuaranteeTypePage(index), guaranteeType)
                 .setValue(AddLiabilityYesNoPage(index), true)
 
-              val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+              val result = UserAnswersReader[GuaranteeDomain](
                 GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
               ).run(userAnswers)
 
@@ -526,7 +526,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
                 .setValue(AddLiabilityYesNoPage(index), true)
                 .setValue(CurrencyPage(index), currencyCode)
 
-              val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+              val result = UserAnswersReader[GuaranteeDomain](
                 GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
               ).run(userAnswers)
 
@@ -543,7 +543,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
                 .setValue(DeclarationTypePage, declarationType)
                 .setValue(GuaranteeTypePage(index), guaranteeType)
 
-              val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+              val result = UserAnswersReader[GuaranteeDomain](
                 GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
               ).run(userAnswers)
 
@@ -558,7 +558,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
                 .setValue(GuaranteeTypePage(index), guaranteeType)
                 .setValue(CurrencyPage(index), currencyCode)
 
-              val result: EitherType[GuaranteeDomain] = UserAnswersReader[GuaranteeDomain](
+              val result = UserAnswersReader[GuaranteeDomain](
                 GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
               ).run(userAnswers)
 
