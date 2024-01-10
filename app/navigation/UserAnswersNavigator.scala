@@ -59,30 +59,43 @@ object UserAnswersNavigator extends Logging {
 
     userAnswersReader.run(userAnswers) match {
       case Left(ReaderError(unansweredPage, answeredPages, _)) =>
-        unansweredPage.route(userAnswers, mode).getOrElse {
+        nextPage(
+          currentPage,
+          unansweredPage.route(userAnswers, mode),
+          answeredPages,
+          userAnswers,
+          mode
+        ).getOrElse {
           logger.debug(s"Route not defined for page ${unansweredPage.path}")
           errorCall
         }
       case Right((x, answeredPages)) =>
-        x.routeIfCompleted(userAnswers, mode, stage).getOrElse {
+        nextPage(
+          currentPage,
+          x.routeIfCompleted(userAnswers, mode, stage),
+          answeredPages,
+          userAnswers,
+          mode
+        ).getOrElse {
           logger.debug(s"Completed route not defined for model $x")
           errorCall
         }
     }
   }
 
-  def nextRoute(
+  def nextPage(
     currentPage: Option[Page],
-    userAnswersReaderResult: (UserAnswers, Mode) => Option[Call],
+    userAnswersReaderResult: Option[Call],
     answeredPages: Seq[Page],
+    userAnswers: UserAnswers,
     mode: Mode
-  ): (UserAnswers, Mode) => Option[Call] =
+  ): Option[Call] =
     mode match {
       case NormalMode =>
         @tailrec
-        def rec(answeredPages: List[Page], exit: Boolean): (UserAnswers, Mode) => Option[Call] =
+        def rec(answeredPages: List[Page], exit: Boolean): Option[Call] =
           answeredPages match {
-            case head :: _ if exit                          => head.route
+            case head :: _ if exit                          => head.route(userAnswers, mode)
             case head :: tail if currentPage.contains(head) => rec(tail, exit = true)
             case _ :: tail                                  => rec(tail, exit)
             case Nil                                        => userAnswersReaderResult
