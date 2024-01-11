@@ -22,7 +22,6 @@ import config.Constants.GuaranteeType._
 import config.PhaseConfig
 import generators.Generators
 import models.GuaranteeType._
-import models.domain.UserAnswersReader
 import models.journeyDomain.GuaranteeDomain._
 import models.reference.CurrencyCode
 import models.{GuaranteeType, Phase}
@@ -81,7 +80,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
           ).run(userAnswers)
 
-          result.value._1 mustBe expectedResult
+          result.value.value mustBe expectedResult
         }
 
         "and post transition" in {
@@ -117,7 +116,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
           ).run(userAnswers)
 
-          result.value._1 mustBe expectedResult
+          result.value.value mustBe expectedResult
         }
       }
 
@@ -150,7 +149,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
           ).run(userAnswers)
 
-          result.value._1 mustBe expectedResult
+          result.value.value mustBe expectedResult
         }
 
         "when transition" - {
@@ -174,7 +173,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
               GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
             ).run(userAnswers)
 
-            result.value._1 mustBe expectedResult
+            result.value.value mustBe expectedResult
           }
 
           "and adding liability" in {
@@ -203,7 +202,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
               GuaranteeDomain.userAnswersReader(index)(mockPhaseConfig)
             ).run(userAnswers)
 
-            result.value._1 mustBe expectedResult
+            result.value.value mustBe expectedResult
           }
         }
       }
@@ -224,7 +223,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           GuaranteeDomain.userAnswersReader(index)
         ).run(userAnswers)
 
-        result.value._1 mustBe expectedResult
+        result.value.value mustBe expectedResult
       }
 
       "when B guarantee type" in {
@@ -244,7 +243,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           GuaranteeDomain.userAnswersReader(index)
         ).run(userAnswers)
 
-        result.value._1 mustBe expectedResult
+        result.value.value mustBe expectedResult
       }
 
       "when 8 guarantee type" in {
@@ -274,7 +273,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           GuaranteeDomain.userAnswersReader(index)
         ).run(userAnswers)
 
-        result.value._1 mustBe expectedResult
+        result.value.value mustBe expectedResult
       }
 
       "when 3 guarantee type" - {
@@ -306,7 +305,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             GuaranteeDomain.userAnswersReader(index)
           ).run(userAnswers)
 
-          result.value._1 mustBe expectedResult
+          result.value.value mustBe expectedResult
         }
 
         "when without reference" in {
@@ -323,7 +322,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             GuaranteeDomain.userAnswersReader(index)
           ).run(userAnswers)
 
-          result.value._1 mustBe expectedResult
+          result.value.value mustBe expectedResult
         }
 
       }

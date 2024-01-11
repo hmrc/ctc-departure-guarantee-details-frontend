@@ -21,7 +21,6 @@ import config.Constants.DeclarationType._
 import config.Constants.GuaranteeType._
 import generators.Generators
 import models.GuaranteeType._
-import models.domain._
 import models.journeyDomain.GuaranteeDomain.GuaranteeOfTypesAB
 import models.{GuaranteeType, Index}
 import org.scalacheck.Arbitrary.arbitrary
@@ -50,8 +49,8 @@ class GuaranteeDetailsDomainSpec extends SpecBase with Generators {
 
         val result = UserAnswersReader[GuaranteeDetailsDomain].run(userAnswers)
 
-        result.value._1 mustBe expectedResult
-        result.value._2 mustBe Seq(GuaranteeDetailsSection, DeclarationTypePage, GuaranteeTypePage(Index(0)))
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(GuaranteeDetailsSection, DeclarationTypePage, GuaranteeTypePage(Index(0)))
       }
 
       "when non-TIR declaration type" in {
@@ -72,8 +71,8 @@ class GuaranteeDetailsDomainSpec extends SpecBase with Generators {
 
         val result = UserAnswersReader[GuaranteeDetailsDomain].run(userAnswers)
 
-        result.value._1 mustBe expectedResult
-        result.value._2 mustBe Seq(GuaranteeDetailsSection, DeclarationTypePage, GuaranteeTypePage(Index(0)))
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(GuaranteeDetailsSection, DeclarationTypePage, GuaranteeTypePage(Index(0)))
       }
     }
 

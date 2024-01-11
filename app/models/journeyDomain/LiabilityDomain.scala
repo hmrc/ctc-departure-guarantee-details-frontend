@@ -18,7 +18,6 @@ package models.journeyDomain
 
 import cats.implicits._
 import models.Index
-import models.domain.{GettableAsReaderOps, UserAnswersReader}
 import models.reference.CurrencyCode
 import pages.Page
 import pages.guarantee.{CurrencyPage, LiabilityAmountPage}
@@ -32,10 +31,10 @@ object LiabilityDomain {
 
   def userAnswersReader(pages: Seq[Page], index: Index): UserAnswersReader[LiabilityDomain] =
     CurrencyPage(index).reader(pages).flatMap {
-      case (currencyCode, pages) =>
+      case ReaderSuccess(currencyCode, pages) =>
         LiabilityAmountPage(index).reader(pages).map {
-          case (liabilityAmount, pages) =>
-            (LiabilityDomain(currencyCode, liabilityAmount), pages)
+          case ReaderSuccess(liabilityAmount, pages) =>
+            ReaderSuccess(LiabilityDomain(currencyCode, liabilityAmount), pages)
         }
     }
 }

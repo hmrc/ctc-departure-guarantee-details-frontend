@@ -17,9 +17,9 @@
 package utils.cyaHelpers
 
 import config.FrontendAppConfig
-import models.journeyDomain.JourneyDomainModel
+import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.Stage.AccessingJourney
-import models.domain.UserAnswersReader
+import models.journeyDomain.{JourneyDomainModel, ReaderSuccess}
 import models.{Index, LocalReferenceNumber, Mode, RichJsArray, RichOptionalJsArray, UserAnswers}
 import navigation.UserAnswersNavigator
 import pages.QuestionPage
@@ -95,7 +95,7 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
     userAnswersReader
       .run(userAnswers)
       .map {
-        case (x, _) =>
+        case ReaderSuccess(x, _) =>
           buildSimpleRow(
             prefix = prefix,
             label = messages(s"$prefix.label", args: _*),
@@ -136,7 +136,7 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
               }
               .map(Left(_))
         }
-      case Right((journeyDomainModel, _)) =>
+      case Right(ReaderSuccess(journeyDomainModel, _)) =>
         journeyDomainModel.routeIfCompleted(userAnswers, mode, AccessingJourney).map {
           changeRoute =>
             Right(

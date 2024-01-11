@@ -21,7 +21,6 @@ import config.Constants.DeclarationType._
 import config.Constants.GuaranteeType._
 import config.PhaseConfig
 import models.GuaranteeType._
-import models.domain._
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.{CheckMode, GuaranteeType, Index, Mode, Phase, UserAnswers}
 import pages.Page
@@ -43,14 +42,14 @@ object GuaranteeDomain {
   // scalastyle:off cyclomatic.complexity
   implicit def userAnswersReader(index: Index, pages: Seq[Page] = Nil)(implicit phaseConfig: PhaseConfig): UserAnswersReader[GuaranteeDomain] =
     DeclarationTypePage.reader(pages).flatMap {
-      case (TIR, pages) =>
+      case ReaderSuccess(TIR, pages) =>
         GuaranteeTypePage(index).mandatoryReader(pages)(_.code == TIRGuarantee).map {
-          case (guaranteeType, pages) =>
-            (GuaranteeOfTypesAB(guaranteeType)(index), pages)
+          case ReaderSuccess(guaranteeType, pages) =>
+            ReaderSuccess(GuaranteeOfTypesAB(guaranteeType)(index), pages)
         }
-      case (_, pages) =>
+      case ReaderSuccess(_, pages) =>
         GuaranteeTypePage(index).reader(pages).flatMap {
-          case (guaranteeType, pages) =>
+          case ReaderSuccess(guaranteeType, pages) =>
             guaranteeType.code match {
               case WaiverByAgreementGuarantee =>
                 GuaranteeOfTypesAB.userAnswersReader(pages, index, guaranteeType)
@@ -116,14 +115,14 @@ object GuaranteeDomain {
 
     def userAnswersReader(pages: Seq[Page], index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
       UserAnswersReader(guaranteeType, pages).flatMap {
-        case (guaranteeType, pages) =>
+        case ReaderSuccess(guaranteeType, pages) =>
           ReferenceNumberPage(index).reader(pages).flatMap {
-            case (grn, pages) =>
+            case ReaderSuccess(grn, pages) =>
               AddLiabilityYesNoPage(index).filterOptionalDependent(pages)(identity)(LiabilityDomain.userAnswersReader(pages, index)).flatMap {
-                case (liability, pages) =>
+                case ReaderSuccess(liability, pages) =>
                   AccessCodePage(index).reader(pages).map {
-                    case (accessCode, pages) =>
-                      (TransitionGuaranteeOfTypes01249(guaranteeType, grn, liability, accessCode)(index), pages)
+                    case ReaderSuccess(accessCode, pages) =>
+                      ReaderSuccess(TransitionGuaranteeOfTypes01249(guaranteeType, grn, liability, accessCode)(index), pages)
                   }
               }
           }
@@ -142,14 +141,14 @@ object GuaranteeDomain {
 
     def userAnswersReader(pages: Seq[Page], index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
       UserAnswersReader(guaranteeType, pages).flatMap {
-        case (guaranteeType, pages) =>
+        case ReaderSuccess(guaranteeType, pages) =>
           ReferenceNumberPage(index).reader(pages).flatMap {
-            case (grn, pages) =>
+            case ReaderSuccess(grn, pages) =>
               LiabilityDomain.userAnswersReader(pages, index).flatMap {
-                case (liability, pages) =>
+                case ReaderSuccess(liability, pages) =>
                   AccessCodePage(index).reader(pages).map {
-                    case (accessCode, pages) =>
-                      (PostTransitionGuaranteeOfTypes01249(guaranteeType, grn, liability, accessCode)(index), pages)
+                    case ReaderSuccess(accessCode, pages) =>
+                      ReaderSuccess(PostTransitionGuaranteeOfTypes01249(guaranteeType, grn, liability, accessCode)(index), pages)
                   }
               }
           }
@@ -179,10 +178,10 @@ object GuaranteeDomain {
 
     def userAnswersReader(pages: Seq[Page], index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
       UserAnswersReader(guaranteeType, pages).flatMap {
-        case (guaranteeType, pages) =>
+        case ReaderSuccess(guaranteeType, pages) =>
           AddLiabilityYesNoPage(index).filterOptionalDependent(pages)(identity)(LiabilityDomain.userAnswersReader(pages, index)).map {
-            case (liability, pages) =>
-              (TransitionGuaranteeOfType5(guaranteeType, liability)(index), pages)
+            case ReaderSuccess(liability, pages) =>
+              ReaderSuccess(TransitionGuaranteeOfType5(guaranteeType, liability)(index), pages)
           }
       }
   }
@@ -197,10 +196,10 @@ object GuaranteeDomain {
 
     def userAnswersReader(pages: Seq[Page], index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
       UserAnswersReader(guaranteeType, pages).flatMap {
-        case (guaranteeType, pages) =>
+        case ReaderSuccess(guaranteeType, pages) =>
           LiabilityDomain.userAnswersReader(pages, index).map {
-            case (liability, pages) =>
-              (PostTransitionGuaranteeOfType5(guaranteeType, liability)(index), pages)
+            case ReaderSuccess(liability, pages) =>
+              ReaderSuccess(PostTransitionGuaranteeOfType5(guaranteeType, liability)(index), pages)
           }
       }
   }
@@ -216,12 +215,12 @@ object GuaranteeDomain {
 
     def userAnswersReader(pages: Seq[Page], index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
       UserAnswersReader(guaranteeType, pages).flatMap {
-        case (guaranteeType, pages) =>
+        case ReaderSuccess(guaranteeType, pages) =>
           OtherReferencePage(index).reader(pages).flatMap {
-            case (otherReference, pages) =>
+            case ReaderSuccess(otherReference, pages) =>
               LiabilityDomain.userAnswersReader(pages, index).map {
-                case (liability, pages) =>
-                  (GuaranteeOfType8(guaranteeType, otherReference, liability)(index), pages)
+                case ReaderSuccess(liability, pages) =>
+                  ReaderSuccess(GuaranteeOfType8(guaranteeType, otherReference, liability)(index), pages)
               }
           }
       }
@@ -233,8 +232,8 @@ object GuaranteeDomain {
 
     def userAnswersReader(pages: Seq[Page], index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
       OtherReferenceYesNoPage(index).reader(pages).flatMap {
-        case (true, pages)  => GuaranteeOfType3WithReference.userAnswersReader(pages, index, guaranteeType)
-        case (false, pages) => GuaranteeOfType3WithoutReference.userAnswersReader(pages, index, guaranteeType)
+        case ReaderSuccess(true, pages)  => GuaranteeOfType3WithReference.userAnswersReader(pages, index, guaranteeType)
+        case ReaderSuccess(false, pages) => GuaranteeOfType3WithoutReference.userAnswersReader(pages, index, guaranteeType)
       }
   }
 
@@ -249,12 +248,12 @@ object GuaranteeDomain {
 
     def userAnswersReader(pages: Seq[Page], index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
       UserAnswersReader(guaranteeType, pages).flatMap {
-        case (guaranteeType, pages) =>
+        case ReaderSuccess(guaranteeType, pages) =>
           OtherReferencePage(index).reader(pages).flatMap {
-            case (otherReference, pages) =>
+            case ReaderSuccess(otherReference, pages) =>
               LiabilityDomain.userAnswersReader(pages, index).map {
-                case (liability, pages) =>
-                  (GuaranteeOfType3WithReference(guaranteeType, otherReference, liability)(index), pages)
+                case ReaderSuccess(liability, pages) =>
+                  ReaderSuccess(GuaranteeOfType3WithReference(guaranteeType, otherReference, liability)(index), pages)
               }
           }
       }

@@ -15,7 +15,7 @@
  */
 
 import cats.implicits._
-import models.domain.UserAnswersReader
+import models.journeyDomain.{ReaderSuccess, UserAnswersReader}
 import pages.Page
 import play.api.libs.json._
 
@@ -52,10 +52,10 @@ package object models {
         .foldLeft[UserAnswersReader[Seq[T]]](UserAnswersReader[Seq[T]](Nil, pages))({
           case (acc, (_, index)) =>
             acc.flatMap {
-              case (ts, pages) =>
+              case ReaderSuccess(ts, pages) =>
                 userAnswersReader(index, pages).map {
-                  case (t, pages) =>
-                    (ts :+ t, pages)
+                  case ReaderSuccess(t, pages) =>
+                    ReaderSuccess(ts :+ t, pages)
                 }
             }
         })

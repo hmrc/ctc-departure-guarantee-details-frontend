@@ -17,7 +17,7 @@
 package generators
 
 import config.PhaseConfig
-import models.domain.UserAnswersReader
+import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.{GuaranteeDetailsDomain, GuaranteeDomain}
 import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, SubmissionState, UserAnswers}

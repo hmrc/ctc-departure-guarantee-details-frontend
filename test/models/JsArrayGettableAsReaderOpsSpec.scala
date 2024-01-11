@@ -17,7 +17,7 @@
 package models
 
 import base.SpecBase
-import models.domain.JsArrayGettableAsReaderOps
+import models.journeyDomain.JsArrayGettableAsReaderOps
 import play.api.libs.json._
 import queries.Gettable
 
@@ -55,8 +55,8 @@ class JsArrayGettableAsReaderOpsSpec extends SpecBase {
 
         val userAnswers = emptyUserAnswers.copy(data = json)
         val result      = FakeSection.fieldReader(Nil)(FakePage).run(userAnswers)
-        result.value._1 mustBe Seq("1", "3")
-        result.value._2 mustBe Seq(
+        result.value.value mustBe Seq("1", "3")
+        result.value.pages mustBe Seq(
           FakePage(Index(0)),
           FakePage(Index(1)),
           FakePage(Index(2))

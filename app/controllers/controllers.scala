@@ -17,9 +17,8 @@
 import cats.data.ReaderT
 import config.PhaseConfig
 import models.TaskStatus._
-import models.domain.UserAnswersReader
-import models.journeyDomain.GuaranteeDetailsDomain
 import models.journeyDomain.OpsError.WriterError
+import models.journeyDomain.{GuaranteeDetailsDomain, UserAnswersReader}
 import models.requests.MandatoryDataRequest
 import models.{TaskStatus, UserAnswers}
 import navigation.UserAnswersNavigator

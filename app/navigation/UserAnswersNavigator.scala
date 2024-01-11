@@ -17,10 +17,9 @@
 package navigation
 
 import config.{FrontendAppConfig, PhaseConfig}
-import models.domain.UserAnswersReader
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.Stage.CompletingJourney
-import models.journeyDomain.{JourneyDomainModel, Stage}
+import models.journeyDomain.{JourneyDomainModel, ReaderSuccess, Stage, UserAnswersReader}
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.Page
 import play.api.Logging
@@ -69,7 +68,7 @@ object UserAnswersNavigator extends Logging {
           logger.debug(s"Route not defined for page ${unansweredPage.path}")
           errorCall
         }
-      case Right((x, answeredPages)) =>
+      case Right(ReaderSuccess(x, answeredPages)) =>
         nextPage(
           currentPage,
           x.routeIfCompleted(userAnswers, mode, stage),

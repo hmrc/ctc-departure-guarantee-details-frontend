@@ -20,7 +20,6 @@ import cats.implicits._
 import config.Constants.DeclarationType._
 import config.PhaseConfig
 import controllers.routes
-import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.{Index, Mode, RichJsArray, UserAnswers}
 import pages.external.DeclarationTypePage
 import pages.sections.GuaranteeDetailsSection
@@ -43,15 +42,15 @@ object GuaranteeDetailsDomain {
     GuaranteeDetailsSection
       .arrayReader(Nil)
       .flatMap {
-        case (x, pages) if x.isEmpty =>
+        case ReaderSuccess(x, pages) if x.isEmpty =>
           UserAnswersReader[GuaranteeDomain](GuaranteeDomain.userAnswersReader(Index(0), pages)).map {
-            case (guarantee, pages) =>
-              (GuaranteeDetailsDomain(Seq(guarantee)), pages)
+            case ReaderSuccess(guarantee, pages) =>
+              ReaderSuccess(GuaranteeDetailsDomain(Seq(guarantee)), pages)
           }
-        case (x, pages) =>
+        case ReaderSuccess(x, pages) =>
           x.traverse[GuaranteeDomain](pages)(GuaranteeDomain.userAnswersReader).map {
-            case (guarantees, pages) =>
-              (GuaranteeDetailsDomain(guarantees), pages)
+            case ReaderSuccess(guarantees, pages) =>
+              ReaderSuccess(GuaranteeDetailsDomain(guarantees), pages)
           }
       }
 }
