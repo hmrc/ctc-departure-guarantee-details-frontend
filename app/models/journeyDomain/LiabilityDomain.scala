@@ -16,7 +16,6 @@
 
 package models.journeyDomain
 
-import cats.implicits._
 import models.Index
 import models.reference.CurrencyCode
 import pages.Page
@@ -30,11 +29,8 @@ case class LiabilityDomain(
 object LiabilityDomain {
 
   def userAnswersReader(pages: Seq[Page], index: Index): UserAnswersReader[LiabilityDomain] =
-    CurrencyPage(index).reader(pages).flatMap {
-      case ReaderSuccess(currencyCode, pages) =>
-        LiabilityAmountPage(index).reader(pages).map {
-          case ReaderSuccess(liabilityAmount, pages) =>
-            ReaderSuccess(LiabilityDomain(currencyCode, liabilityAmount), pages)
-        }
-    }
+    (
+      CurrencyPage(index).reader(_: Seq[Page]),
+      LiabilityAmountPage(index).reader(_: Seq[Page])
+    ).mapReads(pages)(LiabilityDomain.apply)
 }

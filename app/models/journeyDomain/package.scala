@@ -33,12 +33,12 @@ package object journeyDomain {
     def apply[A](fn: UserAnswers => EitherType[ReaderSuccess[A]]): UserAnswersReader[A] =
       ReaderT[EitherType, UserAnswers, ReaderSuccess[A]](fn)
 
-    def apply[A](a: A, pages: Seq[Page]): UserAnswersReader[A] = {
+    def success[A](a: A, pages: Seq[Page]): UserAnswersReader[A] = {
       val fn: UserAnswers => EitherType[ReaderSuccess[A]] = _ => Right(ReaderSuccess(a, pages))
       apply(fn)
     }
 
-    def fail[A](page: Gettable[_], pages: Seq[Page], message: Option[String] = None): UserAnswersReader[A] = {
+    def error[A](page: Gettable[_], pages: Seq[Page], message: Option[String] = None): UserAnswersReader[A] = {
       val fn: UserAnswers => EitherType[ReaderSuccess[A]] = _ => Left(ReaderError(page, pages :+ page, message))
       apply(fn)
     }
@@ -54,13 +54,13 @@ package object journeyDomain {
       */
 
     def filterMandatoryDependent[B](pages: Seq[Page])(predicate: A => Boolean)(next: => UserAnswersReader[B]): UserAnswersReader[B] =
-      a.reader(pages, s"Reader for ${a.path} failed before reaching predicate")
+      a.readerWithMessage(pages, s"Reader for ${a.path} failed before reaching predicate")
         .flatMap {
           case ReaderSuccess(x, pages) =>
             if (predicate(x)) {
               next
             } else {
-              UserAnswersReader.fail[B](a, pages :+ a, Some(s"Mandatory predicate failed for ${a.path}"))
+              UserAnswersReader.error[B](a, pages :+ a, Some(s"Mandatory predicate failed for ${a.path}"))
             }
         }
 
@@ -71,16 +71,13 @@ package object journeyDomain {
       * `next` will not be run
       */
     def filterOptionalDependent[B](pages: Seq[Page])(predicate: A => Boolean)(next: Seq[Page] => UserAnswersReader[B]): UserAnswersReader[Option[B]] =
-      a.reader(pages, s"Reader for ${a.path} failed before reaching predicate")
+      a.readerWithMessage(pages, s"Reader for ${a.path} failed before reaching predicate")
         .flatMap {
           case ReaderSuccess(x, pages) =>
             if (predicate(x)) {
-              next(pages).map {
-                case ReaderSuccess(x, pages) =>
-                  ReaderSuccess(Some(x), pages)
-              }
+              next(pages).map(_.to(Some(_)))
             } else {
-              UserAnswersReader(None, pages)
+              UserAnswersReader.success(None, pages)
             }
         }
   }
@@ -94,7 +91,7 @@ package object journeyDomain {
 
     def reader(pages: Seq[Page])(implicit reads: Reads[A]): UserAnswersReader[A] = reader(pages, None)
 
-    def reader(pages: Seq[Page], message: String)(implicit reads: Reads[A]): UserAnswersReader[A] = reader(pages, Some(message))
+    def readerWithMessage(pages: Seq[Page], message: String)(implicit reads: Reads[A]): UserAnswersReader[A] = reader(pages, Some(message))
 
     private def reader(pages: Seq[Page], message: Option[String])(implicit reads: Reads[A]): UserAnswersReader[A] = {
       val fn: UserAnswers => EitherType[ReaderSuccess[A]] = _.get(a) match {
@@ -142,5 +139,49 @@ package object journeyDomain {
       }
       UserAnswersReader(fn)
     }
+  }
+
+  private type Read[T] = Seq[Page] => UserAnswersReader[T]
+
+  implicit class RichTuple2[A, B](value: (Read[A], Read[B])) {
+
+    def mapReads[T](pages: Seq[Page])(f: (A, B) => T): UserAnswersReader[T] =
+      for {
+        a <- value._1(pages)
+        b <- value._2(a.pages)
+      } yield ReaderSuccess(f(a.value, b.value), b.pages)
+  }
+
+  implicit class RichTuple3[A, B, C](value: (Read[A], Read[B], Read[C])) {
+
+    def mapReads[T](pages: Seq[Page])(f: (A, B, C) => T): UserAnswersReader[T] =
+      for {
+        a <- value._1(pages)
+        b <- value._2(a.pages)
+        c <- value._3(b.pages)
+      } yield ReaderSuccess(f(a.value, b.value, c.value), c.pages)
+  }
+
+  implicit class RichTuple4[A, B, C, D](value: (Read[A], Read[B], Read[C], Read[D])) {
+
+    def mapReads[T](pages: Seq[Page])(f: (A, B, C, D) => T): UserAnswersReader[T] =
+      for {
+        a <- value._1(pages)
+        b <- value._2(a.pages)
+        c <- value._3(b.pages)
+        d <- value._4(c.pages)
+      } yield ReaderSuccess(f(a.value, b.value, c.value, d.value), d.pages)
+  }
+
+  implicit class RichTuple5[A, B, C, D, E](value: (Read[A], Read[B], Read[C], Read[D], Read[E])) {
+
+    def mapReads[T](pages: Seq[Page])(f: (A, B, C, D, E) => T): UserAnswersReader[T] =
+      for {
+        a <- value._1(pages)
+        b <- value._2(a.pages)
+        c <- value._3(b.pages)
+        d <- value._4(c.pages)
+        e <- value._5(d.pages)
+      } yield ReaderSuccess(f(a.value, b.value, c.value, d.value, e.value), e.pages)
   }
 }

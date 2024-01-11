@@ -43,14 +43,11 @@ object GuaranteeDetailsDomain {
       .arrayReader(Nil)
       .flatMap {
         case ReaderSuccess(x, pages) if x.isEmpty =>
-          UserAnswersReader[GuaranteeDomain](GuaranteeDomain.userAnswersReader(Index(0), pages)).map {
-            case ReaderSuccess(guarantee, pages) =>
-              ReaderSuccess(GuaranteeDetailsDomain(Seq(guarantee)), pages)
-          }
+          UserAnswersReader[GuaranteeDomain](GuaranteeDomain.userAnswersReader(Index(0), pages))
+            .map(_.toList)
+            .map(_.to(GuaranteeDetailsDomain(_)))
         case ReaderSuccess(x, pages) =>
-          x.traverse[GuaranteeDomain](pages)(GuaranteeDomain.userAnswersReader).map {
-            case ReaderSuccess(guarantees, pages) =>
-              ReaderSuccess(GuaranteeDetailsDomain(guarantees), pages)
-          }
+          x.traverse[GuaranteeDomain](pages)(GuaranteeDomain.userAnswersReader)
+            .map(_.to(GuaranteeDetailsDomain(_)))
       }
 }

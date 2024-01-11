@@ -49,7 +49,7 @@ package object models {
 
     def traverse[T](pages: Seq[Page])(implicit userAnswersReader: (Index, Seq[Page]) => UserAnswersReader[T]): UserAnswersReader[Seq[T]] =
       arr.zipWithIndex
-        .foldLeft[UserAnswersReader[Seq[T]]](UserAnswersReader[Seq[T]](Nil, pages))({
+        .foldLeft[UserAnswersReader[Seq[T]]](UserAnswersReader.success[Seq[T]](Nil, pages))({
           case (acc, (_, index)) =>
             acc.flatMap {
               case ReaderSuccess(ts, pages) =>
