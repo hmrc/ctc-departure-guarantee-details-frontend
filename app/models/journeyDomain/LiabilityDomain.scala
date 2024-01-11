@@ -30,7 +30,7 @@ object LiabilityDomain {
 
   def userAnswersReader(pages: Seq[Page], index: Index): UserAnswersReader[LiabilityDomain] =
     (
-      CurrencyPage(index).reader(_: Seq[Page]),
-      LiabilityAmountPage(index).reader(_: Seq[Page])
+      CurrencyPage(index).reader(_),
+      LiabilityAmountPage(index).reader(_)
     ).mapReads(pages)(LiabilityDomain.apply)
 }
