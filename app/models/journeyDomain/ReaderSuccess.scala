@@ -23,5 +23,6 @@ case class ReaderSuccess[A](value: A, pages: Seq[Page]) {
   def to[T](f: A => T): ReaderSuccess[T] =
     ReaderSuccess(f(value), pages)
 
-  def toList: ReaderSuccess[Seq[A]] = ReaderSuccess(Seq(value), pages)
+  def toList: ReaderSuccess[Seq[A]] =
+    to(Seq(_))
 }
