@@ -61,8 +61,8 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             .setValue(ReferenceNumberPage(index), grn)
             .setValue(AddLiabilityYesNoPage(index), true)
             .setValue(CurrencyPage(index), currencyCode)
-            .setValue(AccessCodePage(index), accessCode)
             .setValue(LiabilityAmountPage(index), liabilityAmount)
+            .setValue(AccessCodePage(index), accessCode)
 
           val expectedResult = TransitionGuaranteeOfTypes01249(
             `type` = guaranteeType,
@@ -81,6 +81,15 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           ).run(userAnswers)
 
           result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            DeclarationTypePage,
+            GuaranteeTypePage(index),
+            ReferenceNumberPage(index),
+            AddLiabilityYesNoPage(index),
+            CurrencyPage(index),
+            LiabilityAmountPage(index),
+            AccessCodePage(index)
+          )
         }
 
         "and post transition" in {
@@ -99,8 +108,8 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             .setValue(GuaranteeTypePage(index), guaranteeType)
             .setValue(ReferenceNumberPage(index), grn)
             .setValue(CurrencyPage(index), currencyCode)
-            .setValue(AccessCodePage(index), accessCode)
             .setValue(LiabilityAmountPage(index), liabilityAmount)
+            .setValue(AccessCodePage(index), accessCode)
 
           val expectedResult = PostTransitionGuaranteeOfTypes01249(
             `type` = guaranteeType,
@@ -117,6 +126,14 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           ).run(userAnswers)
 
           result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            DeclarationTypePage,
+            GuaranteeTypePage(index),
+            ReferenceNumberPage(index),
+            CurrencyPage(index),
+            LiabilityAmountPage(index),
+            AccessCodePage(index)
+          )
         }
       }
 
@@ -150,6 +167,12 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           ).run(userAnswers)
 
           result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            DeclarationTypePage,
+            GuaranteeTypePage(index),
+            CurrencyPage(index),
+            LiabilityAmountPage(index)
+          )
         }
 
         "when transition" - {
@@ -174,6 +197,11 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             ).run(userAnswers)
 
             result.value.value mustBe expectedResult
+            result.value.pages mustBe Seq(
+              DeclarationTypePage,
+              GuaranteeTypePage(index),
+              AddLiabilityYesNoPage(index)
+            )
           }
 
           "and adding liability" in {
@@ -203,6 +231,13 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             ).run(userAnswers)
 
             result.value.value mustBe expectedResult
+            result.value.pages mustBe Seq(
+              DeclarationTypePage,
+              GuaranteeTypePage(index),
+              AddLiabilityYesNoPage(index),
+              CurrencyPage(index),
+              LiabilityAmountPage(index)
+            )
           }
         }
       }
@@ -224,14 +259,16 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
         ).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          DeclarationTypePage,
+          GuaranteeTypePage(index)
+        )
       }
 
       "when B guarantee type" in {
-        val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
-        val guaranteeType   = `B`.sample.value
+        val guaranteeType = `B`.sample.value
 
         val userAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, declarationType)
           .setValue(DeclarationTypePage, TIR)
           .setValue(GuaranteeTypePage(index), guaranteeType)
 
@@ -244,6 +281,10 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
         ).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          DeclarationTypePage,
+          GuaranteeTypePage(index)
+        )
       }
 
       "when 8 guarantee type" in {
@@ -274,6 +315,13 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
         ).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          DeclarationTypePage,
+          GuaranteeTypePage(index),
+          OtherReferencePage(index),
+          CurrencyPage(index),
+          LiabilityAmountPage(index)
+        )
       }
 
       "when 3 guarantee type" - {
@@ -306,6 +354,14 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           ).run(userAnswers)
 
           result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            DeclarationTypePage,
+            GuaranteeTypePage(index),
+            OtherReferenceYesNoPage(index),
+            OtherReferencePage(index),
+            CurrencyPage(index),
+            LiabilityAmountPage(index)
+          )
         }
 
         "when without reference" in {
@@ -323,6 +379,11 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           ).run(userAnswers)
 
           result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            DeclarationTypePage,
+            GuaranteeTypePage(index),
+            OtherReferenceYesNoPage(index)
+          )
         }
 
       }

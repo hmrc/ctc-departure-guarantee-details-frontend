@@ -118,7 +118,7 @@ object GuaranteeDomain {
         case ReaderSuccess(guaranteeType, pages) =>
           ReferenceNumberPage(index).reader(pages).flatMap {
             case ReaderSuccess(grn, pages) =>
-              AddLiabilityYesNoPage(index).filterOptionalDependent(pages)(identity)(LiabilityDomain.userAnswersReader(pages, index)).flatMap {
+              AddLiabilityYesNoPage(index).filterOptionalDependent(pages)(identity)(LiabilityDomain.userAnswersReader(_, index)).flatMap {
                 case ReaderSuccess(liability, pages) =>
                   AccessCodePage(index).reader(pages).map {
                     case ReaderSuccess(accessCode, pages) =>
@@ -179,7 +179,7 @@ object GuaranteeDomain {
     def userAnswersReader(pages: Seq[Page], index: Index, guaranteeType: GuaranteeType): UserAnswersReader[GuaranteeDomain] =
       UserAnswersReader(guaranteeType, pages).flatMap {
         case ReaderSuccess(guaranteeType, pages) =>
-          AddLiabilityYesNoPage(index).filterOptionalDependent(pages)(identity)(LiabilityDomain.userAnswersReader(pages, index)).map {
+          AddLiabilityYesNoPage(index).filterOptionalDependent(pages)(identity)(LiabilityDomain.userAnswersReader(_, index)).map {
             case ReaderSuccess(liability, pages) =>
               ReaderSuccess(TransitionGuaranteeOfType5(guaranteeType, liability)(index), pages)
           }

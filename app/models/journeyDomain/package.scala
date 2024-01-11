@@ -70,17 +70,17 @@ package object journeyDomain {
       * will return None. If the result of UserAnswerReader[A] is not defined then the overall reader will fail and
       * `next` will not be run
       */
-    def filterOptionalDependent[B](pages: Seq[Page])(predicate: A => Boolean)(next: => UserAnswersReader[B]): UserAnswersReader[Option[B]] =
+    def filterOptionalDependent[B](pages: Seq[Page])(predicate: A => Boolean)(next: Seq[Page] => UserAnswersReader[B]): UserAnswersReader[Option[B]] =
       a.reader(pages, s"Reader for ${a.path} failed before reaching predicate")
         .flatMap {
           case ReaderSuccess(x, pages) =>
             if (predicate(x)) {
-              next.map {
+              next(pages).map {
                 case ReaderSuccess(x, pages) =>
                   ReaderSuccess(Some(x), pages)
               }
             } else {
-              UserAnswersReader(None, pages :+ a)
+              UserAnswersReader(None, pages)
             }
         }
   }
