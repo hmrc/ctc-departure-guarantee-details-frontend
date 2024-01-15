@@ -17,9 +17,8 @@
 import cats.data.ReaderT
 import config.PhaseConfig
 import models.TaskStatus._
-import models.domain.UserAnswersReader
-import models.journeyDomain.GuaranteeDetailsDomain
 import models.journeyDomain.OpsError.WriterError
+import models.journeyDomain.{GuaranteeDetailsDomain, UserAnswersReader}
 import models.requests.MandatoryDataRequest
 import models.{TaskStatus, UserAnswers}
 import navigation.UserAnswersNavigator
@@ -115,7 +114,7 @@ package object controllers {
 
     def navigate()(implicit navigator: UserAnswersNavigator, executionContext: ExecutionContext): Future[Result] =
       navigate {
-        case (_, userAnswers) => navigator.nextPage(userAnswers)
+        case (page, userAnswers) => navigator.nextPage(userAnswers, Some(page))
       }
 
     def navigateTo(call: Call)(implicit executionContext: ExecutionContext): Future[Result] =

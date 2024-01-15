@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package queries
+package models.journeyDomain
 
-import models.UserAnswers
 import pages.Page
 
-import scala.util.{Success, Try}
+case class ReaderSuccess[A](value: A, pages: Seq[Page]) {
 
-trait Gettable[A] extends Page
+  def to[T](f: A => T): ReaderSuccess[T] =
+    ReaderSuccess(f(value), pages)
 
-trait Settable[A] extends Page {
-
-  def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
-    Success(userAnswers)
+  def toSeq: ReaderSuccess[Seq[A]] =
+    to(Seq(_))
 }
