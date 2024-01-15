@@ -161,27 +161,4 @@ package object journeyDomain {
         c <- value._3(b.pages)
       } yield ReaderSuccess(f(a.value, b.value, c.value), c.pages)
   }
-
-  implicit class RichTuple4[A, B, C, D](value: (Read[A], Read[B], Read[C], Read[D])) {
-
-    def mapReads[T](pages: Seq[Page])(f: (A, B, C, D) => T): UserAnswersReader[T] =
-      for {
-        a <- value._1(pages)
-        b <- value._2(a.pages)
-        c <- value._3(b.pages)
-        d <- value._4(c.pages)
-      } yield ReaderSuccess(f(a.value, b.value, c.value, d.value), d.pages)
-  }
-
-  implicit class RichTuple5[A, B, C, D, E](value: (Read[A], Read[B], Read[C], Read[D], Read[E])) {
-
-    def mapReads[T](pages: Seq[Page])(f: (A, B, C, D, E) => T): UserAnswersReader[T] =
-      for {
-        a <- value._1(pages)
-        b <- value._2(a.pages)
-        c <- value._3(b.pages)
-        d <- value._4(c.pages)
-        e <- value._5(d.pages)
-      } yield ReaderSuccess(f(a.value, b.value, c.value, d.value, e.value), e.pages)
-  }
 }
