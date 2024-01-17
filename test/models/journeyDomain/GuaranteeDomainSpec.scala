@@ -82,7 +82,6 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
 
           result.value.value mustBe expectedResult
           result.value.pages mustBe Seq(
-            DeclarationTypePage,
             GuaranteeTypePage(index),
             ReferenceNumberPage(index),
             AddLiabilityYesNoPage(index),
@@ -127,7 +126,6 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
 
           result.value.value mustBe expectedResult
           result.value.pages mustBe Seq(
-            DeclarationTypePage,
             GuaranteeTypePage(index),
             ReferenceNumberPage(index),
             CurrencyPage(index),
@@ -168,7 +166,6 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
 
           result.value.value mustBe expectedResult
           result.value.pages mustBe Seq(
-            DeclarationTypePage,
             GuaranteeTypePage(index),
             CurrencyPage(index),
             LiabilityAmountPage(index)
@@ -198,7 +195,6 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
 
             result.value.value mustBe expectedResult
             result.value.pages mustBe Seq(
-              DeclarationTypePage,
               GuaranteeTypePage(index),
               AddLiabilityYesNoPage(index)
             )
@@ -232,7 +228,6 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
 
             result.value.value mustBe expectedResult
             result.value.pages mustBe Seq(
-              DeclarationTypePage,
               GuaranteeTypePage(index),
               AddLiabilityYesNoPage(index),
               CurrencyPage(index),
@@ -260,7 +255,6 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
 
         result.value.value mustBe expectedResult
         result.value.pages mustBe Seq(
-          DeclarationTypePage,
           GuaranteeTypePage(index)
         )
       }
@@ -282,7 +276,6 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
 
         result.value.value mustBe expectedResult
         result.value.pages mustBe Seq(
-          DeclarationTypePage,
           GuaranteeTypePage(index)
         )
       }
@@ -316,7 +309,6 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
 
         result.value.value mustBe expectedResult
         result.value.pages mustBe Seq(
-          DeclarationTypePage,
           GuaranteeTypePage(index),
           OtherReferencePage(index),
           CurrencyPage(index),
@@ -355,7 +347,6 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
 
           result.value.value mustBe expectedResult
           result.value.pages mustBe Seq(
-            DeclarationTypePage,
             GuaranteeTypePage(index),
             OtherReferenceYesNoPage(index),
             OtherReferencePage(index),
@@ -380,7 +371,6 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
 
           result.value.value mustBe expectedResult
           result.value.pages mustBe Seq(
-            DeclarationTypePage,
             GuaranteeTypePage(index),
             OtherReferenceYesNoPage(index)
           )

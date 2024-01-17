@@ -18,7 +18,8 @@ package models
 
 import cats.data.ReaderT
 import models.journeyDomain.OpsError.ReaderError
-import pages.Page
+import pages.sections.Section
+import pages.{InferredPage, Page, ReadOnlyPage}
 import play.api.libs.json.{JsArray, Reads}
 import queries.Gettable
 
@@ -39,7 +40,7 @@ package object journeyDomain {
     }
 
     def error[A](page: Gettable[_], pages: Seq[Page], message: Option[String] = None): UserAnswersReader[A] = {
-      val fn: UserAnswers => EitherType[ReaderSuccess[A]] = _ => Left(ReaderError(page, pages :+ page, message))
+      val fn: UserAnswers => EitherType[ReaderSuccess[A]] = _ => Left(ReaderError(page, pages.append(page), message))
       apply(fn)
     }
   }
@@ -60,7 +61,7 @@ package object journeyDomain {
             if (predicate(x)) {
               next(pages)
             } else {
-              UserAnswersReader.error[B](a, pages :+ a, Some(s"Mandatory predicate failed for ${a.path}"))
+              UserAnswersReader.error[B](a, pages.append(a), Some(s"Mandatory predicate failed for ${a.path}"))
             }
         }
 
@@ -96,22 +97,22 @@ package object journeyDomain {
 
     private def reader(message: Option[String])(implicit reads: Reads[A]): Read[A] = pages => {
       val fn: UserAnswers => EitherType[ReaderSuccess[A]] = _.get(a) match {
-        case Some(value) => Right(ReaderSuccess(value, pages :+ a))
-        case None        => Left(ReaderError(a, pages :+ a, message))
+        case Some(value) => Right(ReaderSuccess(value, pages.append(a)))
+        case None        => Left(ReaderError(a, pages.append(a), message))
       }
       UserAnswersReader(fn)
     }
 
     def mandatoryReader(predicate: A => Boolean)(implicit reads: Reads[A]): Read[A] = pages => {
       val fn: UserAnswers => EitherType[ReaderSuccess[A]] = _.get(a) match {
-        case Some(value) if predicate(value) => Right(ReaderSuccess(value, pages :+ a))
-        case _                               => Left(ReaderError(a, pages :+ a))
+        case Some(value) if predicate(value) => Right(ReaderSuccess(value, pages.append(a)))
+        case _                               => Left(ReaderError(a, pages.append(a)))
       }
       UserAnswersReader(fn)
     }
 
     def optionalReader(implicit reads: Reads[A]): Read[Option[A]] = pages => {
-      val fn: UserAnswers => EitherType[ReaderSuccess[Option[A]]] = ua => Right(ReaderSuccess(ua.get(a), pages :+ a))
+      val fn: UserAnswers => EitherType[ReaderSuccess[Option[A]]] = ua => Right(ReaderSuccess(ua.get(a), pages.append(a)))
       UserAnswersReader(fn)
     }
   }
@@ -120,7 +121,7 @@ package object journeyDomain {
 
     def arrayReader(implicit reads: Reads[JsArray]): Read[JsArray] = pages => {
       val fn: UserAnswers => EitherType[ReaderSuccess[JsArray]] =
-        ua => Right(ReaderSuccess(ua.get(jsArray).getOrElse(JsArray()), pages :+ jsArray))
+        ua => Right(ReaderSuccess(ua.get(jsArray).getOrElse(JsArray()), pages.append(jsArray)))
 
       UserAnswersReader(fn)
     }
@@ -132,8 +133,8 @@ package object journeyDomain {
             case (ReaderSuccess(ts, pages), i) =>
               val gettable = page(Index(i))
               ua.get(gettable) match {
-                case Some(t) => ReaderSuccess(ts :+ t, pages :+ gettable)
-                case None    => ReaderSuccess(ts, pages :+ gettable)
+                case Some(t) => ReaderSuccess(ts :+ t, pages.append(gettable))
+                case None    => ReaderSuccess(ts, pages.append(gettable))
               }
           }
         }
@@ -142,7 +143,20 @@ package object journeyDomain {
     }
   }
 
-  type Read[T] = Seq[Page] => UserAnswersReader[T]
+  type Pages   = Seq[Page]
+  type Read[T] = Pages => UserAnswersReader[T]
+
+  implicit class RichPages(pages: Pages) {
+
+    def append(page: Page): Pages =
+      page match {
+        case _: Section[_]             => pages
+        case _: InferredPage[_]        => pages
+        case _: ReadOnlyPage[_]        => pages
+        case _ if pages.contains(page) => pages
+        case _                         => pages :+ page
+      }
+  }
 
   implicit class RichTuple2[A, B](value: (Read[A], Read[B])) {
 

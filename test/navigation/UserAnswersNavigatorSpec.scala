@@ -25,12 +25,6 @@ import uk.gov.hmrc.http.HttpVerbs.GET
 
 class UserAnswersNavigatorSpec extends SpecBase {
 
-  private case object ExternalPage extends QuestionPage[String] {
-    override def path: JsPath = JsPath \ "external"
-
-    override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] = None
-  }
-
   private case object FooPage extends QuestionPage[String] {
     override def path: JsPath = JsPath \ "foo"
 
@@ -87,15 +81,6 @@ class UserAnswersNavigatorSpec extends SpecBase {
 
               result.value.url mustBe "/bar"
             }
-
-            "when external page checked between FooPage and BarPage" in {
-              val userAnswersReaderResult = BarPage.route(userAnswers, mode)
-              val answeredPages           = Seq(FooPage, ExternalPage)
-
-              val result = UserAnswersNavigator.nextPage(currentPage, userAnswersReaderResult, answeredPages, userAnswers, mode)
-
-              result.value.url mustBe "/bar"
-            }
           }
         }
 
@@ -115,15 +100,6 @@ class UserAnswersNavigatorSpec extends SpecBase {
             "when BazPage unanswered" in {
               val userAnswersReaderResult = BazPage.route(userAnswers, mode)
               val answeredPages           = Seq(FooPage, BarPage)
-
-              val result = UserAnswersNavigator.nextPage(currentPage, userAnswersReaderResult, answeredPages, userAnswers, mode)
-
-              result.value.url mustBe "/baz"
-            }
-
-            "when external page checked between BarPage and BazPage" in {
-              val userAnswersReaderResult = BazPage.route(userAnswers, mode)
-              val answeredPages           = Seq(FooPage, BarPage, ExternalPage)
 
               val result = UserAnswersNavigator.nextPage(currentPage, userAnswersReaderResult, answeredPages, userAnswers, mode)
 
