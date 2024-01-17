@@ -18,7 +18,6 @@ package models.journeyDomain
 
 import models.Index
 import models.reference.CurrencyCode
-import pages.Page
 import pages.guarantee.{CurrencyPage, LiabilityAmountPage}
 
 case class LiabilityDomain(
@@ -28,9 +27,9 @@ case class LiabilityDomain(
 
 object LiabilityDomain {
 
-  def userAnswersReader(pages: Seq[Page], index: Index): UserAnswersReader[LiabilityDomain] =
+  def userAnswersReader(index: Index): Read[LiabilityDomain] =
     (
-      CurrencyPage(index).reader(_),
-      LiabilityAmountPage(index).reader(_)
-    ).mapReads(pages)(LiabilityDomain.apply)
+      CurrencyPage(index).reader.apply(_),
+      LiabilityAmountPage(index).reader.apply(_)
+    ).mapReads(_)(LiabilityDomain.apply)
 }

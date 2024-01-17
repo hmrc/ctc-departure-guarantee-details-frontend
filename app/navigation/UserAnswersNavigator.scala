@@ -99,7 +99,7 @@ object UserAnswersNavigator extends Logging {
             case _ :: tail                                  => rec(tail, exit)
             case Nil                                        => userAnswersReaderResult
           }
-        rec(answeredPages.toList, exit = false)
+        rec(answeredPages.filter(_.route(userAnswers, mode).isDefined).toList, exit = false)
       case CheckMode =>
         userAnswersReaderResult
     }

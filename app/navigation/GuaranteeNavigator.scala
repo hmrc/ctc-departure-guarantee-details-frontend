@@ -44,5 +44,5 @@ class GuaranteeNavigator(
   override type T = GuaranteeDomain
 
   implicit override val reader: UserAnswersReader[GuaranteeDomain] =
-    GuaranteeDomain.userAnswersReader(index)
+    GuaranteeDomain.userAnswersReader(index).apply(Nil)
 }

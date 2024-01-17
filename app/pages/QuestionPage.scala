@@ -20,4 +20,4 @@ import queries.{Gettable, Settable}
 
 trait QuestionPage[A] extends ReadOnlyPage[A] with Settable[A]
 
-trait ReadOnlyPage[A] extends Page with Gettable[A]
+trait ReadOnlyPage[A] extends Gettable[A]

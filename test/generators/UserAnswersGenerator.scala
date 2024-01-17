@@ -63,5 +63,5 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
     buildUserAnswers[GuaranteeDetailsDomain](userAnswers)(GuaranteeDetailsDomain.userAnswersReader)
 
   def arbitraryGuaranteeAnswers(userAnswers: UserAnswers, index: Index)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
-    buildUserAnswers[GuaranteeDomain](userAnswers)(GuaranteeDomain.userAnswersReader(index))
+    buildUserAnswers[GuaranteeDomain](userAnswers)(GuaranteeDomain.userAnswersReader(index).apply(Nil))
 }
