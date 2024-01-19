@@ -50,7 +50,9 @@ class GuaranteeDetailsDomainSpec extends SpecBase with Generators {
         val result = UserAnswersReader[GuaranteeDetailsDomain].run(userAnswers)
 
         result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(GuaranteeDetailsSection, DeclarationTypePage, GuaranteeTypePage(Index(0)))
+        result.value.pages mustBe Seq(
+          GuaranteeTypePage(Index(0))
+        )
       }
 
       "when non-TIR declaration type" in {
@@ -72,7 +74,9 @@ class GuaranteeDetailsDomainSpec extends SpecBase with Generators {
         val result = UserAnswersReader[GuaranteeDetailsDomain].run(userAnswers)
 
         result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(GuaranteeDetailsSection, DeclarationTypePage, GuaranteeTypePage(Index(0)))
+        result.value.pages mustBe Seq(
+          GuaranteeTypePage(Index(0))
+        )
       }
     }
 
@@ -86,7 +90,9 @@ class GuaranteeDetailsDomainSpec extends SpecBase with Generators {
         val result = UserAnswersReader[GuaranteeDetailsDomain].run(userAnswers)
 
         result.left.value.page mustBe GuaranteeTypePage(Index(0))
-        result.left.value.pages mustBe Seq(GuaranteeDetailsSection, DeclarationTypePage, GuaranteeTypePage(Index(0)))
+        result.left.value.pages mustBe Seq(
+          GuaranteeTypePage(Index(0))
+        )
       }
     }
   }

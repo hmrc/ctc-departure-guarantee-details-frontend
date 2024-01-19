@@ -15,8 +15,7 @@
  */
 
 import cats.implicits._
-import models.journeyDomain.{ReaderSuccess, UserAnswersReader}
-import pages.Page
+import models.journeyDomain._
 import play.api.libs.json._
 
 import scala.annotation.nowarn
@@ -47,9 +46,9 @@ package object models {
 
     def nonEmpty: Boolean = !isEmpty
 
-    def traverse[T](pages: Seq[Page])(implicit userAnswersReader: (Index, Seq[Page]) => UserAnswersReader[T]): UserAnswersReader[Seq[T]] =
+    def traverse[T](implicit userAnswersReader: (Index, Pages) => UserAnswersReader[T]): Read[Seq[T]] = pages =>
       arr.zipWithIndex
-        .foldLeft[UserAnswersReader[Seq[T]]](UserAnswersReader.success[Seq[T]](Nil, pages))({
+        .foldLeft[UserAnswersReader[Seq[T]]](UserAnswersReader.success[Seq[T]](Nil).apply(pages))({
           case (acc, (_, index)) =>
             acc.flatMap {
               case ReaderSuccess(ts, pages) =>

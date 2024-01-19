@@ -37,6 +37,6 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mod
           nameWhenComplete = x => formatDynamicEnumAsString(x.`type`),
           nameWhenInProgress = userAnswers.get(GuaranteeTypePage(index)).map(formatDynamicEnumAsString(_)),
           removeRoute = Some(controllers.guarantee.routes.RemoveGuaranteeYesNoController.onPageLoad(lrn, index))
-        )(GuaranteeDomain.userAnswersReader(index))
+        )(GuaranteeDomain.userAnswersReader(index).apply(Nil))
     }
 }
