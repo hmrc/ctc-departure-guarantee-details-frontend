@@ -31,5 +31,5 @@ object LiabilityDomain {
     (
       CurrencyPage(index).reader.apply(_),
       LiabilityAmountPage(index).reader.apply(_)
-    ).map(_)(LiabilityDomain.apply)
+    ).map(LiabilityDomain.apply)
 }

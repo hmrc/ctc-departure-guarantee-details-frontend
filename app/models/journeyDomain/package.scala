@@ -34,12 +34,14 @@ package object journeyDomain {
     def apply[A](fn: UserAnswers => EitherType[ReaderSuccess[A]]): UserAnswersReader[A] =
       ReaderT[EitherType, UserAnswers, ReaderSuccess[A]](fn)
 
-    def success[A](a: A, pages: Seq[Page]): UserAnswersReader[A] = {
+    def success[A](a: A): Read[A] = pages => {
       val fn: UserAnswers => EitherType[ReaderSuccess[A]] = _ => Right(ReaderSuccess(a, pages))
       apply(fn)
     }
 
-    def error[A](page: Gettable[_], pages: Seq[Page], message: Option[String] = None): UserAnswersReader[A] = {
+    def none[A]: Read[Option[A]] = pages => success[Option[A]](None).apply(pages)
+
+    def error[A](page: Gettable[_], message: Option[String] = None): Read[A] = pages => {
       val fn: UserAnswers => EitherType[ReaderSuccess[A]] = _ => Left(ReaderError(page, pages.append(page), message))
       apply(fn)
     }
@@ -61,7 +63,7 @@ package object journeyDomain {
             if (predicate(x)) {
               next(pages)
             } else {
-              UserAnswersReader.error[B](a, pages.append(a), Some(s"Mandatory predicate failed for ${a.path}"))
+              UserAnswersReader.error[B](a, Some(s"Mandatory predicate failed for ${a.path}")).apply(pages.append(a))
             }
         }
 
@@ -77,9 +79,9 @@ package object journeyDomain {
         .flatMap {
           case ReaderSuccess(x, pages) =>
             if (predicate(x)) {
-              next(pages).map(_.to(Some(_)))
+              next.toOption.apply(pages)
             } else {
-              UserAnswersReader.success(None, pages)
+              UserAnswersReader.none.apply(pages)
             }
         }
   }
@@ -158,22 +160,33 @@ package object journeyDomain {
       }
   }
 
+  implicit class RichRead[A](value: Read[A]) {
+
+    def map[T <: JourneyDomainModel](fun: A => T): Read[T] = pages =>
+      for {
+        a <- value(pages)
+      } yield ReaderSuccess(fun(a.value), a.pages)
+
+    def toSeq: Read[Seq[A]]       = value(_).map(_.toSeq)
+    def toOption: Read[Option[A]] = value(_).map(_.toOption)
+  }
+
   implicit class RichTuple2[A, B](value: (Read[A], Read[B])) {
 
-    def map[T <: JourneyDomainModel](pages: Seq[Page])(f: (A, B) => T): UserAnswersReader[T] =
+    def map[T <: JourneyDomainModel](fun: (A, B) => T): Read[T] = pages =>
       for {
         a <- value._1(pages)
         b <- value._2(a.pages)
-      } yield ReaderSuccess(f(a.value, b.value), b.pages)
+      } yield ReaderSuccess(fun(a.value, b.value), b.pages)
   }
 
   implicit class RichTuple3[A, B, C](value: (Read[A], Read[B], Read[C])) {
 
-    def map[T <: JourneyDomainModel](pages: Seq[Page])(f: (A, B, C) => T): UserAnswersReader[T] =
+    def map[T <: JourneyDomainModel](fun: (A, B, C) => T): Read[T] = pages =>
       for {
         a <- value._1(pages)
         b <- value._2(a.pages)
         c <- value._3(b.pages)
-      } yield ReaderSuccess(f(a.value, b.value, c.value), c.pages)
+      } yield ReaderSuccess(fun(a.value, b.value, c.value), c.pages)
   }
 }

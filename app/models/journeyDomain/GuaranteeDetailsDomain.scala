@@ -38,19 +38,16 @@ case class GuaranteeDetailsDomain(
 
 object GuaranteeDetailsDomain {
 
-  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[GuaranteeDetailsDomain] =
-    GuaranteeDetailsSection.arrayReader
-      .apply(Nil)
-      .flatMap {
+  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[GuaranteeDetailsDomain] = {
+
+    implicit val guaranteesReader: Read[Seq[GuaranteeDomain]] =
+      GuaranteeDetailsSection.arrayReader.apply(_).flatMap {
         case ReaderSuccess(x, pages) if x.isEmpty =>
-          GuaranteeDomain
-            .userAnswersReader(Index(0))
-            .apply(pages)
-            .map(_.toSeq)
-            .map(_.to(GuaranteeDetailsDomain(_)))
+          GuaranteeDomain.userAnswersReader(Index(0)).toSeq.apply(pages)
         case ReaderSuccess(x, pages) =>
-          x.traverse[GuaranteeDomain](pages)(
-            (index, pages) => GuaranteeDomain.userAnswersReader(index).apply(pages)
-          ).map(_.to(GuaranteeDetailsDomain(_)))
+          x.traverse[GuaranteeDomain](GuaranteeDomain.userAnswersReader(_).apply(_)).apply(pages)
       }
+
+    guaranteesReader.map(GuaranteeDetailsDomain.apply).apply(Nil)
+  }
 }
