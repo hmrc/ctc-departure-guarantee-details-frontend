@@ -117,7 +117,7 @@ object GuaranteeDomain {
         ReferenceNumberPage(index).reader.apply(_),
         AddLiabilityYesNoPage(index).filterOptionalDependent(identity)(LiabilityDomain.userAnswersReader(index)),
         AccessCodePage(index).reader.apply(_)
-      ).mapReads(_)(TransitionGuaranteeOfTypes01249.apply(guaranteeType, _, _, _)(index))
+      ).map(_)(TransitionGuaranteeOfTypes01249.apply(guaranteeType, _, _, _)(index))
   }
 
   case class PostTransitionGuaranteeOfTypes01249(
@@ -135,7 +135,7 @@ object GuaranteeDomain {
         ReferenceNumberPage(index).reader.apply(_),
         LiabilityDomain.userAnswersReader(index),
         AccessCodePage(index).reader.apply(_)
-      ).mapReads(_)(PostTransitionGuaranteeOfTypes01249.apply(guaranteeType, _, _, _)(index))
+      ).map(_)(PostTransitionGuaranteeOfTypes01249.apply(guaranteeType, _, _, _)(index))
   }
 
   sealed trait GuaranteeOfType5 extends GuaranteeDomain
@@ -192,7 +192,7 @@ object GuaranteeDomain {
       (
         OtherReferencePage(index).reader,
         LiabilityDomain.userAnswersReader(index)
-      ).mapReads(_)(GuaranteeOfType8.apply(guaranteeType, _, _)(index))
+      ).map(_)(GuaranteeOfType8.apply(guaranteeType, _, _)(index))
   }
 
   sealed trait GuaranteeOfType3 extends GuaranteeDomain
@@ -219,7 +219,7 @@ object GuaranteeDomain {
       (
         OtherReferencePage(index).reader,
         LiabilityDomain.userAnswersReader(index)
-      ).mapReads(_)(GuaranteeOfType3WithReference.apply(guaranteeType, _, _)(index))
+      ).map(_)(GuaranteeOfType3WithReference.apply(guaranteeType, _, _)(index))
   }
 
   case class GuaranteeOfType3WithoutReference(

@@ -23,7 +23,7 @@ import pages.guarantee.{CurrencyPage, LiabilityAmountPage}
 case class LiabilityDomain(
   currencyCode: CurrencyCode,
   amount: BigDecimal
-)
+) extends JourneyDomainModel
 
 object LiabilityDomain {
 
@@ -31,5 +31,5 @@ object LiabilityDomain {
     (
       CurrencyPage(index).reader.apply(_),
       LiabilityAmountPage(index).reader.apply(_)
-    ).mapReads(_)(LiabilityDomain.apply)
+    ).map(_)(LiabilityDomain.apply)
 }

@@ -112,7 +112,7 @@ package object journeyDomain {
     }
 
     def optionalReader(implicit reads: Reads[A]): Read[Option[A]] = pages => {
-      val fn: UserAnswers => EitherType[ReaderSuccess[Option[A]]] = ua => Right(ReaderSuccess(ua.get(a), pages.append(a)))
+      val fn: UserAnswers => EitherType[ReaderSuccess[Option[A]]] = ua => Right(ReaderSuccess(ua.get(a), pages))
       UserAnswersReader(fn)
     }
   }
@@ -160,7 +160,7 @@ package object journeyDomain {
 
   implicit class RichTuple2[A, B](value: (Read[A], Read[B])) {
 
-    def mapReads[T](pages: Seq[Page])(f: (A, B) => T): UserAnswersReader[T] =
+    def map[T <: JourneyDomainModel](pages: Seq[Page])(f: (A, B) => T): UserAnswersReader[T] =
       for {
         a <- value._1(pages)
         b <- value._2(a.pages)
@@ -169,7 +169,7 @@ package object journeyDomain {
 
   implicit class RichTuple3[A, B, C](value: (Read[A], Read[B], Read[C])) {
 
-    def mapReads[T](pages: Seq[Page])(f: (A, B, C) => T): UserAnswersReader[T] =
+    def map[T <: JourneyDomainModel](pages: Seq[Page])(f: (A, B, C) => T): UserAnswersReader[T] =
       for {
         a <- value._1(pages)
         b <- value._2(a.pages)
