@@ -17,7 +17,11 @@
 package navigation
 
 import base.SpecBase
+import models.journeyDomain.OpsError.ReaderError
+import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
+import models.journeyDomain.{JourneyDomainModel, ReaderSuccess, Stage}
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import org.scalacheck.Gen
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -45,6 +49,14 @@ class UserAnswersNavigatorSpec extends SpecBase {
 
   private val userAnswers = emptyUserAnswers
 
+  private val stage = Gen.oneOf(AccessingJourney, CompletingJourney).sample.value
+
+  private case object FakeDomainModel extends JourneyDomainModel {
+
+    override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+      Some(Call(GET, "/cya"))
+  }
+
   "UserAnswersNavigator" - {
     "nextPage" - {
       "when in normal mode" - {
@@ -52,10 +64,12 @@ class UserAnswersNavigatorSpec extends SpecBase {
 
         "and no pages answered" in {
           val currentPage             = None
-          val userAnswersReaderResult = FooPage.route(userAnswers, mode)
           val answeredPages           = Nil
+          val userAnswersReaderResult = Left(ReaderError(FooPage, answeredPages))
 
-          val result = UserAnswersNavigator.nextPage(currentPage, userAnswersReaderResult, answeredPages, userAnswers, mode)
+          val result = UserAnswersNavigator
+            .nextPage(currentPage, userAnswersReaderResult, mode)
+            .apply(userAnswers, stage)
 
           result.value.url mustBe "/foo"
         }
@@ -65,19 +79,23 @@ class UserAnswersNavigatorSpec extends SpecBase {
 
           "must redirect to BarPage" - {
             "when BarPage answered" in {
-              val userAnswersReaderResult = BazPage.route(userAnswers, mode)
               val answeredPages           = Seq(FooPage, BarPage)
+              val userAnswersReaderResult = Left(ReaderError(BazPage, answeredPages))
 
-              val result = UserAnswersNavigator.nextPage(currentPage, userAnswersReaderResult, answeredPages, userAnswers, mode)
+              val result = UserAnswersNavigator
+                .nextPage(currentPage, userAnswersReaderResult, mode)
+                .apply(userAnswers, stage)
 
               result.value.url mustBe "/bar"
             }
 
             "when BarPage unanswered" in {
-              val userAnswersReaderResult = BarPage.route(userAnswers, mode)
               val answeredPages           = Seq(FooPage)
+              val userAnswersReaderResult = Left(ReaderError(BarPage, answeredPages))
 
-              val result = UserAnswersNavigator.nextPage(currentPage, userAnswersReaderResult, answeredPages, userAnswers, mode)
+              val result = UserAnswersNavigator
+                .nextPage(currentPage, userAnswersReaderResult, mode)
+                .apply(userAnswers, stage)
 
               result.value.url mustBe "/bar"
             }
@@ -89,19 +107,23 @@ class UserAnswersNavigatorSpec extends SpecBase {
 
           "must redirect to BazPage" - {
             "when BazPage answered" in {
-              val userAnswersReaderResult = Some(Call(GET, "/cya"))
               val answeredPages           = Seq(FooPage, BarPage, BazPage)
+              val userAnswersReaderResult = Right(ReaderSuccess(FakeDomainModel, answeredPages))
 
-              val result = UserAnswersNavigator.nextPage(currentPage, userAnswersReaderResult, answeredPages, userAnswers, mode)
+              val result = UserAnswersNavigator
+                .nextPage(currentPage, userAnswersReaderResult, mode)
+                .apply(userAnswers, stage)
 
               result.value.url mustBe "/baz"
             }
 
             "when BazPage unanswered" in {
-              val userAnswersReaderResult = BazPage.route(userAnswers, mode)
               val answeredPages           = Seq(FooPage, BarPage)
+              val userAnswersReaderResult = Left(ReaderError(BazPage, answeredPages))
 
-              val result = UserAnswersNavigator.nextPage(currentPage, userAnswersReaderResult, answeredPages, userAnswers, mode)
+              val result = UserAnswersNavigator
+                .nextPage(currentPage, userAnswersReaderResult, mode)
+                .apply(userAnswers, stage)
 
               result.value.url mustBe "/baz"
             }
@@ -112,32 +134,91 @@ class UserAnswersNavigatorSpec extends SpecBase {
       "when in check mode" - {
         val mode = CheckMode
 
-        "must redirect to user answers reader result" - {
-          val userAnswersReaderResult = Some(Call(GET, "/cya"))
-          val answeredPages           = Seq(FooPage, BarPage, BazPage)
+        "and on FooPage" - {
+          val currentPage = Some(FooPage)
 
-          "from FooPage" in {
-            val currentPage = Some(FooPage)
+          "must redirect to BarPage" - {
+            "when BarPage answered" in {
+              val answeredPages           = Seq(FooPage, BarPage)
+              val userAnswersReaderResult = Left(ReaderError(BazPage, answeredPages))
 
-            val result = UserAnswersNavigator.nextPage(currentPage, userAnswersReaderResult, answeredPages, userAnswers, mode)
+              val result = UserAnswersNavigator
+                .nextPage(currentPage, userAnswersReaderResult, mode)
+                .apply(userAnswers, stage)
 
-            result.value.url mustBe "/cya"
+              result.value.url mustBe "/bar"
+            }
+
+            "when BarPage unanswered" in {
+              val answeredPages           = Seq(FooPage)
+              val userAnswersReaderResult = Left(ReaderError(BarPage, answeredPages))
+
+              val result = UserAnswersNavigator
+                .nextPage(currentPage, userAnswersReaderResult, mode)
+                .apply(userAnswers, stage)
+
+              result.value.url mustBe "/bar"
+            }
           }
 
-          "from BarPage" in {
-            val currentPage = Some(BarPage)
+          "must redirect to cya" - {
+            "when all questions answered" in {
+              val answeredPages           = Seq(FooPage, BarPage, BazPage)
+              val userAnswersReaderResult = Right(ReaderSuccess(FakeDomainModel, answeredPages))
 
-            val result = UserAnswersNavigator.nextPage(currentPage, userAnswersReaderResult, answeredPages, userAnswers, mode)
+              val result = UserAnswersNavigator
+                .nextPage(currentPage, userAnswersReaderResult, mode)
+                .apply(userAnswers, stage)
 
-            result.value.url mustBe "/cya"
+              result.value.url mustBe "/cya"
+            }
+          }
+        }
+
+        "and on BarPage" - {
+          val currentPage = Some(BarPage)
+
+          "must redirect to BazPage" - {
+            "when BazPage unanswered" in {
+              val answeredPages           = Seq(FooPage, BarPage)
+              val userAnswersReaderResult = Left(ReaderError(BazPage, answeredPages))
+
+              val result = UserAnswersNavigator
+                .nextPage(currentPage, userAnswersReaderResult, mode)
+                .apply(userAnswers, stage)
+
+              result.value.url mustBe "/baz"
+            }
           }
 
-          "from BazPage" in {
-            val currentPage = Some(BazPage)
+          "must redirect to cya" - {
+            "when all questions answered" in {
+              val answeredPages           = Seq(FooPage, BarPage, BazPage)
+              val userAnswersReaderResult = Right(ReaderSuccess(FakeDomainModel, answeredPages))
 
-            val result = UserAnswersNavigator.nextPage(currentPage, userAnswersReaderResult, answeredPages, userAnswers, mode)
+              val result = UserAnswersNavigator
+                .nextPage(currentPage, userAnswersReaderResult, mode)
+                .apply(userAnswers, stage)
 
-            result.value.url mustBe "/cya"
+              result.value.url mustBe "/cya"
+            }
+          }
+        }
+
+        "and on BazPage" - {
+          val currentPage = Some(BazPage)
+
+          "must redirect to cya" - {
+            "when all questions answered" in {
+              val answeredPages           = Seq(FooPage, BarPage, BazPage)
+              val userAnswersReaderResult = Right(ReaderSuccess(FakeDomainModel, answeredPages))
+
+              val result = UserAnswersNavigator
+                .nextPage(currentPage, userAnswersReaderResult, mode)
+                .apply(userAnswers, stage)
+
+              result.value.url mustBe "/cya"
+            }
           }
         }
       }
