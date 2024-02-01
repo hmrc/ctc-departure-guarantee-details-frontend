@@ -75,7 +75,8 @@ class GuaranteeDetailsDomainSpec extends SpecBase with Generators {
 
         result.value.value mustBe expectedResult
         result.value.pages mustBe Seq(
-          GuaranteeTypePage(Index(0))
+          GuaranteeTypePage(Index(0)),
+          GuaranteeDetailsSection
         )
       }
     }

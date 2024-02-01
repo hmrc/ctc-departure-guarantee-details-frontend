@@ -158,14 +158,31 @@ package object journeyDomain {
         case _ if pages.contains(page) => pages
         case _                         => pages :+ page
       }
+
+    def append(page: Option[Section[_]]): Pages =
+      page.fold(pages) {
+        case x if pages.contains(x) => pages
+        case x                      => pages :+ x
+      }
   }
 
   implicit class RichRead[A](value: Read[A]) {
 
-    def map[T <: JourneyDomainModel](fun: A => T): Read[T] = pages =>
+    def map[T <: JourneyDomainModel](fun: A => T): Read[T] =
+      to {
+        a =>
+          val t = fun(a)
+          pages =>
+            UserAnswersReader.apply {
+              ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
+            }
+      }
+
+    def to[T](fun: A => Read[T]): Read[T] = pages =>
       for {
-        a <- value(pages)
-      } yield ReaderSuccess(fun(a.value), a.pages)
+        a      <- value(pages)
+        reader <- fun(a.value)(a.pages)
+      } yield reader
 
     def toSeq: Read[Seq[A]]       = value(_).map(_.toSeq)
     def toOption: Read[Option[A]] = value(_).map(_.toOption)
@@ -173,20 +190,42 @@ package object journeyDomain {
 
   implicit class RichTuple2[A, B](value: (Read[A], Read[B])) {
 
-    def map[T <: JourneyDomainModel](fun: (A, B) => T): Read[T] = pages =>
+    def map[T <: JourneyDomainModel](fun: (A, B) => T): Read[T] =
+      to {
+        case (a, b) =>
+          val t = fun(a, b)
+          pages =>
+            UserAnswersReader.apply {
+              ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
+            }
+      }
+
+    def to[T](fun: (A, B) => Read[T]): Read[T] = pages =>
       for {
-        a <- value._1(pages)
-        b <- value._2(a.pages)
-      } yield ReaderSuccess(fun(a.value, b.value), b.pages)
+        a      <- value._1(pages)
+        b      <- value._2(a.pages)
+        reader <- fun(a.value, b.value)(b.pages)
+      } yield reader
   }
 
   implicit class RichTuple3[A, B, C](value: (Read[A], Read[B], Read[C])) {
 
-    def map[T <: JourneyDomainModel](fun: (A, B, C) => T): Read[T] = pages =>
+    def map[T <: JourneyDomainModel](fun: (A, B, C) => T): Read[T] =
+      to {
+        case (a, b, c) =>
+          val t = fun(a, b, c)
+          pages =>
+            UserAnswersReader.apply {
+              ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
+            }
+      }
+
+    def to[T](fun: (A, B, C) => Read[T]): Read[T] = pages =>
       for {
-        a <- value._1(pages)
-        b <- value._2(a.pages)
-        c <- value._3(b.pages)
-      } yield ReaderSuccess(fun(a.value, b.value, c.value), c.pages)
+        a      <- value._1(pages)
+        b      <- value._2(a.pages)
+        c      <- value._3(b.pages)
+        reader <- fun(a.value, b.value, c.value)(c.pages)
+      } yield reader
   }
 }

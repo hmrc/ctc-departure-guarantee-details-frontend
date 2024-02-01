@@ -28,4 +28,7 @@ case class ReaderSuccess[A](value: A, pages: Seq[Page]) {
 
   def toOption: ReaderSuccess[Option[A]] =
     to(Option(_))
+
+  def toUserAnswersReader: UserAnswersReader[A] =
+    UserAnswersReader.success(value).apply(pages)
 }
