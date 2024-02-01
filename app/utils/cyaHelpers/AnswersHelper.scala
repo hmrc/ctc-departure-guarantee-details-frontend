@@ -17,9 +17,8 @@
 package utils.cyaHelpers
 
 import config.FrontendAppConfig
-import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.Stage.AccessingJourney
-import models.journeyDomain.{JourneyDomainModel, ReaderSuccess}
+import models.journeyDomain.{JourneyDomainModel, ReaderSuccess, UserAnswersReader}
 import models.{Index, LocalReferenceNumber, Mode, RichJsArray, RichOptionalJsArray, UserAnswers}
 import navigation.UserAnswersNavigator
 import pages.QuestionPage
@@ -95,11 +94,11 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
     userAnswersReader
       .run(userAnswers)
       .map {
-        case ReaderSuccess(x, _) =>
+        x =>
           buildSimpleRow(
             prefix = prefix,
             label = messages(s"$prefix.label", args: _*),
-            answer = formatAnswer(x),
+            answer = formatAnswer(x.value),
             id = id,
             call = Some(UserAnswersNavigator.nextPage[A](userAnswers, None, mode, AccessingJourney)),
             args = args: _*

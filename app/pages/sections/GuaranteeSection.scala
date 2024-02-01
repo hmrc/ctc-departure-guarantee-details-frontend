@@ -16,10 +16,15 @@
 
 package pages.sections
 
-import models.Index
+import controllers.guarantee.routes
+import models.{Index, Mode, UserAnswers}
 import play.api.libs.json.{JsObject, JsPath}
+import play.api.mvc.Call
 
 case class GuaranteeSection(index: Index) extends Section[JsObject] {
 
   override def path: JsPath = GuaranteeDetailsSection.path \ index.position
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, index))
 }

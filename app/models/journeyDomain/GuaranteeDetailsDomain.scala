@@ -16,23 +16,28 @@
 
 package models.journeyDomain
 
-import cats.implicits._
 import config.Constants.DeclarationType._
 import config.PhaseConfig
 import controllers.routes
 import models.{Index, Mode, RichJsArray, UserAnswers}
 import pages.external.DeclarationTypePage
-import pages.sections.GuaranteeDetailsSection
+import pages.sections.{GuaranteeDetailsSection, Section}
 import play.api.mvc.Call
 
 case class GuaranteeDetailsDomain(
   guarantees: Seq[GuaranteeDomain]
 ) extends JourneyDomainModel {
 
+  override def page(userAnswers: UserAnswers): Option[Section[_]] =
+    userAnswers.get(DeclarationTypePage).flatMap {
+      case TIR => None
+      case _   => Some(GuaranteeDetailsSection)
+    }
+
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    userAnswers.get(DeclarationTypePage) map {
-      case TIR => routes.GuaranteeAddedTIRController.onPageLoad(userAnswers.lrn)
-      case _   => routes.AddAnotherGuaranteeController.onPageLoad(userAnswers.lrn)
+    page(userAnswers) match {
+      case Some(value) => value.route(userAnswers, mode)
+      case None        => Some(routes.GuaranteeAddedTIRController.onPageLoad(userAnswers.lrn))
     }
 }
 
@@ -41,11 +46,11 @@ object GuaranteeDetailsDomain {
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[GuaranteeDetailsDomain] = {
 
     implicit val guaranteesReader: Read[Seq[GuaranteeDomain]] =
-      GuaranteeDetailsSection.arrayReader.apply(_).flatMap {
-        case ReaderSuccess(x, pages) if x.isEmpty =>
-          GuaranteeDomain.userAnswersReader(Index(0)).toSeq.apply(pages)
-        case ReaderSuccess(x, pages) =>
-          x.traverse[GuaranteeDomain](GuaranteeDomain.userAnswersReader(_).apply(_)).apply(pages)
+      GuaranteeDetailsSection.arrayReader.to {
+        case x if x.isEmpty =>
+          GuaranteeDomain.userAnswersReader(Index(0)).toSeq
+        case x =>
+          x.traverse[GuaranteeDomain](GuaranteeDomain.userAnswersReader(_).apply(_))
       }
 
     guaranteesReader.map(GuaranteeDetailsDomain.apply).apply(Nil)

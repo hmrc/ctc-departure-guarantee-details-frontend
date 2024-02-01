@@ -25,6 +25,7 @@ import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.{CheckMode, GuaranteeType, Index, Mode, Phase, UserAnswers}
 import pages.external.DeclarationTypePage
 import pages.guarantee._
+import pages.sections.{GuaranteeSection, Section}
 import play.api.mvc.Call
 
 sealed trait GuaranteeDomain extends JourneyDomainModel {
@@ -32,37 +33,49 @@ sealed trait GuaranteeDomain extends JourneyDomainModel {
 
   val `type`: GuaranteeType
 
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(GuaranteeSection(index))
+
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    Some(controllers.guarantee.routes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, index))
+    page(userAnswers) match {
+      case None =>
+        stage match {
+          case AccessingJourney =>
+            Some(controllers.guarantee.routes.GuaranteeTypeController.onPageLoad(userAnswers.lrn, CheckMode, index))
+          case CompletingJourney =>
+            Some(controllers.routes.AddAnotherGuaranteeController.onPageLoad(userAnswers.lrn))
+        }
+      case Some(value) =>
+        value.route(userAnswers, mode)
+    }
 }
 
 object GuaranteeDomain {
 
   // scalastyle:off cyclomatic.complexity
-  implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): Read[GuaranteeDomain] = pages =>
-    DeclarationTypePage.reader.apply(pages).flatMap {
-      case ReaderSuccess(TIR, pages) =>
+  implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): Read[GuaranteeDomain] =
+    DeclarationTypePage.reader.to {
+      case TIR =>
         GuaranteeTypePage(index)
           .mandatoryReader(_.code == TIRGuarantee)
-          .apply(pages)
+          .apply(_)
           .map(_.to(GuaranteeOfTypesAB(_)(index)))
-      case ReaderSuccess(_, pages) =>
-        GuaranteeTypePage(index).reader.apply(pages).flatMap {
-          case ReaderSuccess(guaranteeType, pages) =>
+      case _ =>
+        GuaranteeTypePage(index).reader.to {
+          guaranteeType =>
             guaranteeType.code match {
               case WaiverByAgreementGuarantee =>
-                GuaranteeOfTypesAB.userAnswersReader(index, guaranteeType).apply(pages)
+                GuaranteeOfTypesAB.userAnswersReader(index, guaranteeType)
               case WaiverGuarantee | ComprehensiveGuarantee | IndividualInFormOfUndertakingGuarantee | IndividualInFormOfVouchersGuarantee |
                   IndividualForMultipleUsagesGuarantee =>
-                GuaranteeOfTypes01249.userAnswersReader(index, guaranteeType).apply(pages)
+                GuaranteeOfTypes01249.userAnswersReader(index, guaranteeType)
               case WaiverImportExportGuarantee =>
-                GuaranteeOfType5.userAnswersReader(index, guaranteeType).apply(pages)
+                GuaranteeOfType5.userAnswersReader(index, guaranteeType)
               case NotRequiredByPublicBodiesGuarantee =>
-                GuaranteeOfType8.userAnswersReader(index, guaranteeType).apply(pages)
+                GuaranteeOfType8.userAnswersReader(index, guaranteeType)
               case CashDepositGuarantee =>
-                GuaranteeOfType3.userAnswersReader(index, guaranteeType).apply(pages)
+                GuaranteeOfType3.userAnswersReader(index, guaranteeType)
               case code =>
-                UserAnswersReader.error[GuaranteeDomain](GuaranteeTypePage(index), Some(s"Guarantee type of $code not valid")).apply(pages)
+                UserAnswersReader.error[GuaranteeDomain](GuaranteeTypePage(index), Some(s"Guarantee type of $code not valid"))
             }
         }
     }
@@ -73,14 +86,7 @@ object GuaranteeDomain {
   )(override val index: Index)
       extends GuaranteeDomain {
 
-    override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
-      stage match {
-        case AccessingJourney =>
-          controllers.guarantee.routes.GuaranteeTypeController.onPageLoad(userAnswers.lrn, CheckMode, index)
-        case CompletingJourney =>
-          controllers.routes.AddAnotherGuaranteeController.onPageLoad(userAnswers.lrn)
-      }
-    }
+    override def page(userAnswers: UserAnswers): Option[Section[_]] = None
   }
 
   object GuaranteeOfTypesAB {
@@ -161,8 +167,8 @@ object GuaranteeDomain {
 
     def userAnswersReader(index: Index, guaranteeType: GuaranteeType): Read[GuaranteeDomain] =
       AddLiabilityYesNoPage(index)
-        .filterOptionalDependent(identity)(LiabilityDomain.userAnswersReader(index))(_)
-        .map(_.to(TransitionGuaranteeOfType5.apply(guaranteeType, _)(index)))
+        .filterOptionalDependent(identity)(LiabilityDomain.userAnswersReader(index))
+        .map(TransitionGuaranteeOfType5.apply(guaranteeType, _)(index))
   }
 
   case class PostTransitionGuaranteeOfType5(
@@ -175,8 +181,8 @@ object GuaranteeDomain {
 
     def userAnswersReader(index: Index, guaranteeType: GuaranteeType): Read[GuaranteeDomain] =
       LiabilityDomain
-        .userAnswersReader(index)(_)
-        .map(_.to(PostTransitionGuaranteeOfType5.apply(guaranteeType, _)(index)))
+        .userAnswersReader(index)
+        .map(PostTransitionGuaranteeOfType5.apply(guaranteeType, _)(index))
   }
 
   case class GuaranteeOfType8(
@@ -200,9 +206,9 @@ object GuaranteeDomain {
   object GuaranteeOfType3 {
 
     def userAnswersReader(index: Index, guaranteeType: GuaranteeType): Read[GuaranteeDomain] =
-      OtherReferenceYesNoPage(index).reader.apply(_).flatMap {
-        case ReaderSuccess(true, pages)  => GuaranteeOfType3WithReference.userAnswersReader(index, guaranteeType).apply(pages)
-        case ReaderSuccess(false, pages) => GuaranteeOfType3WithoutReference.userAnswersReader(index, guaranteeType).apply(pages)
+      OtherReferenceYesNoPage(index).reader.to {
+        case true  => GuaranteeOfType3WithReference.userAnswersReader(index, guaranteeType)
+        case false => GuaranteeOfType3WithoutReference.userAnswersReader(index, guaranteeType)
       }
   }
 
@@ -230,6 +236,6 @@ object GuaranteeDomain {
   object GuaranteeOfType3WithoutReference {
 
     def userAnswersReader(index: Index, guaranteeType: GuaranteeType): Read[GuaranteeDomain] =
-      UserAnswersReader.success(GuaranteeOfType3WithoutReference(guaranteeType)(index))
+      UserAnswersReader.success(guaranteeType).map(GuaranteeOfType3WithoutReference(_)(index))
   }
 }

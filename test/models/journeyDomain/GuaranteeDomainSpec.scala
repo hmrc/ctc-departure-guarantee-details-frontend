@@ -30,6 +30,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.external.DeclarationTypePage
 import pages.guarantee._
+import pages.sections.GuaranteeSection
 
 class GuaranteeDomainSpec extends SpecBase with Generators {
 
@@ -87,7 +88,8 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             AddLiabilityYesNoPage(index),
             CurrencyPage(index),
             LiabilityAmountPage(index),
-            AccessCodePage(index)
+            AccessCodePage(index),
+            GuaranteeSection(index)
           )
         }
 
@@ -130,7 +132,8 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             ReferenceNumberPage(index),
             CurrencyPage(index),
             LiabilityAmountPage(index),
-            AccessCodePage(index)
+            AccessCodePage(index),
+            GuaranteeSection(index)
           )
         }
       }
@@ -168,7 +171,8 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           result.value.pages mustBe Seq(
             GuaranteeTypePage(index),
             CurrencyPage(index),
-            LiabilityAmountPage(index)
+            LiabilityAmountPage(index),
+            GuaranteeSection(index)
           )
         }
 
@@ -196,7 +200,8 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             result.value.value mustBe expectedResult
             result.value.pages mustBe Seq(
               GuaranteeTypePage(index),
-              AddLiabilityYesNoPage(index)
+              AddLiabilityYesNoPage(index),
+              GuaranteeSection(index)
             )
           }
 
@@ -231,7 +236,8 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
               GuaranteeTypePage(index),
               AddLiabilityYesNoPage(index),
               CurrencyPage(index),
-              LiabilityAmountPage(index)
+              LiabilityAmountPage(index),
+              GuaranteeSection(index)
             )
           }
         }
@@ -312,7 +318,8 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           GuaranteeTypePage(index),
           OtherReferencePage(index),
           CurrencyPage(index),
-          LiabilityAmountPage(index)
+          LiabilityAmountPage(index),
+          GuaranteeSection(index)
         )
       }
 
@@ -351,7 +358,8 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             OtherReferenceYesNoPage(index),
             OtherReferencePage(index),
             CurrencyPage(index),
-            LiabilityAmountPage(index)
+            LiabilityAmountPage(index),
+            GuaranteeSection(index)
           )
         }
 
@@ -372,10 +380,10 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           result.value.value mustBe expectedResult
           result.value.pages mustBe Seq(
             GuaranteeTypePage(index),
-            OtherReferenceYesNoPage(index)
+            OtherReferenceYesNoPage(index),
+            GuaranteeSection(index)
           )
         }
-
       }
     }
 
