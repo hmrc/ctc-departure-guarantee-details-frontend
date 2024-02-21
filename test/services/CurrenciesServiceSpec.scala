@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import generators.Generators
 import models.SelectableList
@@ -33,9 +34,9 @@ class CurrenciesServiceSpec extends SpecBase with BeforeAndAfterEach with Genera
   val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   val service                                      = new CurrenciesService(mockRefDataConnector)
 
-  val currencyCode1: CurrencyCode      = CurrencyCode("CHF", Some("Swiss Franc"))
-  val currencyCode2: CurrencyCode      = CurrencyCode("GBP", Some("Sterling"))
-  val currencyCodes: Seq[CurrencyCode] = Seq(currencyCode1, currencyCode2)
+  val currencyCode1: CurrencyCode              = CurrencyCode("CHF", Some("Swiss Franc"))
+  val currencyCode2: CurrencyCode              = CurrencyCode("GBP", Some("Sterling"))
+  val currencyCodes: NonEmptySet[CurrencyCode] = NonEmptySet.of(currencyCode1, currencyCode2)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)

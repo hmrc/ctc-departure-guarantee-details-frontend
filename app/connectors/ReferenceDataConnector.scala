@@ -16,6 +16,8 @@
 
 package connectors
 
+import cats.Order
+import cats.data.NonEmptySet
 import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.GuaranteeType
@@ -24,42 +26,53 @@ import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Reads}
 import sttp.model.HeaderNames
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient) extends Logging {
+class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClientV2) extends Logging {
 
-  def getCurrencyCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CurrencyCode]] = {
-    val url = s"${config.referenceDataUrl}/lists/CurrencyCodes"
-    http.GET[Seq[CurrencyCode]](url, headers = version2Header)
+  def getCurrencyCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[CurrencyCode]] = {
+    val url = url"${config.referenceDataUrl}/lists/CurrencyCodes"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[CurrencyCode]]
   }
 
-  def getGuaranteeTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[GuaranteeType]] = {
-    val url = s"${config.referenceDataUrl}/lists/GuaranteeType"
-    http.GET[Seq[GuaranteeType]](url, headers = version2Header)
+  def getGuaranteeTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[GuaranteeType]] = {
+    val url = url"${config.referenceDataUrl}/lists/GuaranteeType"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[GuaranteeType]]
   }
 
-  def getGuaranteeType(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[GuaranteeType]] = {
-    val url                                = s"${config.referenceDataUrl}/filtered-lists/GuaranteeType"
-    val queryParams: Seq[(String, String)] = Seq("data.code" -> code)
-    http.GET[Seq[GuaranteeType]](url, headers = version2Header, queryParams = queryParams)
+  def getGuaranteeType(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[GuaranteeType] = {
+    val url = url"${config.referenceDataUrl}/lists/GuaranteeType"
+    http
+      .get(url)
+      .transform(_.withQueryStringParameters("data.code" -> code))
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[GuaranteeType]]
+      .map(_.head)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(
     HeaderNames.Accept -> "application/vnd.hmrc.2.0+json"
   )
 
-  implicit def responseHandlerGeneric[A](implicit reads: Reads[A]): HttpReads[Seq[A]] =
+  implicit def responseHandlerGeneric[A](implicit reads: Reads[A], order: Order[A]): HttpReads[NonEmptySet[A]] =
     (_: String, _: String, response: HttpResponse) => {
       response.status match {
         case OK =>
-          (response.json \ "data").validate[Seq[A]] match {
+          (response.json \ "data").validate[List[A]] match {
             case JsSuccess(Nil, _) =>
               throw new NoReferenceDataFoundException
-            case JsSuccess(value, _) =>
-              value
+            case JsSuccess(head :: tail, _) =>
+              NonEmptySet.of(head, tail: _*)
             case JsError(errors) =>
               throw JsResultException(errors)
           }

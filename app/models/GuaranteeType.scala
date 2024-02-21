@@ -16,16 +16,19 @@
 
 package models
 
+import cats.Order
 import play.api.libs.json.{Format, Json}
 
 case class GuaranteeType(code: String, description: String) extends Radioable[GuaranteeType] {
-  override val messageKeyPrefix: String = GuaranteeType.messageKeyPrefix
-  override def toString: String         = s"($code) $description"
+  override def toString: String = s"($code) $description"
+
+  override val messageKeyPrefix: String = "guarantee.guaranteeType"
 }
 
 object GuaranteeType extends DynamicEnumerableType[GuaranteeType] {
   implicit val format: Format[GuaranteeType] = Json.format[GuaranteeType]
 
-  val messageKeyPrefix = "guarantee.guaranteeType"
-
+  implicit val order: Order[GuaranteeType] = (x: GuaranteeType, y: GuaranteeType) => {
+    x.code.compareToIgnoreCase(y.code)
+  }
 }
