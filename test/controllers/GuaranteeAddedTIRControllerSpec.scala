@@ -21,7 +21,7 @@ import models.GuaranteeType._
 import models.{GuaranteeType, Index, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{never, reset, verify, when}
+import org.mockito.Mockito.{reset, verify, when}
 import pages.guarantee.GuaranteeTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -72,7 +72,7 @@ class GuaranteeAddedTIRControllerSpec extends SpecBase with AppWithDefaultMockFi
 
           setExistingUserAnswers(emptyUserAnswers)
 
-          when(mockService.getGuaranteeType(any())(any())).thenReturn(Future.successful(Some(guaranteeType)))
+          when(mockService.getGuaranteeType(any())(any())).thenReturn(Future.successful(guaranteeType))
           when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
           val request = FakeRequest(POST, routes.GuaranteeAddedTIRController.onSubmit(lrn).url)
@@ -87,26 +87,6 @@ class GuaranteeAddedTIRControllerSpec extends SpecBase with AppWithDefaultMockFi
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
           userAnswersCaptor.getValue.get(GuaranteeTypePage(Index(0))).get mustBe guaranteeType
-        }
-      }
-
-      "when guarantee type not found" - {
-        "must redirect to technical difficulties" in {
-          setExistingUserAnswers(emptyUserAnswers)
-
-          when(mockService.getGuaranteeType(any())(any())).thenReturn(Future.successful(None))
-          when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
-
-          val request = FakeRequest(POST, routes.GuaranteeAddedTIRController.onSubmit(lrn).url)
-
-          val result = route(app, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual frontendAppConfig.technicalDifficultiesUrl
-
-          verify(mockService).getGuaranteeType(eqTo("B"))(any())
-          verify(mockSessionRepository, never()).set(any())(any())
         }
       }
     }

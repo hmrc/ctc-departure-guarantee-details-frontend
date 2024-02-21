@@ -31,7 +31,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.GuaranteeAddedTIRView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class GuaranteeAddedTIRController @Inject() (
   override val messagesApi: MessagesApi,
@@ -54,15 +54,12 @@ class GuaranteeAddedTIRController @Inject() (
   def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       service.getGuaranteeType(TIRGuarantee).flatMap {
-        case Some(guaranteeType) =>
+        guaranteeType =>
           GuaranteeTypePage(Index(0))
             .writeToUserAnswers(guaranteeType)
             .updateTask()
             .writeToSession()
             .navigateTo(config.taskListUrl(lrn))
-        case None =>
-          logger.warn("'B' guarantee type not found in reference data")
-          Future.successful(Redirect(config.technicalDifficultiesUrl))
       }
   }
 }

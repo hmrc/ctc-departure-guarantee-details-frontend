@@ -30,9 +30,6 @@ class GuaranteeTypesService @Inject() (
   referenceDataConnector: ReferenceDataConnector
 )(implicit ec: ExecutionContext) {
 
-  private def sort(guaranteeType: Seq[GuaranteeType]): Seq[GuaranteeType] =
-    guaranteeType.sortBy(_.code.toLowerCase)
-
   private def filter(guaranteeTypes: Seq[GuaranteeType], userAnswers: UserAnswers): Seq[GuaranteeType] = {
     lazy val isXiOfficeOfDeparture = userAnswers.get(OfficeOfDeparturePage).map(_.countryCode).contains(XI)
     guaranteeTypes
@@ -45,10 +42,10 @@ class GuaranteeTypesService @Inject() (
   def getGuaranteeTypes(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Seq[GuaranteeType]] =
     referenceDataConnector
       .getGuaranteeTypes()
+      .map(_.toSeq)
       .map(filter(_, userAnswers))
-      .map(sort)
 
-  def getGuaranteeType(code: String)(implicit hc: HeaderCarrier): Future[Option[GuaranteeType]] =
-    referenceDataConnector.getGuaranteeType(code).map(_.headOption)
-
+  def getGuaranteeType(code: String)(implicit hc: HeaderCarrier): Future[GuaranteeType] =
+    referenceDataConnector
+      .getGuaranteeType(code)
 }

@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import generators.Generators
 import models.GuaranteeType
@@ -49,7 +50,7 @@ class GuaranteeTypesServiceSpec extends SpecBase with BeforeAndAfterEach with Ge
   }
 
   "getGuaranteeTypes" - {
-    val guaranteeTypes = Seq(guaranteeTypeR, guaranteeTypeJ, guaranteeTypeB, guaranteeType9, guaranteeType1, guaranteeType0)
+    val guaranteeTypes = NonEmptySet.of(guaranteeTypeR, guaranteeTypeJ, guaranteeTypeB, guaranteeType9, guaranteeType1, guaranteeType0)
 
     "when office of departure is in GB" - {
       "must return filtered and sorted guarantee types" in {
@@ -84,23 +85,11 @@ class GuaranteeTypesServiceSpec extends SpecBase with BeforeAndAfterEach with Ge
 
     "when guarantee type found" - {
       "must return that guarantee type" in {
-        when(mockConnector.getGuaranteeType(any())(any(), any())).thenReturn(Future.successful(Seq(guaranteeType0)))
+        when(mockConnector.getGuaranteeType(any())(any(), any())).thenReturn(Future.successful(guaranteeType0))
 
         val result = service.getGuaranteeType(code).futureValue
 
-        result mustBe Some(guaranteeType0)
-
-        verify(mockConnector).getGuaranteeType(eqTo(code))(any(), any())
-      }
-    }
-
-    "when guarantee type not found" - {
-      "must return None" in {
-        when(mockConnector.getGuaranteeType(any())(any(), any())).thenReturn(Future.successful(Seq.empty))
-
-        val result = service.getGuaranteeType(code).futureValue
-
-        result mustBe None
+        result mustBe guaranteeType0
 
         verify(mockConnector).getGuaranteeType(eqTo(code))(any(), any())
       }

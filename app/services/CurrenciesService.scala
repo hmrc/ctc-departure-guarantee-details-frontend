@@ -31,9 +31,5 @@ class CurrenciesService @Inject() (
   def getCurrencyCodes()(implicit hc: HeaderCarrier): Future[SelectableList[CurrencyCode]] =
     referenceDataConnector
       .getCurrencyCodes()
-      .map(sort)
-
-  private def sort(currencyCodes: Seq[CurrencyCode]): SelectableList[CurrencyCode] =
-    SelectableList(currencyCodes.sortBy(_.currency.toLowerCase))
-
+      .map(SelectableList(_))
 }

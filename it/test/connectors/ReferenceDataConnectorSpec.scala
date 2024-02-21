@@ -16,9 +16,10 @@
 
 package connectors
 
-import base._
+import cats.data.NonEmptySet
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
+import itbase.ItSpecBase
 import models.GuaranteeType
 import models.reference._
 import org.scalacheck.Gen
@@ -29,7 +30,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler with ScalaCheckPropertyChecks {
+class ReferenceDataConnectorSpec extends ItSpecBase with ScalaCheckPropertyChecks {
 
   private val baseUrl = "customs-reference-data/test-only"
 
@@ -86,7 +87,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(responseJson))
         )
 
-        val expectedResult = Seq(
+        val expectedResult = NonEmptySet.of(
           CurrencyCode("GBP", Some("Sterling")),
           CurrencyCode("CHF", Some("Swiss Franc"))
         )
@@ -139,7 +140,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(responseJson))
         )
 
-        val expectedResult = Seq(
+        val expectedResult = NonEmptySet.of(
           GuaranteeType("0", "Description 0"),
           GuaranteeType("1", "Description 1")
         )
@@ -158,7 +159,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
     "getGuaranteeType" - {
 
-      val url = s"/$baseUrl/filtered-lists/GuaranteeType?data.code=0"
+      val url = s"/$baseUrl/lists/GuaranteeType?data.code=0"
 
       val responseJson: String =
         s"""
@@ -188,9 +189,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(responseJson))
         )
 
-        val expectedResult = Seq(
-          GuaranteeType("0", "Description 0")
-        )
+        val expectedResult = GuaranteeType("0", "Description 0")
 
         connector.getGuaranteeType("0").futureValue mustBe expectedResult
       }

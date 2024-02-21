@@ -16,6 +16,7 @@
 
 package models.reference
 
+import cats.Order
 import models.Selectable
 import play.api.libs.json.{Json, OFormat}
 
@@ -35,4 +36,8 @@ case class CurrencyCode(currency: String, description: Option[String]) extends S
 
 object CurrencyCode {
   implicit val format: OFormat[CurrencyCode] = Json.format[CurrencyCode]
+
+  implicit val order: Order[CurrencyCode] = (x: CurrencyCode, y: CurrencyCode) => {
+    x.currency.compareToIgnoreCase(y.currency)
+  }
 }
