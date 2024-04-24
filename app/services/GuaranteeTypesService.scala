@@ -31,7 +31,7 @@ class GuaranteeTypesService @Inject() (
 )(implicit ec: ExecutionContext) {
 
   private def filter(guaranteeTypes: Seq[GuaranteeType], userAnswers: UserAnswers): Seq[GuaranteeType] = {
-    lazy val isXiOfficeOfDeparture = userAnswers.get(OfficeOfDeparturePage).map(_.countryCode).contains(XI)
+    lazy val isXiOfficeOfDeparture = userAnswers.get(OfficeOfDeparturePage).map(_.countryId).contains(XI)
     guaranteeTypes
       .filterNot(_.code == Article102BGuarantee)
       .filterNot(_.code == Article898AGuarantee)

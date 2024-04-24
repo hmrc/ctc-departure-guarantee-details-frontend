@@ -85,7 +85,7 @@ class AddDefaultLiabilityAmountControllerTest extends SpecBase with AppWithDefau
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-      userAnswersCaptor.getValue.get(CurrencyPage(index)).value mustBe CurrencyCode("EUR", Some("Euro"))
+      userAnswersCaptor.getValue.get(CurrencyPage(index)).value mustBe CurrencyCode("EUR", "Euro")
       userAnswersCaptor.getValue.get(LiabilityAmountPage(index)).value mustBe BigDecimal(10000)
       userAnswersCaptor.getValue.tasks.get(".guaranteeDetails").value mustBe TaskStatus.InProgress
     }

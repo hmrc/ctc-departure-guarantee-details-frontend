@@ -395,7 +395,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
           forAll(arbitrary[Mode]) {
             mode =>
               val answers = emptyUserAnswers
-                .setValue(CurrencyPage(index), CurrencyCode("EUR", Some("Euros")))
+                .setValue(CurrencyPage(index), CurrencyCode("EUR", "Euros"))
                 .setValue(LiabilityAmountPage(index), 1000: BigDecimal)
 
               val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
