@@ -62,7 +62,7 @@ class AddDefaultLiabilityAmountController @Inject() (
             case true =>
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
               CurrencyPage(index)
-                .writeToUserAnswers(CurrencyCode("EUR", Some("Euro")))
+                .writeToUserAnswers(CurrencyCode("EUR", "Euro"))
                 .andThenWriteToUserAnswers(LiabilityAmountPage(index), BigDecimal(10000))
                 .updateTask()
                 .writeToSession()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package models.reference
+package models
 
-import models.Selectable
-import play.api.libs.json.{Json, OFormat}
+package object reference {
 
-case class CustomsOffice(id: String, name: String, phoneNumber: Option[String], countryId: String) extends Selectable {
-  override def toString: String = s"$name ($id)"
+  implicit class RichComparison[T](value: (T, T)) {
 
-  override val value: String = id
-}
-
-object CustomsOffice {
-  implicit val format: OFormat[CustomsOffice] = Json.format[CustomsOffice]
+    def compareBy(fs: (T => String)*): Int =
+      value match {
+        case (x, y) =>
+          fs.toList match {
+            case Nil => 0
+            case f :: tail =>
+              f(x).compareToIgnoreCase(f(y)) match {
+                case 0      => compareBy(tail: _*)
+                case result => result
+              }
+          }
+      }
+  }
 }

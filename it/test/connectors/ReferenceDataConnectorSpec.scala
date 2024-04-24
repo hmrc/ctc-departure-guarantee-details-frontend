@@ -88,8 +88,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         )
 
         val expectedResult = NonEmptySet.of(
-          CurrencyCode("GBP", Some("Sterling")),
-          CurrencyCode("CHF", Some("Swiss Franc"))
+          CurrencyCode("GBP", "Sterling"),
+          CurrencyCode("CHF", "Swiss Franc")
         )
 
         connector.getCurrencyCodes().futureValue mustBe expectedResult

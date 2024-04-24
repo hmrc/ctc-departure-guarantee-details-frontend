@@ -23,11 +23,9 @@ import play.api.libs.json.{Json, OFormat}
 import java.util.Currency
 import scala.util.Try
 
-case class CurrencyCode(currency: String, description: Option[String]) extends Selectable {
+case class CurrencyCode(currency: String, description: String) extends Selectable {
 
-  override def toString: String = currency + description.fold("")(
-    x => s" - $x"
-  )
+  override def toString: String = s"$currency - $description"
 
   override val value: String = currency
 
@@ -38,6 +36,6 @@ object CurrencyCode {
   implicit val format: OFormat[CurrencyCode] = Json.format[CurrencyCode]
 
   implicit val order: Order[CurrencyCode] = (x: CurrencyCode, y: CurrencyCode) => {
-    x.currency.compareToIgnoreCase(y.currency)
+    (x, y).compareBy(_.currency)
   }
 }
