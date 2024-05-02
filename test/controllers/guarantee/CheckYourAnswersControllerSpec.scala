@@ -73,7 +73,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "when TIR declaration type" - {
