@@ -81,7 +81,7 @@ class AddAnotherGuaranteeControllerSpec extends SpecBase with AppWithDefaultMock
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          routes.AddGuaranteeYesNoController.onPageLoad(lrn).url
+          controllers.guarantee.routes.GuaranteeTypeController.onPageLoad(lrn, NormalMode, Index(0)).url
       }
     }
 

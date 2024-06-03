@@ -33,10 +33,6 @@ addAnotherGuarantee.error.required = Select yes if you want to add another guara
 addAnotherGuarantee.label = Do you want to add another guarantee?
 addAnotherGuarantee.maxLimit.label = You cannot add any more guarantees. To add another guarantee, you need to remove one first.
 
-addGuaranteeYesNo.title = Do you want to add a guarantee?
-addGuaranteeYesNo.heading = Do you want to add a guarantee?
-addGuaranteeYesNo.error.required = Select yes if you want to add a guarantee
-
 checkYourAnswers.title = Check your answers - Guarantee details
 checkYourAnswers.heading = Check your answers
 
