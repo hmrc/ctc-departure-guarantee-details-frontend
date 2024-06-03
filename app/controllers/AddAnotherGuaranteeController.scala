@@ -18,8 +18,9 @@ package controllers
 
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions.Actions
+import controllers.guarantee.routes
 import forms.AddAnotherFormProvider
-import models.{LocalReferenceNumber, NormalMode}
+import models.{Index, LocalReferenceNumber, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -48,7 +49,7 @@ class AddAnotherGuaranteeController @Inject() (
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers)
       viewModel.count match {
-        case 0 => Redirect(routes.AddGuaranteeYesNoController.onPageLoad(lrn))
+        case 0 => Redirect(routes.GuaranteeTypeController.onPageLoad(lrn, NormalMode, Index(0)))
         case _ => Ok(view(form(viewModel), lrn, viewModel))
       }
   }
@@ -61,7 +62,7 @@ class AddAnotherGuaranteeController @Inject() (
         .fold(
           formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
           {
-            case true  => Redirect(controllers.guarantee.routes.GuaranteeTypeController.onPageLoad(lrn, NormalMode, viewModel.nextIndex))
+            case true  => Redirect(routes.GuaranteeTypeController.onPageLoad(lrn, NormalMode, viewModel.nextIndex))
             case false => Redirect(config.taskListUrl(lrn))
           }
         )
