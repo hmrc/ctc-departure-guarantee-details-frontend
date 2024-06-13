@@ -19,13 +19,15 @@ package controllers.guarantee
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
-import models.UserAnswers
+import models.{GuaranteeType, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.DeclarationTypePage
+import pages.guarantee.{GuaranteeTypePage, OtherReferencePage, ReferenceNumberPage}
 import pages.sections.GuaranteeSection
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,18 +38,25 @@ import scala.concurrent.Future
 class RemoveGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val formProvider                   = new YesNoFormProvider()
+  private val guaranteeType                  = arbitrary[GuaranteeType].sample.value
+  private val guaranteeRefNum                = Gen.alphaStr.sample.value
+  private val otherRefNum                    = Gen.alphaStr.sample.value
   private val form                           = formProvider("guarantee.removeGuaranteeYesNo")
   private lazy val removeGuaranteeYesNoRoute = routes.RemoveGuaranteeYesNoController.onPageLoad(lrn, index).url
 
   "RemoveGuaranteeYesNoController" - {
 
     "must return OK and the correct view for a GET" in {
-      val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
-      val updatedUA       = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
-
-      forAll(arbitraryGuaranteeAnswers(updatedUA, index)) {
+      forAll(arbitraryGuaranteeAnswers(emptyUserAnswers, index)) {
         userAnswers =>
-          setExistingUserAnswers(userAnswers)
+          val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
+          val updatedUA = userAnswers
+            .setValue(DeclarationTypePage, declarationType)
+            .setValue(GuaranteeTypePage(index), guaranteeType)
+            .setValue(ReferenceNumberPage(index), guaranteeRefNum)
+            .removeValue(OtherReferencePage(index))
+
+          setExistingUserAnswers(updatedUA)
 
           val request = FakeRequest(GET, removeGuaranteeYesNoRoute)
           val result  = route(app, request).value
@@ -57,7 +66,7 @@ class RemoveGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, lrn, index)(request, messages).toString
+            view(form, lrn, Some(s"${guaranteeType.toString} - $guaranteeRefNum"), index)(request, messages).toString
       }
     }
 
@@ -114,11 +123,16 @@ class RemoveGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
-      val updatedUA       = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
-      forAll(arbitraryGuaranteeAnswers(updatedUA, index)) {
+      forAll(arbitraryGuaranteeAnswers(emptyUserAnswers, index)) {
         userAnswers =>
-          setExistingUserAnswers(userAnswers)
+          val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
+          val updatedUA = userAnswers
+            .setValue(DeclarationTypePage, declarationType)
+            .setValue(GuaranteeTypePage(index), guaranteeType)
+            .setValue(OtherReferencePage(index), otherRefNum)
+            .removeValue(ReferenceNumberPage(index))
+
+          setExistingUserAnswers(updatedUA)
 
           val request   = FakeRequest(POST, removeGuaranteeYesNoRoute).withFormUrlEncodedBody(("value", ""))
           val boundForm = form.bind(Map("value" -> ""))
@@ -130,7 +144,7 @@ class RemoveGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
           val view = injector.instanceOf[RemoveGuaranteeYesNoView]
 
           contentAsString(result) mustEqual
-            view(boundForm, lrn, index)(request, messages).toString
+            view(boundForm, lrn, Some(s"${guaranteeType.toString} - $otherRefNum"), index)(request, messages).toString
       }
     }
 

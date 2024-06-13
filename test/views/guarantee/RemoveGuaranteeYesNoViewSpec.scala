@@ -16,6 +16,7 @@
 
 package views.guarantee
 
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -23,8 +24,10 @@ import views.html.guarantee.RemoveGuaranteeYesNoView
 
 class RemoveGuaranteeYesNoViewSpec extends YesNoViewBehaviours {
 
+  private val insetText = Gen.alphaStr.sample.value
+
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[RemoveGuaranteeYesNoView].apply(form, lrn, index)(fakeRequest, messages)
+    injector.instanceOf[RemoveGuaranteeYesNoView].apply(form, lrn, Some(insetText), index)(fakeRequest, messages)
 
   override val prefix: String = "guarantee.removeGuaranteeYesNo"
 
@@ -35,6 +38,8 @@ class RemoveGuaranteeYesNoViewSpec extends YesNoViewBehaviours {
   behave like pageWithSectionCaption("Guarantee details")
 
   behave like pageWithHeading()
+
+  behave like pageWithInsetText(insetText)
 
   behave like pageWithRadioItems()
 

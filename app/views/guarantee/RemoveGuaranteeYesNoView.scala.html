@@ -16,18 +16,20 @@
 
 @import controllers.guarantee.routes
 @import models.{LocalReferenceNumber, Index}
+@import viewModels.components.InputYesNoViewModel
 @import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
+    insetText: InsetText,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, guarantee: Option[String], index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("guarantee.removeGuaranteeYesNo.title"),
@@ -41,9 +43,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = InputYesNoViewModel(
                 heading = messages("guarantee.removeGuaranteeYesNo.heading"),
-                caption = Some(messages("caption"))
+                caption = Some(messages("caption")),
+                additionalHtml = guarantee.map(insetText(_))
             )
         )
 

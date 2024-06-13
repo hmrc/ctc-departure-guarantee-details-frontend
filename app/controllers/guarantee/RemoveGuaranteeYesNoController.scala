@@ -20,7 +20,8 @@ import config.PhaseConfig
 import controllers.actions.Actions
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.{Index, LocalReferenceNumber}
+import models.removable.Guarantee
+import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.sections.GuaranteeSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -50,7 +51,7 @@ class RemoveGuaranteeYesNoController @Inject() (
   def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = actions
     .requireIndex(lrn, GuaranteeSection(index), addAnother(lrn)) {
       implicit request =>
-        Ok(view(form, lrn, index))
+        Ok(view(form, lrn, insetText(request.userAnswers, index), index))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = actions
@@ -60,7 +61,7 @@ class RemoveGuaranteeYesNoController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, index))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, insetText(request.userAnswers, index), index))),
             {
               case true =>
                 GuaranteeSection(index)
@@ -73,4 +74,7 @@ class RemoveGuaranteeYesNoController @Inject() (
             }
           )
     }
+
+  private def insetText(userAnswers: UserAnswers, index: Index): Option[String] =
+    Guarantee(userAnswers, index).map(_.forRemoveDisplay)
 }
