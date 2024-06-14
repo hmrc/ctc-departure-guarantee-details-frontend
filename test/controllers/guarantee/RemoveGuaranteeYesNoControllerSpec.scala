@@ -66,7 +66,7 @@ class RemoveGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, lrn, Some(s"${guaranteeType.toString} - $guaranteeRefNum"), index)(request, messages).toString
+            view(form, lrn, Some(Seq(s"${guaranteeType.toString}", guaranteeRefNum)), index)(request, messages).toString
       }
     }
 
@@ -144,7 +144,7 @@ class RemoveGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
           val view = injector.instanceOf[RemoveGuaranteeYesNoView]
 
           contentAsString(result) mustEqual
-            view(boundForm, lrn, Some(s"${guaranteeType.toString} - $otherRefNum"), index)(request, messages).toString
+            view(boundForm, lrn, Some(Seq(s"${guaranteeType.toString}", otherRefNum)), index)(request, messages).toString
       }
     }
 

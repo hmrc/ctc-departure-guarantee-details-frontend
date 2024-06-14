@@ -75,6 +75,6 @@ class RemoveGuaranteeYesNoController @Inject() (
           )
     }
 
-  private def insetText(userAnswers: UserAnswers, index: Index): Option[String] =
+  private def insetText(userAnswers: UserAnswers, index: Index): Option[Seq[String]] =
     Guarantee(userAnswers, index).map(_.forRemoveDisplay)
 }

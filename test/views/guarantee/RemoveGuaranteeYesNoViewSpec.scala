@@ -27,7 +27,7 @@ class RemoveGuaranteeYesNoViewSpec extends YesNoViewBehaviours {
   private val insetText = Gen.alphaStr.sample.value
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[RemoveGuaranteeYesNoView].apply(form, lrn, Some(insetText), index)(fakeRequest, messages)
+    injector.instanceOf[RemoveGuaranteeYesNoView].apply(form, lrn, Some(Seq(insetText)), index)(fakeRequest, messages)
 
   override val prefix: String = "guarantee.removeGuaranteeYesNo"
 

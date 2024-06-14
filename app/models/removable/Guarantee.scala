@@ -22,10 +22,10 @@ import play.api.libs.json.Reads
 
 case class Guarantee(`type`: GuaranteeType, guaranteeReferenceNumber: Option[String], otherReferenceNumber: Option[String]) {
 
-  def forRemoveDisplay: String = (guaranteeReferenceNumber, otherReferenceNumber) match {
-    case (Some(a), None) => s"${`type`.toString} - $a"
-    case (None, Some(b)) => s"${`type`.toString} - $b"
-    case _               => `type`.toString
+  def forRemoveDisplay: Seq[String] = (guaranteeReferenceNumber, otherReferenceNumber) match {
+    case (Some(a), None) => Seq(s"${`type`.toString}", a)
+    case (None, Some(b)) => Seq(s"${`type`.toString}", b)
+    case _               => Seq(`type`.toString)
   }
 }
 
