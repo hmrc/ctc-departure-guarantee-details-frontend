@@ -1,8 +1,8 @@
 # ctc-departure-guarantee-details-frontend
 
-This service allows a user to complete the documents section of a transit movement departure.
+This service allows a user to complete the guarantee details section of a transit movement departure.
 
-Service manager port: 10132
+Service manager port: 10128
 
 ### Testing
 
