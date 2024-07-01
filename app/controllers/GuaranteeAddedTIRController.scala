@@ -35,7 +35,7 @@ import scala.concurrent.ExecutionContext
 
 class GuaranteeAddedTIRController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: GuaranteeAddedTIRView,
@@ -58,7 +58,7 @@ class GuaranteeAddedTIRController @Inject() (
           GuaranteeTypePage(Index(0))
             .writeToUserAnswers(guaranteeType)
             .updateTask()
-            .writeToSession()
+            .writeToSession(sessionRepository)
             .navigateTo(config.taskListUrl(lrn))
       }
   }

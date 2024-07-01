@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class GuaranteeTypeController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   navigatorProvider: GuaranteeNavigatorProvider,
   actions: Actions,
   guaranteeTypesService: GuaranteeTypesService,
@@ -74,12 +74,12 @@ class GuaranteeTypeController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, guaranteeTypes, mode, index))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+                val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
                 GuaranteeTypePage(index)
                   .writeToUserAnswers(value)
                   .updateTask()
-                  .writeToSession()
-                  .navigate()
+                  .writeToSession(sessionRepository)
+                  .navigateWith(navigator)
               }
             )
       }

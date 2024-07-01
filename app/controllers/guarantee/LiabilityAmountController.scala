@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class LiabilityAmountController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   navigatorProvider: GuaranteeNavigatorProvider,
   formProvider: MoneyFormProvider,
   actions: Actions,
@@ -72,8 +72,8 @@ class LiabilityAmountController @Inject() (
               case v: BigDecimal if v == 0 =>
                 Future.successful(Redirect(routes.AddDefaultLiabilityAmountController.onPageLoad(lrn, mode, index)))
               case value =>
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-                LiabilityAmountPage(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+                LiabilityAmountPage(index).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
             }
           )
     }
