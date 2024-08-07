@@ -12,6 +12,3 @@ POST       /guarantee-added-tir/:lrn                                            
 
 GET        /add-another-guarantee/:lrn                                              controllers.AddAnotherGuaranteeController.onPageLoad(lrn: LocalReferenceNumber)
 POST       /add-another-guarantee/:lrn                                              controllers.AddAnotherGuaranteeController.onSubmit(lrn: LocalReferenceNumber)
-
-GET        /add-guarantee/:lrn                                                      controllers.AddGuaranteeYesNoController.onPageLoad(lrn: LocalReferenceNumber)
-POST       /add-guarantee/:lrn                                                      controllers.AddGuaranteeYesNoController.onSubmit(lrn: LocalReferenceNumber)

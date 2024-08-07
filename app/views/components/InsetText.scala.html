@@ -14,22 +14,17 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import viewModels.components.InputTextViewModel
+@import viewModels.components.InputTextViewModel._
+@import views.html.components.Heading
 
-@this(govukButton: GovukButton)
+@this(govukInsetText: GovukInsetText)
 
-@(
-    messageKey: String = "site.saveAndContinue",
-    isStartButton: Boolean = false,
-    preventDoubleClick: Boolean = true,
-    attributes: Map[String, String] = Map.empty,
-    href: Option[String] = None
-)(implicit messages: Messages)
+@(content: Content)
 
-@govukButton(Button(
-    isStartButton = isStartButton,
-    preventDoubleClick = Some(preventDoubleClick),
-    content = Text(messages(messageKey)),
-    attributes = attributes,
-    href = href
-))
+@govukInsetText(
+    InsetText(
+        content = content
+    )
+)

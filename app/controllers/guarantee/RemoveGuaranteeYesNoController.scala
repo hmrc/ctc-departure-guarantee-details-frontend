@@ -20,7 +20,8 @@ import config.PhaseConfig
 import controllers.actions.Actions
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.{Index, LocalReferenceNumber}
+import models.removable.Guarantee
+import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.sections.GuaranteeSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -33,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveGuaranteeYesNoController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -50,7 +51,7 @@ class RemoveGuaranteeYesNoController @Inject() (
   def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = actions
     .requireIndex(lrn, GuaranteeSection(index), addAnother(lrn)) {
       implicit request =>
-        Ok(view(form, lrn, index))
+        Ok(view(form, lrn, insetText(request.userAnswers, index), index))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = actions
@@ -60,17 +61,20 @@ class RemoveGuaranteeYesNoController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, index))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, insetText(request.userAnswers, index), index))),
             {
               case true =>
                 GuaranteeSection(index)
                   .removeFromUserAnswers()
                   .updateTask()
-                  .writeToSession()
+                  .writeToSession(sessionRepository)
                   .navigateTo(addAnother(lrn))
               case false =>
                 Future.successful(Redirect(addAnother(lrn)))
             }
           )
     }
+
+  private def insetText(userAnswers: UserAnswers, index: Index): Option[Seq[String]] =
+    Guarantee(userAnswers, index).map(_.forRemoveDisplay)
 }
