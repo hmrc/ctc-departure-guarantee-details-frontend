@@ -70,7 +70,7 @@ class AddDefaultLiabilityAmountControllerTest extends SpecBase with AppWithDefau
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -92,7 +92,7 @@ class AddDefaultLiabilityAmountControllerTest extends SpecBase with AppWithDefau
 
     "must redirect to the liability amount page when valid data and a false is submitted" in {
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 

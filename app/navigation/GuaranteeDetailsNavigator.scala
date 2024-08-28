@@ -36,9 +36,9 @@ trait GuaranteeDetailsNavigatorProvider {
   def apply(mode: Mode): UserAnswersNavigator
 }
 
-class GuaranteeDetailsNavigator(override val mode: Mode)(
-  implicit override val appConfig: FrontendAppConfig,
-  implicit override val phaseConfig: PhaseConfig
+class GuaranteeDetailsNavigator(override val mode: Mode)(implicit
+  override val appConfig: FrontendAppConfig,
+  override val phaseConfig: PhaseConfig
 ) extends UserAnswersNavigator {
 
   override type T = GuaranteeDetailsDomain

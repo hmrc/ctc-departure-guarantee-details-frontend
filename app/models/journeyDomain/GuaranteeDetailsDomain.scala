@@ -28,7 +28,7 @@ case class GuaranteeDetailsDomain(
   guarantees: Seq[GuaranteeDomain]
 ) extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] =
+  override def page(userAnswers: UserAnswers): Option[Section[?]] =
     userAnswers.get(DeclarationTypePage).flatMap {
       case TIR => None
       case _   => Some(GuaranteeDetailsSection)

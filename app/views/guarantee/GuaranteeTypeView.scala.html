@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[GuaranteeType], lrn: LocalReferenceNumber, values: Seq[GuaranteeType], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[GuaranteeType], lrn: LocalReferenceNumber, values: Seq[GuaranteeType], mode: Mode, index: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("guarantee.guaranteeType.title"),

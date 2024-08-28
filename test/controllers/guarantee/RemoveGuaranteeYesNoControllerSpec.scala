@@ -77,7 +77,7 @@ class RemoveGuaranteeYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
         forAll(arbitraryGuaranteeAnswers(updatedUA, index)) {
           userAnswers =>
             reset(mockSessionRepository)
-            when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+            when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
             setExistingUserAnswers(userAnswers)
 

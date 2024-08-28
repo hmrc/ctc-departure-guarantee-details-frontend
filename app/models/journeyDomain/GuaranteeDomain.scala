@@ -33,7 +33,7 @@ sealed trait GuaranteeDomain extends JourneyDomainModel {
 
   val `type`: GuaranteeType
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(GuaranteeSection(index))
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(GuaranteeSection(index))
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     page(userAnswers) match {
@@ -86,7 +86,7 @@ object GuaranteeDomain {
   )(override val index: Index)
       extends GuaranteeDomain {
 
-    override def page(userAnswers: UserAnswers): Option[Section[_]] = None
+    override def page(userAnswers: UserAnswers): Option[Section[?]] = None
   }
 
   object GuaranteeOfTypesAB {

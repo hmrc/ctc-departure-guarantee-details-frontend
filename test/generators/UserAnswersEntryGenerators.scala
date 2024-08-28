@@ -26,11 +26,11 @@ import queries.Gettable
 trait UserAnswersEntryGenerators {
   self: Generators =>
 
-  def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] =
+  def generateAnswer: PartialFunction[Gettable[?], Gen[JsValue]] =
     generateExternalAnswer orElse
       generateGuaranteeDetailsAnswer
 
-  private def generateExternalAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateExternalAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
     import pages.external._
     {
       case OfficeOfDeparturePage => arbitrary[CustomsOffice](arbitraryOfficeOfDeparture).map(Json.toJson(_))
@@ -38,14 +38,14 @@ trait UserAnswersEntryGenerators {
     }
   }
 
-  private def generateGuaranteeDetailsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateGuaranteeDetailsAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
     import pages.guarantee._
     {
       case GuaranteeTypePage(_)       => arbitrary[GuaranteeType].map(Json.toJson(_))
-      case ReferenceNumberPage(_)     => Gen.alphaNumStr.map(JsString)
+      case ReferenceNumberPage(_)     => Gen.alphaNumStr.map(JsString.apply)
       case OtherReferenceYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
-      case OtherReferencePage(_)      => Gen.alphaNumStr.map(JsString)
-      case AccessCodePage(_)          => Gen.alphaNumStr.map(JsString)
+      case OtherReferencePage(_)      => Gen.alphaNumStr.map(JsString.apply)
+      case AccessCodePage(_)          => Gen.alphaNumStr.map(JsString.apply)
       case AddLiabilityYesNoPage(_)   => arbitrary[Boolean].map(JsBoolean)
       case LiabilityAmountPage(_)     => Gen.choose(BigDecimal("0"), BigDecimal("9999999999999999.99")).map(Json.toJson(_))
       case CurrencyPage(_)            => arbitrary[CurrencyCode].map(Json.toJson(_))

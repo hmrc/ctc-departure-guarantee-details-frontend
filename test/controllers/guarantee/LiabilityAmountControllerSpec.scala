@@ -97,7 +97,7 @@ class LiabilityAmountControllerSpec extends SpecBase with AppWithDefaultMockFixt
       val userAnswers = emptyUserAnswers.setValue(CurrencyPage(index), currency)
       setExistingUserAnswers(userAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, referenceNumberRoute)
         .withFormUrlEncodedBody(("value", validAnswer.toString))
@@ -114,7 +114,7 @@ class LiabilityAmountControllerSpec extends SpecBase with AppWithDefaultMockFixt
       val userAnswers = emptyUserAnswers.setValue(CurrencyPage(index), currency)
       setExistingUserAnswers(userAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, referenceNumberRoute)
         .withFormUrlEncodedBody(("value", zeroAmount.toString))

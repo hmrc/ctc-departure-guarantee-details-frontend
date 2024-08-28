@@ -27,7 +27,7 @@
     button: Button
 )
 
-@(form: Form[_], lrn: LocalReferenceNumber, mode: Mode, index: Index, currency: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], lrn: LocalReferenceNumber, mode: Mode, index: Index, currency: String)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("guarantee.liabilityAmount.title"),

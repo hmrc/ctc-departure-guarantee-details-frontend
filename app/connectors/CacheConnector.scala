@@ -29,6 +29,8 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, Upstream
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
+import play.api.libs.ws.JsonBodyWritables._
+
 class CacheConnector @Inject() (
   config: FrontendAppConfig,
   http: HttpClientV2

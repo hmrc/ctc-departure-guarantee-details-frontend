@@ -24,7 +24,7 @@ trait BigDecimalFieldBehaviours extends FieldBehaviours {
   val maxDecimalPlaces: Int = 2
 
   def bigDecimalField(
-    form: Form[_],
+    form: Form[?],
     fieldName: String,
     invalidCharactersError: FormError,
     invalidFormatError: FormError,

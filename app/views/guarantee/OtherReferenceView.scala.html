@@ -27,7 +27,7 @@
     button: Button
 )
 
-@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, index: Index, prefix: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, index: Index, prefix: String)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages(s"$prefix.title"),
