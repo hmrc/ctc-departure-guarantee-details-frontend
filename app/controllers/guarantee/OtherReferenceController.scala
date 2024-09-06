@@ -49,7 +49,7 @@ class OtherReferenceController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider1[GuaranteeType]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider1[GuaranteeType]#SpecificDataRequest[?]
 
   private def form(prefix: String): Form[String] = formProvider(prefix)
 

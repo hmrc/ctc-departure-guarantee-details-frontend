@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[_], lrn: LocalReferenceNumber, viewModel: AddAnotherGuaranteeViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+@(form: Form[?], lrn: LocalReferenceNumber, viewModel: AddAnotherGuaranteeViewModel)(implicit request: Request[?], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
     title = viewModel.title,

@@ -27,7 +27,7 @@
     formHelper: FormWithCSRF
 )
 
-@(lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(lrn: LocalReferenceNumber)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("guaranteeAddedTIR.title"),
