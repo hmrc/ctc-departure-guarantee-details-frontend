@@ -37,7 +37,7 @@ object MappingsSpec {
         values.toSeq
           .map(
             v => v.toString -> v
-          ) *
+          )*
       )
   }
 }
@@ -181,7 +181,7 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
         Seq(Bar, Baz)
           .map(
             v => v.toString -> v
-          ) *
+          )*
       )
 
     val testForm = Form(
