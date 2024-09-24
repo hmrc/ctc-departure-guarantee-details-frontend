@@ -28,7 +28,5 @@ case class GuaranteeType(code: String, description: String) extends Radioable[Gu
 object GuaranteeType extends DynamicEnumerableType[GuaranteeType] {
   implicit val format: Format[GuaranteeType] = Json.format[GuaranteeType]
 
-  implicit val order: Order[GuaranteeType] = (x: GuaranteeType, y: GuaranteeType) => {
-    x.code.compareToIgnoreCase(y.code)
-  }
+  implicit val order: Order[GuaranteeType] = (x: GuaranteeType, y: GuaranteeType) => x.code.compareToIgnoreCase(y.code)
 }

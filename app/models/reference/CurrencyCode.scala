@@ -35,7 +35,5 @@ case class CurrencyCode(currency: String, description: String) extends Selectabl
 object CurrencyCode {
   implicit val format: OFormat[CurrencyCode] = Json.format[CurrencyCode]
 
-  implicit val order: Order[CurrencyCode] = (x: CurrencyCode, y: CurrencyCode) => {
-    (x, y).compareBy(_.currency)
-  }
+  implicit val order: Order[CurrencyCode] = (x: CurrencyCode, y: CurrencyCode) => (x, y).compareBy(_.currency)
 }
