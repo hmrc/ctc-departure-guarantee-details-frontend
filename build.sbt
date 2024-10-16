@@ -43,10 +43,8 @@ lazy val microservice = Project(appName, file("."))
     Concat.groups := Seq(
       "javascripts/application.js" -> group(Seq("javascripts/app.js"))
     ),
-    uglifyCompressOptions := Seq("unused=false", "dead_code=false", "warnings=false"),
-    Assets / pipelineStages := Seq(digest, concat, uglify),
-    ThisBuild / useSuperShell := false,
-    uglify / includeFilter := GlobFilter("application.js")
+    Assets / pipelineStages := Seq(digest, concat),
+    ThisBuild / useSuperShell := false
   )
   .settings(resolvers += Resolver.jcenterRepo)
   .settings(CodeCoverageSettings.settings *)
