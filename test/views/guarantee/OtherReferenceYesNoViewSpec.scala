@@ -37,6 +37,8 @@ class OtherReferenceYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent("p", "This is a unique number used to identify the guarantee.")
 
+  behave like pageWithHint("Adding a reference is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")
