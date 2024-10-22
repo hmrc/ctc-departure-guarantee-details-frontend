@@ -28,18 +28,15 @@ class InputYesNoViewModelSpec extends SpecBase with Generators with ScalaCheckPr
   "apply method should return correct ViewModel based on input" - {
 
     "must return with Additional HTML" in {
-      val htmlContent = Html("<p>Some HTML content</p>")
-      val result      = InputYesNoViewModel.apply("Heading", Some("Caption"), Some(htmlContent))
-      result shouldBe an[YesNoWithAdditionalHtml]
-      result.asInstanceOf[YesNoWithAdditionalHtml].heading shouldBe "Heading"
-      result.asInstanceOf[YesNoWithAdditionalHtml].caption shouldBe Some("Caption")
-      result.asInstanceOf[YesNoWithAdditionalHtml].additionalHtml shouldBe htmlContent
+      val htmlContent    = Html("<p>Some HTML content</p>")
+      val result         = InputYesNoViewModel.apply("Heading", Some("Caption"), Some(htmlContent))
+      val expectedResult = YesNoWithAdditionalHtml("Heading", Some("Caption"), htmlContent)
+      result shouldBe expectedResult
     }
     "must return without Additional HTML" in {
       val resultWithoutHtml = InputYesNoViewModel.apply("Heading", Some("Caption"), None)
-      resultWithoutHtml shouldBe an[OrdinaryYesNo]
-      resultWithoutHtml.asInstanceOf[OrdinaryYesNo].heading shouldBe "Heading"
-      resultWithoutHtml.asInstanceOf[OrdinaryYesNo].caption shouldBe Some("Caption")
+      val expectedResult    = OrdinaryYesNo("Heading", Some("Caption"))
+      resultWithoutHtml shouldBe expectedResult
     }
   }
 }

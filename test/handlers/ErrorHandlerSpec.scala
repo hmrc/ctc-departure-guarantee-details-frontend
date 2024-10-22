@@ -19,90 +19,69 @@ package handlers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
-import play.api.libs.typedmap.TypedMap
-import play.api.mvc.request.{RemoteConnection, RequestTarget}
-import play.api.mvc.{Headers, RequestHeader, Result, Results}
+import play.api.mvc.Results
+import play.api.mvc.Results.Redirect
 import play.api.test.Helpers.*
-import scala.util.control.NoStackTrace
 import uk.gov.hmrc.play.bootstrap.frontend.http.ApplicationException
 
-import scala.concurrent.Future
-
-// scalastyle:off magic.number
 class ErrorHandlerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private lazy val handler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
+  private val handler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
 
   "onClientError" - {
-    "must redirect to NotFound page when given a 404" in {
+    "when status is 404" - {
+      "must redirect to not found page" in {
+        val result = handler.onClientError(fakeRequest, NOT_FOUND)
 
-      val result: Future[Result] = handler.onClientError(new FakeRequestHeader, 404)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).value mustBe s"${frontendAppConfig.departureHubUrl}/not-found"
-    }
-
-    "must redirect to BadRequest page when given a client error (400-499)" in {
-
-      forAll(Gen.choose(400, 499).suchThat(_ != 404)) {
-        clientErrorCode =>
-          beforeEach()
-
-          val result: Future[Result] = handler.onClientError(new FakeRequestHeader, clientErrorCode)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe s"${frontendAppConfig.departureHubUrl}/bad-request"
+        redirectLocation(result).value `mustBe` frontendAppConfig.notFoundUrl
       }
     }
 
-    "must redirect to TechnicalDifficulties page when given any other error" in {
+    "when status is 4xx" - {
+      "must redirect to bad request page" in {
+        forAll(Gen.choose(400: Int, 499: Int).retryUntil(_ != NOT_FOUND)) {
+          status =>
+            val result = handler.onClientError(fakeRequest, status)
 
-      forAll(Gen.choose(500, 599)) {
-        serverErrorCode =>
-          beforeEach()
+            redirectLocation(result).value `mustBe` s"${frontendAppConfig.departureHubUrl}/bad-request"
+        }
+      }
+    }
 
-          val result: Future[Result] = handler.onClientError(new FakeRequestHeader, serverErrorCode)
+    "when status is 5xx" - {
+      "must redirect to technical difficulties page" in {
+        forAll(Gen.choose(500: Int, 599: Int)) {
+          status =>
+            val result = handler.onClientError(fakeRequest, status)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe s"${frontendAppConfig.departureHubUrl}/technical-difficulties"
+            redirectLocation(result).value `mustBe` frontendAppConfig.technicalDifficultiesUrl
+        }
       }
     }
   }
 
   "onServerError" - {
-    "return the result from ApplicationException" in {
-      val customResult                    = Results.Ok("Custom error response")
-      val exception: ApplicationException = ApplicationException(customResult, "Test application exception")
-
-      val result: Future[Result] = handler.onServerError(fakeRequest, exception)
-
-      status(result) mustBe OK
-      contentAsString(result) mustBe "Custom error response"
+    "when an application exception" - {
+      "must return the underlying result" in {
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (message, url) =>
+            val redirect  = Redirect(url)
+            val exception = ApplicationException(redirect, message)
+            val result    = handler.onServerError(fakeRequest, exception)
+            redirectLocation(result).value `mustBe` url
+        }
+      }
     }
 
-    "redirect to the internal server error page for an unhandled exception" in {
-      val exception = new RuntimeException("Unexpected error") with NoStackTrace
-
-      val result: Future[Result] = handler.onServerError(fakeRequest, exception)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(s"${frontendAppConfig.departureHubUrl}/internal-server-error")
+    "when any other exception" - {
+      "must redirect to internal server error page" in {
+        forAll(Gen.alphaNumStr) {
+          message =>
+            val exception = Exception(message)
+            val result    = handler.onServerError(fakeRequest, exception)
+            redirectLocation(result).value `mustBe` s"${frontendAppConfig.departureHubUrl}/internal-server-error"
+        }
+      }
     }
   }
-
-  class FakeRequestHeader extends RequestHeader {
-    override val target: RequestTarget = RequestTarget("/context/some-path", "/context/some-path", Map.empty)
-
-    override def method: String = "POST"
-
-    override def version: String = "HTTP/1.1"
-
-    override def headers: Headers = new Headers(Seq.empty)
-
-    override def connection: RemoteConnection = RemoteConnection("", secure = true, None)
-
-    override def attrs: TypedMap = TypedMap()
-  }
-
 }
-// scalastyle:on magic.number
