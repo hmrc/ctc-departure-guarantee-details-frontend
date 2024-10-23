@@ -45,7 +45,8 @@
                 heading = messages("guarantee.addLiabilityYesNo.heading"),
                 caption = Some(messages("caption")),
                 additionalHtml = messages("guarantee.addLiabilityYesNo.paragraph").toParagraph
-            )
+            ),
+            hint = Some(Text(messages("guarantee.addLiabilityYesNo.hint")))
         )
 
         @button(attributes = Map("id" -> "submit"))

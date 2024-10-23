@@ -37,6 +37,8 @@ class AddLiabilityYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent("p", "This includes the liability currency and amount.")
 
+  behave like pageWithHint("Adding a liability is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")
