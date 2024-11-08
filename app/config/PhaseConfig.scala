@@ -16,25 +16,48 @@
 
 package config
 
+import com.typesafe.config.Config
+import config.PhaseConfig.Values
 import models.Phase
 import models.Phase.{PostTransition, Transition}
+import play.api.{ConfigLoader, Configuration}
+
+import javax.inject.Inject
 
 trait PhaseConfig {
   val phase: Phase
+  val values: Values
 
   def amendMessageKey(key: String): String
 
   def lengthError(prefix: String): String = amendMessageKey(s"$prefix.error.length")
 }
 
-class TransitionConfig() extends PhaseConfig {
-  override val phase: Phase = Transition
+object PhaseConfig {
+
+  case class Values(apiVersion: Double)
+
+  object Values {
+
+    implicit val configLoader: ConfigLoader[Values] = (config: Config, path: String) =>
+      config.getConfig(path) match {
+        case phase =>
+          val apiVersion = phase.getDouble("apiVersion")
+          Values(apiVersion)
+      }
+  }
+}
+
+class TransitionConfig @Inject() (configuration: Configuration) extends PhaseConfig {
+  override val phase: Phase   = Transition
+  override val values: Values = configuration.get[Values]("phase.transitional")
 
   override def amendMessageKey(key: String): String = s"$key.transition"
 }
 
-class PostTransitionConfig() extends PhaseConfig {
-  override val phase: Phase = PostTransition
+class PostTransitionConfig @Inject() (configuration: Configuration) extends PhaseConfig {
+  override val phase: Phase   = PostTransition
+  override val values: Values = configuration.get[Values]("phase.final")
 
   override def amendMessageKey(key: String): String = s"$key.postTransition"
 }

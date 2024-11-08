@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import play.api.mvc.{ActionRefiner, Result}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import models.UserAnswersResponse.{Answers, NotAcceptable}
 
 @Singleton
 class DataRequiredAction(lrn: LocalReferenceNumber, config: FrontendAppConfig)(implicit val executionContext: ExecutionContext)
@@ -31,8 +32,9 @@ class DataRequiredAction(lrn: LocalReferenceNumber, config: FrontendAppConfig)(i
 
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] =
     request.userAnswers match {
-      case Some(userAnswers) if userAnswers.status != SubmissionState.Submitted =>
+      case Answers(userAnswers) if userAnswers.status != SubmissionState.Submitted =>
         Future.successful(Right(DataRequest(request.request, request.eoriNumber, userAnswers)))
+      case NotAcceptable => Future.successful(Left(Redirect(config.draftNotAvailableUrl)))
       case _ =>
         Future.successful(Left(Redirect(config.sessionExpiredUrl(lrn))))
     }
