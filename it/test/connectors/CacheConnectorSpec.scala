@@ -16,14 +16,14 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import itbase.{ItSpecBase, WireMockServerHandler}
-import models.{LockCheck, UserAnswers}
+import models.{LockCheck, UserAnswers, UserAnswersResponse}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
@@ -61,23 +61,49 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
       "must return user answers when status is Ok" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("APIVersion", equalTo("2.0"))
             .willReturn(okJson(json))
         )
 
-        val result: Option[UserAnswers] = await(connector.get(lrn))
+        val result: UserAnswersResponse = await(connector.get(lrn))
 
-        result mustBe Some(userAnswers)
+        result mustBe UserAnswersResponse.Answers(userAnswers)
       }
 
-      "return None when no cached data found for provided LRN" in {
+      "return NoAnswers when no cached data found for provided LRN" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("APIVersion", equalTo("2.0"))
             .willReturn(notFound())
         )
 
-        val result: Option[UserAnswers] = await(connector.get(lrn))
+        val result: UserAnswersResponse = await(connector.get(lrn))
 
-        result mustBe None
+        result mustBe UserAnswersResponse.NoAnswers
+      }
+
+      "return BadRequest when http status indicates" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .withHeader("APIVersion", equalTo("2.0"))
+            .willReturn(aResponse.withStatus(BAD_REQUEST))
+        )
+
+        val result: UserAnswersResponse = await(connector.get(lrn))
+
+        result mustBe UserAnswersResponse.BadRequest
+      }
+
+      "return failed future when response have an unexpected status" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .withHeader("APIVersion", equalTo("2.0"))
+            .willReturn(aResponse.withStatus(505).withBody("body"))
+        )
+
+        val result = connector.get(lrn)
+
+        result.failed.futureValue mustBe a[Throwable]
       }
     }
 
@@ -116,7 +142,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
       val url = s"/manage-transit-movements-departure-cache/user-answers/${userAnswers.lrn.toString}/lock"
 
       "must return Unlocked when status is Ok (200)" in {
-        server.stubFor(get(urlEqualTo(url)) `willReturn` aResponse().withStatus(OK))
+        server.stubFor(get(urlEqualTo(url)).willReturn(aResponse().withStatus(OK)))
 
         val result: LockCheck = await(connector.checkLock(userAnswers))
 
@@ -124,7 +150,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
       }
 
       "must return Locked when status is Locked (423)" in {
-        server.stubFor(get(urlEqualTo(url)) `willReturn` aResponse().withStatus(LOCKED))
+        server.stubFor(get(urlEqualTo(url)).willReturn(aResponse().withStatus(LOCKED)))
 
         val result: LockCheck = await(connector.checkLock(userAnswers))
 
@@ -135,7 +161,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
         forAll(Gen.choose(400: Int, 599: Int).retryUntil(_ != LOCKED)) {
           errorStatus =>
-            server.stubFor(get(urlEqualTo(url)) `willReturn` aResponse().withStatus(errorStatus))
+            server.stubFor(get(urlEqualTo(url)).willReturn(aResponse().withStatus(errorStatus)))
 
             val result: LockCheck = await(connector.checkLock(userAnswers))
 

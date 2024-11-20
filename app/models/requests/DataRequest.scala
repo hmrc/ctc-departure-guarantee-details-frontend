@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 
 package models.requests
 
-import models.{EoriNumber, UserAnswers}
+import models.{EoriNumber, UserAnswers, UserAnswersResponse}
 import play.api.mvc.{Request, WrappedRequest}
 
 case class OptionalDataRequest[A](
   request: Request[A],
   eoriNumber: EoriNumber,
-  userAnswers: Option[UserAnswers]
+  userAnswers: UserAnswersResponse
 ) extends WrappedRequest[A](request)
 
 trait MandatoryDataRequest[A] {
