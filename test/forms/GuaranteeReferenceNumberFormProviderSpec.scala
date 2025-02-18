@@ -67,5 +67,11 @@ class GuaranteeReferenceNumberFormProviderSpec extends StringFieldBehaviours {
       result.errors mustEqual Nil
       result.get mustEqual "01GB1234567890120A123456"
     }
+
+    "must convert bound strings to upper case" in {
+      val result = form.bind(Map(fieldName -> "21gb0000010001jc5"))
+      result.errors mustEqual Nil
+      result.get mustEqual "21GB0000010001JC5"
+    }
   }
 }
