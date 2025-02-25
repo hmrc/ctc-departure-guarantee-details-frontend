@@ -49,7 +49,7 @@ class CurrenciesServiceSpec extends SpecBase with BeforeAndAfterEach with Genera
       "must return a list of sorted currency codes" in {
 
         when(mockRefDataConnector.getCurrencyCodes()(any(), any()))
-          .thenReturn(Future.successful(currencyCodes))
+          .thenReturn(Future.successful(Right(currencyCodes)))
 
         service.getCurrencyCodes().futureValue mustBe
           SelectableList(Seq(currencyCode1, currencyCode2))

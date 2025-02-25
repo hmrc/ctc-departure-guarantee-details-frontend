@@ -42,10 +42,12 @@ class GuaranteeTypesService @Inject() (
   def getGuaranteeTypes(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Seq[GuaranteeType]] =
     referenceDataConnector
       .getGuaranteeTypes()
+      .map(_.resolve())
       .map(_.toSeq)
       .map(filter(_, userAnswers))
 
   def getGuaranteeType(code: String)(implicit hc: HeaderCarrier): Future[GuaranteeType] =
     referenceDataConnector
       .getGuaranteeType(code)
+      .map(_.resolve())
 }
