@@ -54,7 +54,7 @@ class GuaranteeTypesServiceSpec extends SpecBase with BeforeAndAfterEach with Ge
 
     "when office of departure is in GB" - {
       "must return filtered and sorted guarantee types" in {
-        when(mockConnector.getGuaranteeTypes()(any(), any())).thenReturn(Future.successful(guaranteeTypes))
+        when(mockConnector.getGuaranteeTypes()(any(), any())).thenReturn(Future.successful(Right(guaranteeTypes)))
 
         val officeOfDeparture = arbitrary[CustomsOffice](arbitraryGbCustomsOffice).sample.value
         val userAnswers       = emptyUserAnswers.setValue(OfficeOfDeparturePage, officeOfDeparture)
@@ -67,7 +67,7 @@ class GuaranteeTypesServiceSpec extends SpecBase with BeforeAndAfterEach with Ge
 
     "when office of departure is in XI" - {
       "must return filtered and sorted guarantee types without IndividualForMultipleUsagesGuarantee (9)" in {
-        when(mockConnector.getGuaranteeTypes()(any(), any())).thenReturn(Future.successful(guaranteeTypes))
+        when(mockConnector.getGuaranteeTypes()(any(), any())).thenReturn(Future.successful(Right(guaranteeTypes)))
 
         val officeOfDeparture = arbitrary[CustomsOffice](arbitraryXiCustomsOffice).sample.value
         val userAnswers       = emptyUserAnswers.setValue(OfficeOfDeparturePage, officeOfDeparture)
@@ -85,7 +85,7 @@ class GuaranteeTypesServiceSpec extends SpecBase with BeforeAndAfterEach with Ge
 
     "when guarantee type found" - {
       "must return that guarantee type" in {
-        when(mockConnector.getGuaranteeType(any())(any(), any())).thenReturn(Future.successful(guaranteeType0))
+        when(mockConnector.getGuaranteeType(any())(any(), any())).thenReturn(Future.successful(Right(guaranteeType0)))
 
         val result = service.getGuaranteeType(code).futureValue
 

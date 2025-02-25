@@ -31,5 +31,6 @@ class CurrenciesService @Inject() (
   def getCurrencyCodes()(implicit hc: HeaderCarrier): Future[SelectableList[CurrencyCode]] =
     referenceDataConnector
       .getCurrencyCodes()
+      .map(_.resolve())
       .map(SelectableList(_))
 }
