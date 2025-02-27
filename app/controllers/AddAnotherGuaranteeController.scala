@@ -16,14 +16,14 @@
 
 package controllers
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.actions.Actions
 import controllers.guarantee.routes
 import forms.AddAnotherFormProvider
 import models.{Index, LocalReferenceNumber, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.AddAnotherGuaranteeViewModel
 import viewModels.AddAnotherGuaranteeViewModel.AddAnotherGuaranteeViewModelProvider
@@ -38,7 +38,7 @@ class AddAnotherGuaranteeController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   viewModelProvider: AddAnotherGuaranteeViewModelProvider,
   view: AddAnotherGuaranteeView
-)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 

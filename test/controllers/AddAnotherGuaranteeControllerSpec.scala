@@ -68,7 +68,7 @@ class AddAnotherGuaranteeControllerSpec extends SpecBase with AppWithDefaultMock
 
     "redirect to add guarantee yes/no page" - {
       "when 0 guarantees" in {
-        when(mockViewModelProvider.apply(any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any())(any(), any()))
           .thenReturn(emptyViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -88,7 +88,7 @@ class AddAnotherGuaranteeControllerSpec extends SpecBase with AppWithDefaultMock
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
 
-        when(mockViewModelProvider.apply(any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -107,7 +107,7 @@ class AddAnotherGuaranteeControllerSpec extends SpecBase with AppWithDefaultMock
 
       "when max limit reached" in {
 
-        when(mockViewModelProvider.apply(any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -128,7 +128,7 @@ class AddAnotherGuaranteeControllerSpec extends SpecBase with AppWithDefaultMock
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to guarantee type page at next index" in {
-          when(mockViewModelProvider.apply(any())(any(), any(), any()))
+          when(mockViewModelProvider.apply(any())(any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -147,7 +147,7 @@ class AddAnotherGuaranteeControllerSpec extends SpecBase with AppWithDefaultMock
 
       "when no submitted" - {
         "must redirect to task list" in {
-          when(mockViewModelProvider.apply(any())(any(), any(), any()))
+          when(mockViewModelProvider.apply(any())(any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -166,7 +166,7 @@ class AddAnotherGuaranteeControllerSpec extends SpecBase with AppWithDefaultMock
 
     "when max limit reached" - {
       "must redirect to task list" in {
-        when(mockViewModelProvider.apply(any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -184,7 +184,7 @@ class AddAnotherGuaranteeControllerSpec extends SpecBase with AppWithDefaultMock
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
