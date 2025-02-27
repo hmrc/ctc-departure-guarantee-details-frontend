@@ -16,7 +16,7 @@
 
 package viewModels
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.{NormalMode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -35,12 +35,12 @@ case class AddAnotherGuaranteeViewModel(
 
 object AddAnotherGuaranteeViewModel {
 
-  def apply(userAnswers: UserAnswers)(implicit messages: Messages, config: FrontendAppConfig, phaseConfig: PhaseConfig): AddAnotherGuaranteeViewModel =
+  def apply(userAnswers: UserAnswers)(implicit messages: Messages, config: FrontendAppConfig): AddAnotherGuaranteeViewModel =
     new AddAnotherGuaranteeViewModelProvider()(userAnswers)
 
   class AddAnotherGuaranteeViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers)(implicit messages: Messages, config: FrontendAppConfig, phaseConfig: PhaseConfig): AddAnotherGuaranteeViewModel = {
+    def apply(userAnswers: UserAnswers)(implicit messages: Messages, config: FrontendAppConfig): AddAnotherGuaranteeViewModel = {
       val helper = new GuaranteeDetailsCheckYourAnswersHelper(userAnswers, NormalMode)
 
       val listItems = helper.listItems.collect {

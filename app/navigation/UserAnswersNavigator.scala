@@ -16,7 +16,7 @@
 
 package navigation
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.Stage.CompletingJourney
 import models.journeyDomain.{EitherType, JourneyDomainModel, ReaderSuccess, Stage, UserAnswersReader}
@@ -31,7 +31,6 @@ import scala.annotation.tailrec
 trait UserAnswersNavigator extends Navigator {
 
   implicit val appConfig: FrontendAppConfig
-  implicit val phaseConfig: PhaseConfig
 
   type T <: JourneyDomainModel
 
