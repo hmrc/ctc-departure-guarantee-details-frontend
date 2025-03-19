@@ -19,6 +19,7 @@
 @import models.reference.CurrencyCode
 @import models.Selectable
 @import models.Selectable._
+@import forms.SelectableFormProvider.CurrencyFormProvider.field
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import viewModels.components.InputSelectViewModel._
 @import views.html.components.{Button, ErrorSummary, InputSelect}
@@ -44,7 +45,7 @@
         @errorSummary(form.errors)
 
         @inputSelect(
-            field = form("value"),
+            field = form(field),
             selectType = SelectWithAdditionalHtml(
                 heading = messages("guarantee.currency.heading"),
                 caption = Some(messages("caption")),

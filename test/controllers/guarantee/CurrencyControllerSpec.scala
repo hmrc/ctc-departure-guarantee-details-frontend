@@ -17,7 +17,7 @@
 package controllers.guarantee
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CurrencyFormProvider
 import generators.Generators
 import models.reference.CurrencyCode
 import models.{NormalMode, SelectableList}
@@ -41,7 +41,8 @@ class CurrencyControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
   private val currencyCode2    = arbitrary[CurrencyCode].sample.value
   private val currencyCodeList = SelectableList(Seq(currencyCode1, currencyCode2))
 
-  private val formProvider = new SelectableFormProvider()
+  private val formProvider = new CurrencyFormProvider()
+  private val field        = formProvider.field
   private val form         = formProvider("guarantee.currency", currencyCodeList)
   private val mode         = NormalMode
 
@@ -83,7 +84,7 @@ class CurrencyControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> currencyCode1.currency))
+      val filledForm = form.bind(Map(field -> currencyCode1.currency))
 
       val view = injector.instanceOf[CurrencyView]
 
@@ -101,7 +102,7 @@ class CurrencyControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, currencyRoute)
-        .withFormUrlEncodedBody(("value", currencyCode1.currency))
+        .withFormUrlEncodedBody((field, currencyCode1.currency))
 
       val result = route(app, request).value
 
@@ -115,8 +116,8 @@ class CurrencyControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       when(mockCurrenciesService.getCurrencyCodes()(any())).thenReturn(Future.successful(currencyCodeList))
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, currencyRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, currencyRoute).withFormUrlEncodedBody((field, "invalid value"))
+      val boundForm = form.bind(Map(field -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -145,7 +146,7 @@ class CurrencyControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, currencyRoute)
-        .withFormUrlEncodedBody(("value", currencyCode1.currency))
+        .withFormUrlEncodedBody((field, currencyCode1.currency))
 
       val result = route(app, request).value
 
