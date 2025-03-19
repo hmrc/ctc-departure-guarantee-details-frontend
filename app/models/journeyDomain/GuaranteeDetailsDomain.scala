@@ -17,7 +17,6 @@
 package models.journeyDomain
 
 import config.Constants.DeclarationType._
-import config.PhaseConfig
 import controllers.routes
 import models.{Index, Mode, RichJsArray, UserAnswers}
 import pages.external.DeclarationTypePage
@@ -43,7 +42,7 @@ case class GuaranteeDetailsDomain(
 
 object GuaranteeDetailsDomain {
 
-  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[GuaranteeDetailsDomain] = {
+  implicit val userAnswersReader: UserAnswersReader[GuaranteeDetailsDomain] = {
 
     implicit val guaranteesReader: Read[Seq[GuaranteeDomain]] =
       GuaranteeDetailsSection.arrayReader.to {

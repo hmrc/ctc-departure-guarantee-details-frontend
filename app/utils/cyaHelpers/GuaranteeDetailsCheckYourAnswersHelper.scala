@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.journeyDomain.GuaranteeDomain
 import models.{Mode, UserAnswers}
 import pages.guarantee.GuaranteeTypePage
@@ -26,8 +26,7 @@ import viewModels.ListItem
 
 class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit
   messages: Messages,
-  config: FrontendAppConfig,
-  phaseConfig: PhaseConfig
+  config: FrontendAppConfig
 ) extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
