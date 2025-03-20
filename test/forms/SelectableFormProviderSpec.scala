@@ -34,11 +34,17 @@ class SelectableFormProviderSpec extends StringFieldBehaviours with Generators {
   private val selectableList = SelectableList(Seq(selectable1, selectable2))
   private val arg            = Gen.alphaNumStr.sample.value
 
-  private val form = new SelectableFormProvider()(prefix, selectableList, arg)
+  private class FakeFormProvider extends SelectableFormProvider {
+    override val field: String = "value"
+  }
+
+  private val formProvider = new FakeFormProvider()
+
+  private val form = formProvider(prefix, selectableList, arg)
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName = formProvider.field
 
     behave like fieldThatBindsValidData(
       form,
@@ -54,13 +60,13 @@ class SelectableFormProviderSpec extends StringFieldBehaviours with Generators {
 
     "not bind if value does not exist in the list" in {
       val boundForm = form.bind(Map("value" -> "foobar"))
-      val field     = boundForm("value")
+      val field     = boundForm(fieldName)
       field.errors mustNot be(empty)
     }
 
     "bind a value which is in the list" in {
       val boundForm = form.bind(Map("value" -> selectable1.value))
-      val field     = boundForm("value")
+      val field     = boundForm(fieldName)
       field.errors must be(empty)
     }
   }
