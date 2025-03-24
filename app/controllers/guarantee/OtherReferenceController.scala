@@ -17,7 +17,6 @@
 package controllers.guarantee
 
 import config.Constants.GuaranteeType._
-import config.PhaseConfig
 import controllers.actions.{Actions, SpecificDataRequiredActionProvider}
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.OtherReferenceFormProvider
@@ -45,7 +44,7 @@ class OtherReferenceController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: OtherReferenceView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

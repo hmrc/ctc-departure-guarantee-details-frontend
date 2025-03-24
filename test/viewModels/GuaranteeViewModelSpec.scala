@@ -17,17 +17,15 @@
 package viewModels
 
 import base.SpecBase
-import config.Constants.DeclarationType._
-import config.Constants.GuaranteeType._
-import config.PhaseConfig
+import config.Constants.DeclarationType.*
+import config.Constants.GuaranteeType.*
 import generators.Generators
-import models.GuaranteeType._
-import models.{GuaranteeType, Phase}
-import org.mockito.Mockito.when
+import models.GuaranteeType
+import models.GuaranteeType.*
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.DeclarationTypePage
-import pages.guarantee._
+import pages.guarantee.*
 
 class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -54,62 +52,17 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
         "when 0,1,2,4,9 guarantee type" - {
           val guaranteeType = arbitrary[GuaranteeType](arbitrary01249GuaranteeType).sample.value
 
-          "when transition" - {
-            val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
-            when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+          "must return 5 rows" in {
+            val initialAnswers = emptyUserAnswers
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(GuaranteeTypePage(index), guaranteeType)
 
-            "when adding liability" - {
-              "must return 6 rows" in {
-                val guaranteeType = arbitrary[GuaranteeType](arbitrary01249GuaranteeType).sample.value
-                val initialAnswers = emptyUserAnswers
-                  .setValue(DeclarationTypePage, declarationType)
-                  .setValue(GuaranteeTypePage(index), guaranteeType)
-                  .setValue(AddLiabilityYesNoPage(index), true)
-
-                forAll(arbitraryGuaranteeAnswers(initialAnswers, index)(mockPhaseConfig)) {
-                  answers =>
-                    val result  = GuaranteeViewModel(answers, index)
-                    val section = result.section
-                    section.sectionTitle mustNot be(defined)
-                    section.rows.length mustBe 6
-                }
-              }
-            }
-
-            "when not adding liability" - {
-              "must return 4 rows" in {
-                val initialAnswers = emptyUserAnswers
-                  .setValue(DeclarationTypePage, declarationType)
-                  .setValue(GuaranteeTypePage(index), guaranteeType)
-                  .setValue(AddLiabilityYesNoPage(index), false)
-
-                forAll(arbitraryGuaranteeAnswers(initialAnswers, index)(mockPhaseConfig)) {
-                  answers =>
-                    val result  = GuaranteeViewModel(answers, index)
-                    val section = result.section
-                    section.sectionTitle mustNot be(defined)
-                    section.rows.length mustBe 4
-                }
-              }
-            }
-          }
-
-          "when post transition" - {
-            val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
-            when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
-
-            "must return 5 rows" in {
-              val initialAnswers = emptyUserAnswers
-                .setValue(DeclarationTypePage, declarationType)
-                .setValue(GuaranteeTypePage(index), guaranteeType)
-
-              forAll(arbitraryGuaranteeAnswers(initialAnswers, index)(mockPhaseConfig)) {
-                answers =>
-                  val result  = GuaranteeViewModel(answers, index)
-                  val section = result.section
-                  section.sectionTitle mustNot be(defined)
-                  section.rows.length mustBe 5
-              }
+            forAll(arbitraryGuaranteeAnswers(initialAnswers, index)) {
+              answers =>
+                val result  = GuaranteeViewModel(answers, index)
+                val section = result.section
+                section.sectionTitle mustNot be(defined)
+                section.rows.length mustBe 5
             }
           }
         }
@@ -117,61 +70,17 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
         "when 5 guarantee type" - {
           val guaranteeType = guaranteeTypeGen(WaiverImportExportGuarantee).sample.value
 
-          "when transition" - {
-            val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
-            when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+          "must return 3 rows" in {
+            val initialAnswers = emptyUserAnswers
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(GuaranteeTypePage(index), guaranteeType)
 
-            "when adding liability" - {
-              "must return 4 rows" in {
-                val initialAnswers = emptyUserAnswers
-                  .setValue(DeclarationTypePage, declarationType)
-                  .setValue(GuaranteeTypePage(index), guaranteeType)
-                  .setValue(AddLiabilityYesNoPage(index), true)
-
-                forAll(arbitraryGuaranteeAnswers(initialAnswers, index)(mockPhaseConfig)) {
-                  answers =>
-                    val result  = GuaranteeViewModel(answers, index)
-                    val section = result.section
-                    section.sectionTitle mustNot be(defined)
-                    section.rows.length mustBe 4
-                }
-              }
-            }
-
-            "when not adding liability" - {
-              "must return 2 rows" in {
-                val initialAnswers = emptyUserAnswers
-                  .setValue(DeclarationTypePage, declarationType)
-                  .setValue(GuaranteeTypePage(index), guaranteeType)
-                  .setValue(AddLiabilityYesNoPage(index), false)
-
-                forAll(arbitraryGuaranteeAnswers(initialAnswers, index)(mockPhaseConfig)) {
-                  answers =>
-                    val result  = GuaranteeViewModel(answers, index)
-                    val section = result.section
-                    section.sectionTitle mustNot be(defined)
-                    section.rows.length mustBe 2
-                }
-              }
-            }
-          }
-
-          "when post transition" - {
-            val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
-            when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
-
-            "must return 3 rows" in {
-              val initialAnswers = emptyUserAnswers
-                .setValue(DeclarationTypePage, declarationType)
-                .setValue(GuaranteeTypePage(index), guaranteeType)
-
-              forAll(arbitraryGuaranteeAnswers(initialAnswers, index)(mockPhaseConfig)) {
-                answers =>
-                  val result  = GuaranteeViewModel(answers, index)
-                  val section = result.section
-                  section.sectionTitle mustNot be(defined)
-                  section.rows.length mustBe 3
-              }
+            forAll(arbitraryGuaranteeAnswers(initialAnswers, index)) {
+              answers =>
+                val result  = GuaranteeViewModel(answers, index)
+                val section = result.section
+                section.sectionTitle mustNot be(defined)
+                section.rows.length mustBe 3
             }
           }
         }

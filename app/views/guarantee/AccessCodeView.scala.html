@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.PhaseConfig
 @import controllers.guarantee.routes
 @import models.{Index, LocalReferenceNumber}
 @import viewModels.components.InputTextViewModel._
@@ -25,8 +24,7 @@
     formHelper: FormWithCSRF,
     inputText: InputText,
     errorSummary: ErrorSummary,
-    button: Button,
-    phaseConfig: PhaseConfig
+    button: Button
 )
 
 @(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, index: Index)(implicit request: Request[?], messages: Messages)

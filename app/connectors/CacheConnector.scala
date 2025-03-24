@@ -16,7 +16,7 @@
 
 package connectors
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
 import models.{LocalReferenceNumber, LockCheck, UserAnswers, UserAnswersResponse}
 import play.api.Logging
@@ -32,22 +32,16 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CacheConnector @Inject() (
   config: FrontendAppConfig,
-  http: HttpClientV2,
-  phaseConfig: PhaseConfig
+  http: HttpClientV2
 )(implicit ec: ExecutionContext)
     extends Logging {
 
   private val baseUrl = s"${config.cacheUrl}"
 
-  private val headers = Seq(
-    "APIVersion" -> phaseConfig.values.apiVersion.toString
-  )
-
   def get(lrn: LocalReferenceNumber)(implicit hc: HeaderCarrier): Future[UserAnswersResponse] = {
     val url = url"$baseUrl/user-answers/$lrn"
     http
       .get(url)
-      .setHeader(headers*)
       .execute[UserAnswersResponse]
   }
 

@@ -16,7 +16,6 @@
 
 package controllers.guarantee
 
-import config.PhaseConfig
 import controllers.actions.Actions
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider.CurrencyFormProvider
@@ -42,7 +41,7 @@ class CurrencyController @Inject() (
   currenciesService: CurrenciesService,
   val controllerComponents: MessagesControllerComponents,
   view: CurrencyView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

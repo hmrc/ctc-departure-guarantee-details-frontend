@@ -47,41 +47,6 @@ package object journeyDomain {
     }
   }
 
-  implicit class GettableAsFilterForNextReaderOps[A: Reads](a: Gettable[A]) {
-
-    /** Returns UserAnswersReader[B], where UserAnswersReader[B] which is run only if UserAnswerReader[A] is defined and satisfies the predicate, if it defined
-      * and does not satisfy the predicate overall reader will will fail returning a ReaderError. If the result of UserAnswerReader[A] is not defined then the
-      * overall reader will fail and `next` will not be run
-      */
-    def filterMandatoryDependent[B](predicate: A => Boolean)(next: => Read[B]): Read[B] = pages =>
-      a.reader(s"Reader for ${a.path} failed before reaching predicate")
-        .apply(pages)
-        .flatMap {
-          case ReaderSuccess(x, pages) =>
-            if (predicate(x)) {
-              next(pages)
-            } else {
-              UserAnswersReader.error[B](a, Some(s"Mandatory predicate failed for ${a.path}")).apply(pages.append(a))
-            }
-        }
-
-    /** Returns UserAnswersReader[Option[B]], where UserAnswersReader[B] which is run only if UserAnswerReader[A] is defined and satisfies the predicate, if it
-      * defined and does not satisfy the predicate overall reader will will return None. If the result of UserAnswerReader[A] is not defined then the overall
-      * reader will fail and `next` will not be run
-      */
-    def filterOptionalDependent[B](predicate: A => Boolean)(next: => Read[B]): Read[Option[B]] = pages =>
-      a.reader(s"Reader for ${a.path} failed before reaching predicate")
-        .apply(pages)
-        .flatMap {
-          case ReaderSuccess(x, pages) =>
-            if (predicate(x)) {
-              next.toOption.apply(pages)
-            } else {
-              UserAnswersReader.none.apply(pages)
-            }
-        }
-  }
-
   implicit class GettableAsReaderOps[A](a: Gettable[A]) {
 
     /** Returns a reader for [[Gettable]], which will succeed with an [[A]] if the value is defined and will fail if it is not defined

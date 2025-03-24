@@ -15,7 +15,6 @@
  */
 
 import cats.data.ReaderT
-import config.PhaseConfig
 import models.TaskStatus._
 import models.journeyDomain.OpsError.WriterError
 import models.journeyDomain.{GuaranteeDetailsDomain, UserAnswersReader}
@@ -73,7 +72,7 @@ package object controllers {
           UserAnswersWriter.set(userAnswers, otherPage, value)
       }
 
-    def updateTask()(implicit phaseConfig: PhaseConfig): UserAnswersWriter[Write[A]] =
+    def updateTask(): UserAnswersWriter[Write[A]] =
       userAnswersWriter.flatMapF {
         case (page, userAnswers) =>
           page.path.path.headOption.map(_.toJsonString) match {
