@@ -16,7 +16,7 @@
 
 package views.guarantee
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CurrencyFormProvider
 import models.reference.CurrencyCode
 import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
@@ -27,7 +27,9 @@ import views.html.guarantee.CurrencyView
 
 class CurrencyViewSpec extends InputSelectViewBehaviours[CurrencyCode] {
 
-  override def form: Form[CurrencyCode] = new SelectableFormProvider()(prefix, SelectableList(values))
+  val formProvider                      = new CurrencyFormProvider()
+  override val field                    = formProvider.field
+  override def form: Form[CurrencyCode] = formProvider(prefix, SelectableList(values))
 
   override def applyView(form: Form[CurrencyCode]): HtmlFormat.Appendable =
     injector.instanceOf[CurrencyView].apply(form, lrn, values, NormalMode, index)(fakeRequest, messages)

@@ -18,7 +18,7 @@ package controllers.guarantee
 
 import controllers.actions.Actions
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CurrencyFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{GuaranteeNavigatorProvider, UserAnswersNavigator}
 import pages.guarantee.CurrencyPage
@@ -37,7 +37,7 @@ class CurrencyController @Inject() (
   val sessionRepository: SessionRepository,
   navigatorProvider: GuaranteeNavigatorProvider,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: CurrencyFormProvider,
   currenciesService: CurrenciesService,
   val controllerComponents: MessagesControllerComponents,
   view: CurrencyView

@@ -45,7 +45,7 @@ class LiabilityAmountViewSpec extends CurrencyInputViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithHint("This can have up to 2 decimal places, for example 999.99.")
+  behave like pageWithHint(s"This can have up to 2 decimal places, for example ${currencySymbol}999.99.")
 
   behave like pageWithCurrencyInput()
 
