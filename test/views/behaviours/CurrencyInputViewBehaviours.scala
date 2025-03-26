@@ -26,19 +26,8 @@ trait CurrencyInputViewBehaviours extends InputTextViewBehaviours[BigDecimal] {
 
     behave like pageWithInputText(Some(InputSize.Width10))
 
-    "page with a currency input field" - {
-      "must have correct pattern" in {
-        assert(getElementById(doc, "value").attr("pattern") == "^\\d+(\\.\\d {1,2})?$")
-      }
-
-      "must have correct input mode" in {
-        assert(getElementById(doc, "value").attr("inputmode") == "decimal")
-      }
-
-      "must have correct prefix" in {
-        assert(getElementByClass(doc, "govuk-input__prefix").text() == currencySymbol)
-      }
+    "must have correct prefix" in {
+      assert(getElementByClass(doc, "govuk-input__prefix").text() == currencySymbol)
     }
   }
-
 }

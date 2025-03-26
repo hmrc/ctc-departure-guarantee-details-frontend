@@ -47,9 +47,7 @@
             ),
             hint = Some(messages("guarantee.liabilityAmount.hint", currency)),
             inputClass = InputSize.Width10,
-            prefix = Some(currency),
-            pattern = Some("^\\d+(\\.\\d {1,2})?$"),
-            inputMode = Some("decimal")
+            prefix = Some(currency)
         )
 
         @button(attributes = Map("id" -> "submit"))
