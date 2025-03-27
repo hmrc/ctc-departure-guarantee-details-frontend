@@ -21,24 +21,28 @@ import controllers.actions.Actions
 import controllers.guarantee.routes
 import forms.AddAnotherFormProvider
 import models.{Index, LocalReferenceNumber, NormalMode}
+import pages.guarantee.AddAnotherGuaranteePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.AddAnotherGuaranteeViewModel
 import viewModels.AddAnotherGuaranteeViewModel.AddAnotherGuaranteeViewModelProvider
 import views.html.AddAnotherGuaranteeView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherGuaranteeController @Inject() (
   override val messagesApi: MessagesApi,
+  val sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,
   viewModelProvider: AddAnotherGuaranteeViewModelProvider,
   view: AddAnotherGuaranteeView
-)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit config: FrontendAppConfig, ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -50,21 +54,31 @@ class AddAnotherGuaranteeController @Inject() (
       val viewModel = viewModelProvider(request.userAnswers)
       viewModel.count match {
         case 0 => Redirect(routes.GuaranteeTypeController.onPageLoad(lrn, NormalMode, Index(0)))
-        case _ => Ok(view(form(viewModel), lrn, viewModel))
+        case _ =>
+          val preparedForm = request.userAnswers.get(AddAnotherGuaranteePage(Index(0))) match {
+            case None        => form(viewModel)
+            case Some(value) => form(viewModel).fill(value)
+          }
+          Ok(view(preparedForm, lrn, viewModel))
       }
   }
 
-  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
+  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers)
       form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
-          {
-            case true  => Redirect(routes.GuaranteeTypeController.onPageLoad(lrn, NormalMode, viewModel.nextIndex))
-            case false => Redirect(config.taskListUrl(lrn))
-          }
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel))),
+          value =>
+            AddAnotherGuaranteePage(Index(0))
+              .writeToUserAnswers(value)
+              .updateTask()
+              .writeToSession(sessionRepository)
+              .navigateTo {
+                if value then routes.GuaranteeTypeController.onPageLoad(lrn, NormalMode, viewModel.nextIndex).url
+                else config.taskListUrl(lrn)
+              }
         )
   }
 }

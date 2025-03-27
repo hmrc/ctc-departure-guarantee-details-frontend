@@ -25,10 +25,11 @@ import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.guarantee.AddAnotherGuaranteePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewModels.AddAnotherGuaranteeViewModel.AddAnotherGuaranteeViewModelProvider
 import viewModels.{AddAnotherGuaranteeViewModel, ListItem}
 import views.html.AddAnotherGuaranteeView
@@ -122,6 +123,48 @@ class AddAnotherGuaranteeControllerSpec extends SpecBase with AppWithDefaultMock
 
         contentAsString(result) mustEqual
           view(form(maxedOutViewModel), lrn, maxedOutViewModel)(request, messages, frontendAppConfig).toString
+      }
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered" - {
+      "when max limit not reached" in {
+        when(mockViewModelProvider.apply(any())(any(), any(), any()))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherGuaranteePage(index), true))
+
+        val request = FakeRequest(GET, addAnotherGuaranteeRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(notMaxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherGuaranteeView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, lrn, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+      }
+
+      "when max limit reached" in {
+        when(mockViewModelProvider.apply(any())(any(), any(), any()))
+          .thenReturn(maxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherGuaranteePage(index), true))
+
+        val request = FakeRequest(GET, addAnotherGuaranteeRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(maxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherGuaranteeView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, lrn, maxedOutViewModel)(request, messages, frontendAppConfig).toString
       }
     }
 
