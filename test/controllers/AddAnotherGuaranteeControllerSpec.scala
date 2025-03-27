@@ -25,7 +25,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.guarantee.AddAnotherGuaranteePage
+import pages.AddAnotherGuaranteePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -131,7 +131,7 @@ class AddAnotherGuaranteeControllerSpec extends SpecBase with AppWithDefaultMock
         when(mockViewModelProvider.apply(any())(any(), any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
-        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherGuaranteePage(index), true))
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherGuaranteePage, true))
 
         val request = FakeRequest(GET, addAnotherGuaranteeRoute)
 
@@ -151,7 +151,7 @@ class AddAnotherGuaranteeControllerSpec extends SpecBase with AppWithDefaultMock
         when(mockViewModelProvider.apply(any())(any(), any(), any()))
           .thenReturn(maxedOutViewModel)
 
-        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherGuaranteePage(index), true))
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherGuaranteePage, true))
 
         val request = FakeRequest(GET, addAnotherGuaranteeRoute)
 

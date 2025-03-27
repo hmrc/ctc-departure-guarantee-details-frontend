@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package pages.guarantee
+package pages
 
+import pages.AddAnotherGuaranteePage
 import pages.behaviours.PageBehaviours
-import pages.guarantee.AddAnotherGuaranteePage
 
 class AddAnotherGuaranteePageSpec extends PageBehaviours {
 
   "AddAnotherGuaranteePage" - {
 
-    beRetrievable[Boolean](AddAnotherGuaranteePage(index))
+    beRetrievable[Boolean](AddAnotherGuaranteePage)
 
-    beSettable[Boolean](AddAnotherGuaranteePage(index))
+    beSettable[Boolean](AddAnotherGuaranteePage)
 
-    beRemovable[Boolean](AddAnotherGuaranteePage(index))
+    beRemovable[Boolean](AddAnotherGuaranteePage)
   }
 }

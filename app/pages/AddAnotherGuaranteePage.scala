@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package pages.guarantee
+package pages
 
 import controllers.routes
-import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.GuaranteeSection
+import models.{Mode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AddAnotherGuaranteePage(index: Index) extends QuestionPage[Boolean] {
+case object AddAnotherGuaranteePage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = GuaranteeSection(index).path \ toString
+  override def path: JsPath = JsPath \ toString
 
   override def toString: String = "addAnotherGuarantee"
 

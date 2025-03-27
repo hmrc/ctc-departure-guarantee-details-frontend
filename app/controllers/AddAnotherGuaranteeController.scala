@@ -21,7 +21,7 @@ import controllers.actions.Actions
 import controllers.guarantee.routes
 import forms.AddAnotherFormProvider
 import models.{Index, LocalReferenceNumber, NormalMode}
-import pages.guarantee.AddAnotherGuaranteePage
+import pages.AddAnotherGuaranteePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.*
@@ -55,7 +55,7 @@ class AddAnotherGuaranteeController @Inject() (
       viewModel.count match {
         case 0 => Redirect(routes.GuaranteeTypeController.onPageLoad(lrn, NormalMode, Index(0)))
         case _ =>
-          val preparedForm = request.userAnswers.get(AddAnotherGuaranteePage(Index(0))) match {
+          val preparedForm = request.userAnswers.get(AddAnotherGuaranteePage) match {
             case None        => form(viewModel)
             case Some(value) => form(viewModel).fill(value)
           }
@@ -71,7 +71,7 @@ class AddAnotherGuaranteeController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel))),
           value =>
-            AddAnotherGuaranteePage(Index(0))
+            AddAnotherGuaranteePage
               .writeToUserAnswers(value)
               .updateTask()
               .writeToSession(sessionRepository)
