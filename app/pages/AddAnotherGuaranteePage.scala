@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package views.behaviours
+package pages
 
-import viewModels.InputSize
+import controllers.routes
+import models.{Mode, UserAnswers}
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-trait CurrencyInputViewBehaviours extends InputTextViewBehaviours[BigDecimal] {
+case object AddAnotherGuaranteePage extends QuestionPage[Boolean] {
 
-  val currencySymbol: String = nonEmptyString.sample.value
+  override def path: JsPath = JsPath \ toString
 
-  def pageWithCurrencyInput(): Unit = {
+  override def toString: String = "addAnotherGuarantee"
 
-    behave like pageWithInputText(Some(InputSize.Width10))
-
-    "must have correct prefix" in {
-      assert(getElementByClass(doc, "govuk-input__prefix").text() == currencySymbol)
-    }
-  }
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddAnotherGuaranteeController.onPageLoad(userAnswers.lrn))
 }
