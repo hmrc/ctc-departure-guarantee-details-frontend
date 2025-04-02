@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,16 @@
 package models.journeyDomain
 
 import base.SpecBase
-import config.Constants.DeclarationType._
-import config.Constants.GuaranteeType._
+import config.Constants.DeclarationType.*
+import config.Constants.GuaranteeType.*
 import generators.Generators
-import models.GuaranteeType._
+import models.GuaranteeType.*
 import models.journeyDomain.GuaranteeDomain.GuaranteeOfTypesAB
 import models.{GuaranteeType, Index}
 import org.scalacheck.Arbitrary.arbitrary
+import pages.AddAnotherGuaranteePage
 import pages.external.DeclarationTypePage
 import pages.guarantee.GuaranteeTypePage
-import pages.sections.GuaranteeDetailsSection
 
 class GuaranteeDetailsDomainSpec extends SpecBase with Generators {
 
@@ -76,7 +76,7 @@ class GuaranteeDetailsDomainSpec extends SpecBase with Generators {
         result.value.value mustBe expectedResult
         result.value.pages mustBe Seq(
           GuaranteeTypePage(Index(0)),
-          GuaranteeDetailsSection
+          AddAnotherGuaranteePage
         )
       }
     }

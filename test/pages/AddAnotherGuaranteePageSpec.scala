@@ -16,7 +16,6 @@
 
 package pages
 
-import pages.AddAnotherGuaranteePage
 import pages.behaviours.PageBehaviours
 
 class AddAnotherGuaranteePageSpec extends PageBehaviours {
