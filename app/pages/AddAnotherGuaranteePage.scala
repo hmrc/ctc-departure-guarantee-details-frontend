@@ -21,7 +21,7 @@ import models.{Mode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AddAnotherGuaranteePage extends QuestionPage[Boolean] {
+case object AddAnotherGuaranteePage extends AddAnotherPage {
 
   override def path: JsPath = JsPath \ toString
 

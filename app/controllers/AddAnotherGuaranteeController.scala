@@ -75,9 +75,12 @@ class AddAnotherGuaranteeController @Inject() (
               .writeToUserAnswers(value)
               .updateTask()
               .writeToSession(sessionRepository)
-              .navigateTo {
-                if value then routes.GuaranteeTypeController.onPageLoad(lrn, NormalMode, viewModel.nextIndex).url
-                else config.taskListUrl(lrn)
+              .and {
+                if (value) {
+                  _.navigateTo(routes.GuaranteeTypeController.onPageLoad(lrn, NormalMode, viewModel.nextIndex).url)
+                } else {
+                  _.navigateTo(config.taskListUrl(lrn))
+                }
               }
         )
   }
