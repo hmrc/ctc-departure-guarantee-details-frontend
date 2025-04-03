@@ -78,7 +78,6 @@ class GuaranteeReferenceNumberFormProviderSpec extends StringFieldBehaviours {
     "must not bind GRN with invalid format" in {
       val str    = "OI085M6"
       val result = form.bind(Map(fieldName -> str)).apply(fieldName)
-      println(result.errors)
       result.errors must contain(FormError(fieldName, invalidGRNKey, Seq(referenceNumberFormatRegex.regex)))
     }
   }
