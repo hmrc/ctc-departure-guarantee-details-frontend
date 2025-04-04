@@ -16,7 +16,6 @@
 
 package controllers.guarantee
 
-import config.PhaseConfig
 import controllers.actions.Actions
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
@@ -41,7 +40,7 @@ class AddDefaultLiabilityAmountController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   navigatorProvider: GuaranteeNavigatorProvider,
   view: AddDefaultLiabilityAmountView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

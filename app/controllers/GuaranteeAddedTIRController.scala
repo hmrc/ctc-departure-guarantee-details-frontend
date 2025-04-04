@@ -17,7 +17,7 @@
 package controllers
 
 import config.Constants.GuaranteeType.TIRGuarantee
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.actions.Actions
 import models.GuaranteeType._
 import models.{Index, LocalReferenceNumber}
@@ -41,7 +41,7 @@ class GuaranteeAddedTIRController @Inject() (
   view: GuaranteeAddedTIRView,
   config: FrontendAppConfig,
   service: GuaranteeTypesService
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {

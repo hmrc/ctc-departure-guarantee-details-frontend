@@ -19,10 +19,9 @@ package models.journeyDomain
 import cats.implicits._
 import config.Constants.DeclarationType._
 import config.Constants.GuaranteeType._
-import config.PhaseConfig
 import models.GuaranteeType._
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.{CheckMode, GuaranteeType, Index, Mode, Phase, UserAnswers}
+import models.{CheckMode, GuaranteeType, Index, Mode, UserAnswers}
 import pages.external.DeclarationTypePage
 import pages.guarantee._
 import pages.sections.{GuaranteeSection, Section}
@@ -52,7 +51,7 @@ sealed trait GuaranteeDomain extends JourneyDomainModel {
 object GuaranteeDomain {
 
   // scalastyle:off cyclomatic.complexity
-  implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): Read[GuaranteeDomain] =
+  implicit def userAnswersReader(index: Index): Read[GuaranteeDomain] =
     DeclarationTypePage.reader.to {
       case TIR =>
         GuaranteeTypePage(index)
@@ -95,94 +94,36 @@ object GuaranteeDomain {
       UserAnswersReader.success(GuaranteeOfTypesAB(guaranteeType)(index))
   }
 
-  sealed trait GuaranteeOfTypes01249 extends GuaranteeDomain
-
-  object GuaranteeOfTypes01249 {
-
-    def userAnswersReader(index: Index, guaranteeType: GuaranteeType)(implicit
-      phaseConfig: PhaseConfig
-    ): Read[GuaranteeDomain] =
-      phaseConfig.phase match {
-        case Phase.Transition     => TransitionGuaranteeOfTypes01249.userAnswersReader(index, guaranteeType)
-        case Phase.PostTransition => PostTransitionGuaranteeOfTypes01249.userAnswersReader(index, guaranteeType)
-      }
-  }
-
-  case class TransitionGuaranteeOfTypes01249(
-    `type`: GuaranteeType,
-    grn: String,
-    liability: Option[LiabilityDomain],
-    accessCode: String
-  )(override val index: Index)
-      extends GuaranteeOfTypes01249
-
-  object TransitionGuaranteeOfTypes01249 {
-
-    def userAnswersReader(index: Index, guaranteeType: GuaranteeType): Read[GuaranteeDomain] =
-      (
-        ReferenceNumberPage(index).reader.apply(_),
-        AddLiabilityYesNoPage(index).filterOptionalDependent(identity)(LiabilityDomain.userAnswersReader(index)),
-        AccessCodePage(index).reader.apply(_)
-      ).map(TransitionGuaranteeOfTypes01249.apply(guaranteeType, _, _, _)(index))
-  }
-
-  case class PostTransitionGuaranteeOfTypes01249(
+  case class GuaranteeOfTypes01249(
     `type`: GuaranteeType,
     grn: String,
     liability: LiabilityDomain,
     accessCode: String
   )(override val index: Index)
-      extends GuaranteeOfTypes01249
+      extends GuaranteeDomain
 
-  object PostTransitionGuaranteeOfTypes01249 {
+  object GuaranteeOfTypes01249 {
 
     def userAnswersReader(index: Index, guaranteeType: GuaranteeType): Read[GuaranteeDomain] =
       (
         ReferenceNumberPage(index).reader.apply(_),
         LiabilityDomain.userAnswersReader(index),
         AccessCodePage(index).reader.apply(_)
-      ).map(PostTransitionGuaranteeOfTypes01249.apply(guaranteeType, _, _, _)(index))
+      ).map(GuaranteeOfTypes01249.apply(guaranteeType, _, _, _)(index))
   }
 
-  sealed trait GuaranteeOfType5 extends GuaranteeDomain
-
-  object GuaranteeOfType5 {
-
-    def userAnswersReader(index: Index, guaranteeType: GuaranteeType)(implicit
-      phaseConfig: PhaseConfig
-    ): Read[GuaranteeDomain] =
-      phaseConfig.phase match {
-        case Phase.Transition     => TransitionGuaranteeOfType5.userAnswersReader(index, guaranteeType)
-        case Phase.PostTransition => PostTransitionGuaranteeOfType5.userAnswersReader(index, guaranteeType)
-      }
-  }
-
-  case class TransitionGuaranteeOfType5(
-    `type`: GuaranteeType,
-    liability: Option[LiabilityDomain]
-  )(override val index: Index)
-      extends GuaranteeOfType5
-
-  object TransitionGuaranteeOfType5 {
-
-    def userAnswersReader(index: Index, guaranteeType: GuaranteeType): Read[GuaranteeDomain] =
-      AddLiabilityYesNoPage(index)
-        .filterOptionalDependent(identity)(LiabilityDomain.userAnswersReader(index))
-        .map(TransitionGuaranteeOfType5.apply(guaranteeType, _)(index))
-  }
-
-  case class PostTransitionGuaranteeOfType5(
+  case class GuaranteeOfType5(
     `type`: GuaranteeType,
     liability: LiabilityDomain
   )(override val index: Index)
-      extends GuaranteeOfType5
+      extends GuaranteeDomain
 
-  object PostTransitionGuaranteeOfType5 {
+  object GuaranteeOfType5 {
 
     def userAnswersReader(index: Index, guaranteeType: GuaranteeType): Read[GuaranteeDomain] =
       LiabilityDomain
         .userAnswersReader(index)
-        .map(PostTransitionGuaranteeOfType5.apply(guaranteeType, _)(index))
+        .map(GuaranteeOfType5.apply(guaranteeType, _)(index))
   }
 
   case class GuaranteeOfType8(
