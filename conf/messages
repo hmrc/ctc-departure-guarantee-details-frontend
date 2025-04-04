@@ -53,7 +53,8 @@ guarantee.referenceNumber.change.hidden = guarantee reference number
 guarantee.referenceNumber.paragraph = This is issued by Customs and is used to identify the guarantee.
 guarantee.referenceNumber.hint = It can be up to 24 characters long and include both letters and numbers. For example, 01GB1234567890120A123456.
 guarantee.referenceNumber.error.length = The Guarantee Reference Number must be 24 characters or less
-guarantee.referenceNumber.error.invalid = The Guarantee Reference Number must only include the letters a to z and numbers 0 to 9
+guarantee.referenceNumber.error.invalidCharacters = The Guarantee Reference Number must only include the letters a to z and numbers 0 to 9
+guarantee.referenceNumber.error.invalid = Enter a valid Guarantee Reference Number
 
 guarantee.otherReference.option3.title = What is the reference for the guarantee?
 guarantee.otherReference.option3.heading = What is the reference for the guarantee?

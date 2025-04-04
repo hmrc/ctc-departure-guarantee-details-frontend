@@ -18,7 +18,7 @@ package forms
 
 import forms.Constants.maxRefNumberLength
 import forms.behaviours.StringFieldBehaviours
-import models.domain.StringFieldRegex.alphaNumericRegex
+import models.domain.StringFieldRegex.{alphaNumericRegex, referenceNumberFormatRegex}
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -26,9 +26,10 @@ class GuaranteeReferenceNumberFormProviderSpec extends StringFieldBehaviours {
 
   private val prefix = Gen.alphaNumStr.sample.value
 
-  val requiredKey = s"$prefix.error.required"
-  val lengthKey   = s"$prefix.error.length"
-  val invalidKey  = s"$prefix.error.invalid"
+  val requiredKey          = s"$prefix.error.required"
+  val lengthKey            = s"$prefix.error.length"
+  val invalidCharactersKey = s"$prefix.error.invalidCharacters"
+  val invalidGRNKey        = s"$prefix.error.invalid"
 
   val form = new GuaranteeReferenceNumberFormProvider()(prefix)
 
@@ -58,7 +59,7 @@ class GuaranteeReferenceNumberFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithInvalidCharacters(
       form,
       fieldName,
-      error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
+      error = FormError(fieldName, invalidCharactersKey, Seq(alphaNumericRegex.regex)),
       maxRefNumberLength
     )
 
@@ -72,6 +73,12 @@ class GuaranteeReferenceNumberFormProviderSpec extends StringFieldBehaviours {
       val result = form.bind(Map(fieldName -> "21gb0000010001jc5"))
       result.errors mustEqual Nil
       result.get mustEqual "21GB0000010001JC5"
+    }
+
+    "must not bind GRN with invalid format" in {
+      val str    = "OI085M6"
+      val result = form.bind(Map(fieldName -> str)).apply(fieldName)
+      result.errors must contain(FormError(fieldName, invalidGRNKey, Seq(referenceNumberFormatRegex.regex)))
     }
   }
 }
