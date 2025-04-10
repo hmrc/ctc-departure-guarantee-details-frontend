@@ -21,7 +21,7 @@ import play.api.libs.json.JsPath
 
 case object GuaranteeDetailsSection extends AddAnotherSection {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = GuaranteeDetailsParentSection.path \ toString
 
   override def toString: String = "guaranteeDetails"
 
