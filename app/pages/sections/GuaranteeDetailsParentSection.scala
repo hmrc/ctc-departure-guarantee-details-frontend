@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections
 
-import controllers.routes
-import models.{Mode, UserAnswers}
-import pages.sections.GuaranteeDetailsParentSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import play.api.libs.json.{JsObject, JsPath}
 
-case object AddAnotherGuaranteePage extends AddAnotherPage {
+case object GuaranteeDetailsParentSection extends Section[JsObject] {
 
-  override def path: JsPath = GuaranteeDetailsParentSection.path \ toString
+  override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "addAnotherGuarantee"
-
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddAnotherGuaranteeController.onPageLoad(userAnswers.lrn))
+  override def toString: String = "guaranteeDetails"
 }
