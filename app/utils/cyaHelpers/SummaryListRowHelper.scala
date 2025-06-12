@@ -20,6 +20,7 @@ import models.Radioable
 import models.reference.CurrencyCode
 import play.api.i18n.Messages
 import play.api.mvc.Call
+import scala.util.control.NonFatal
 import uk.gov.hmrc.govukfrontend.views.html.components._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
@@ -51,7 +52,7 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
         format.setCurrency(currency)
         format.format(answer)
       } catch {
-        case _: Throwable => s"$answer ${currencyCode.currency}"
+        case NonFatal(_: Throwable) => s"$answer ${currencyCode.currency}"
       }
 
     str.toText
