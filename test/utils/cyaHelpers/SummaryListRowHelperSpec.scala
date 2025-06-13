@@ -17,39 +17,24 @@
 package utils.cyaHelpers
 
 import base.SpecBase
-import generators.Generators
 import models.reference.CurrencyCode
-import uk.gov.hmrc.govukfrontend.views.html.components.*
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
+import uk.gov.hmrc.govukfrontend.views.html.components._
 
-class SummaryListRowHelperSpec extends SpecBase with Generators {
+class SummaryListRowHelperSpec extends SpecBase {
 
-  def formatAsCurrency(answer: BigDecimal, currencyCode: CurrencyCode): Content = {
-    import java.text.NumberFormat
-    import java.util.Currency
-    import scala.util.Try
-
-    val str = Try {
-      val format   = NumberFormat.getCurrencyInstance()
-      val currency = Currency.getInstance(currencyCode.currency)
-      format.setCurrency(currency)
-      format.format(answer)
-    }.getOrElse(s"$answer ${currencyCode.currency}")
-
-    str.toText
-  }
+  class FakeHelper extends SummaryListRowHelper
 
   "when currency code is valid" - {
-    "must format value properly" in {
-      val result = formatAsCurrency(BigDecimal(1234.56), CurrencyCode("GBP", "Pounds"))
+    "must format value properly" in new FakeHelper {
+      val result: Content = formatAsCurrency(BigDecimal(1234.56), CurrencyCode("GBP", "Pounds"))
 
       result.value mustBe "£1,234.56"
     }
   }
 
   "when currency code is invalid" - {
-    "must format value properly" in {
-      val result = formatAsCurrency(BigDecimal(1234.56), CurrencyCode("Invalid", "Invalid"))
+    "must format value properly" in new FakeHelper {
+      val result: Content = formatAsCurrency(BigDecimal(1234.56), CurrencyCode("Invalid", "Invalid"))
 
       result.value mustBe "1234.56 Invalid"
     }
