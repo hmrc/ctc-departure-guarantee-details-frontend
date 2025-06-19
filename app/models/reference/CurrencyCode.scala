@@ -17,8 +17,10 @@
 package models.reference
 
 import cats.Order
+import config.FrontendAppConfig
 import models.Selectable
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.{__, Format, Json, Reads}
 
 import java.util.Currency
 import scala.util.Try
@@ -33,7 +35,18 @@ case class CurrencyCode(currency: String, description: String) extends Selectabl
 }
 
 object CurrencyCode {
-  implicit val format: OFormat[CurrencyCode] = Json.format[CurrencyCode]
+
+  def reads(config: FrontendAppConfig): Reads[CurrencyCode] =
+    if (config.isPhase6Enabled) {
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(CurrencyCode.apply)
+    } else {
+      Json.reads[CurrencyCode]
+    }
+
+  implicit val format: Format[CurrencyCode] = Json.format[CurrencyCode]
 
   implicit val order: Order[CurrencyCode] = (x: CurrencyCode, y: CurrencyCode) => (x, y).compareBy(_.currency)
 }

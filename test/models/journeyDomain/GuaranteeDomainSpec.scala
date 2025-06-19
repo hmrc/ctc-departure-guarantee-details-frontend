@@ -20,10 +20,9 @@ import base.SpecBase
 import config.Constants.DeclarationType.*
 import config.Constants.GuaranteeType.*
 import generators.Generators
-import models.GuaranteeType
-import models.GuaranteeType.*
+import models.reference.GuaranteeType.*
 import models.journeyDomain.GuaranteeDomain.*
-import models.reference.CurrencyCode
+import models.reference.{CurrencyCode, GuaranteeType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.external.DeclarationTypePage

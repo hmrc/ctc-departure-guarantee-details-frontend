@@ -20,7 +20,7 @@ import base.SpecBase
 import config.Constants.GuaranteeType._
 import controllers.guarantee.routes
 import generators.Generators
-import models.GuaranteeType._
+import models.reference.GuaranteeType._
 import models.{CheckMode, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.external.DeclarationTypePage

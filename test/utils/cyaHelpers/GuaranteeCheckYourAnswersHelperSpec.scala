@@ -22,9 +22,9 @@ import config.Constants.GuaranteeType.TIRGuarantee
 import controllers.guarantee.routes
 import forms.Constants.accessCodeLength
 import generators.Generators
-import models.GuaranteeType._
-import models.reference.CurrencyCode
-import models.{GuaranteeType, Mode}
+import models.reference.GuaranteeType._
+import models.reference.{CurrencyCode, GuaranteeType}
+import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks

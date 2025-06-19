@@ -19,7 +19,8 @@ package controllers.guarantee
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
-import models.{GuaranteeType, UserAnswers}
+import models.UserAnswers
+import models.reference.GuaranteeType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, verify, when}

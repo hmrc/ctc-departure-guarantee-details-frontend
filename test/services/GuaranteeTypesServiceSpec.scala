@@ -20,8 +20,7 @@ import base.SpecBase
 import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import generators.Generators
-import models.GuaranteeType
-import models.reference.CustomsOffice
+import models.reference.{CustomsOffice, GuaranteeType}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary

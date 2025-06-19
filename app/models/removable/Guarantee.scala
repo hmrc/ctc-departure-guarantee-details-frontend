@@ -16,7 +16,8 @@
 
 package models.removable
 
-import models.{GuaranteeType, Index, UserAnswers}
+import models.reference.GuaranteeType
+import models.{Index, UserAnswers}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads
 

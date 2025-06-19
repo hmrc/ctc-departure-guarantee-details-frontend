@@ -19,7 +19,8 @@ package controllers.guarantee
 import controllers.actions.Actions
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.{GuaranteeType, Index, LocalReferenceNumber, Mode}
+import models.reference.GuaranteeType
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{GuaranteeNavigatorProvider, UserAnswersNavigator}
 import pages.guarantee.GuaranteeTypePage
 import play.api.data.Form

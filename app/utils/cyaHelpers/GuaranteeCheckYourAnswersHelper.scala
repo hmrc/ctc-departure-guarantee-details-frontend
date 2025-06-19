@@ -18,9 +18,9 @@ package utils.cyaHelpers
 
 import config.Constants.GuaranteeType._
 import config.FrontendAppConfig
-import models.GuaranteeType._
-import models.reference.CurrencyCode
-import models.{GuaranteeType, Index, Mode, UserAnswers}
+import models.reference.GuaranteeType._
+import models.reference.{CurrencyCode, GuaranteeType}
+import models.{Index, Mode, UserAnswers}
 import pages.guarantee._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow

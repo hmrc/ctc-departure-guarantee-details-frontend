@@ -19,7 +19,7 @@ package controllers
 import config.Constants.GuaranteeType.TIRGuarantee
 import config.FrontendAppConfig
 import controllers.actions.Actions
-import models.GuaranteeType._
+import models.reference.GuaranteeType._
 import models.{Index, LocalReferenceNumber}
 import pages.guarantee.GuaranteeTypePage
 import play.api.Logging
