@@ -20,7 +20,6 @@ import cats.Order
 import cats.data.NonEmptySet
 import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.{NoReferenceDataFoundException, Response, Responses}
-import models.GuaranteeType
 import models.reference.*
 import play.api.Logging
 import play.api.http.Status.*
@@ -38,25 +37,31 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   private def get[T](url: URL)(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: HttpReads[Responses[T]]): Future[Responses[T]] =
     http
       .get(url)
-      .setHeader(HeaderNames.Accept -> "application/vnd.hmrc.1.0+json")
+      .setHeader(HeaderNames.Accept -> {
+        val version = if (config.isPhase6Enabled) "2.0" else "1.0"
+        s"application/vnd.hmrc.$version+json"
+      })
       .execute[Responses[T]]
 
   private def getOne[T](url: URL)(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: HttpReads[Responses[T]]): Future[Response[T]] =
     get[T](url).map(_.map(_.head))
 
   def getCurrencyCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[CurrencyCode]] = {
-    val url = url"${config.referenceDataUrl}/lists/CurrencyCodes"
+    implicit val reads: Reads[CurrencyCode] = CurrencyCode.reads(config)
+    val url                                 = url"${config.referenceDataUrl}/lists/CurrencyCodes"
     get[CurrencyCode](url)
   }
 
   def getGuaranteeTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[GuaranteeType]] = {
-    val url = url"${config.referenceDataUrl}/lists/GuaranteeType"
+    implicit val reads: Reads[GuaranteeType] = GuaranteeType.reads(config)
+    val url                                  = url"${config.referenceDataUrl}/lists/GuaranteeType"
     get[GuaranteeType](url)
   }
 
   def getGuaranteeType(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[GuaranteeType]] = {
-    val queryParameters = Seq("data.code" -> code)
-    val url             = url"${config.referenceDataUrl}/lists/GuaranteeType?$queryParameters"
+    implicit val reads: Reads[GuaranteeType] = GuaranteeType.reads(config)
+    val queryParameters                      = Seq("data.code" -> code)
+    val url                                  = url"${config.referenceDataUrl}/lists/GuaranteeType?$queryParameters"
     getOne[GuaranteeType](url)
   }
 
@@ -64,7 +69,8 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     (_: String, url: String, response: HttpResponse) =>
       response.status match {
         case OK =>
-          (response.json \ "data").validate[List[A]] match {
+          val json = if (config.isPhase6Enabled) response.json else response.json \ "data"
+          json.validate[List[A]] match {
             case JsSuccess(Nil, _) =>
               Left(NoReferenceDataFoundException(url))
             case JsSuccess(head :: tail, _) =>

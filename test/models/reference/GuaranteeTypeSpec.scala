@@ -18,27 +18,27 @@ package models.reference
 
 import base.SpecBase
 import config.FrontendAppConfig
-import org.scalacheck.Arbitrary.arbitrary
+import generators.Generators
+import models.reference.GuaranteeType.*
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{Json, Reads}
 import play.api.test.Helpers.running
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-class CurrencyCodeSpec extends SpecBase with ScalaCheckPropertyChecks {
+class GuaranteeTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  "CurrencyCode" - {
+  "GuaranteeType" - {
 
     "must serialise" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-        (currency, description) =>
-          val currencyCode = CurrencyCode(currency, description)
-          Json.toJson(currencyCode) mustEqual Json.parse(s"""
-            |{
-            |  "currency": "$currency",
-            |  "description": "$description"
-            |}
-            |""".stripMargin)
+        (code, description) =>
+          val guaranteeType = GuaranteeType(code, description)
+          Json.toJson(guaranteeType) mustEqual Json.parse(s"""
+               |{
+               |  "code": "$code",
+               |  "description": "$description"
+               |}
+               |""".stripMargin)
       }
     }
 
@@ -49,17 +49,17 @@ class CurrencyCodeSpec extends SpecBase with ScalaCheckPropertyChecks {
             app =>
               val config = app.injector.instanceOf[FrontendAppConfig]
               forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (currency, description) =>
-                  val currencyCode               = CurrencyCode(currency, description)
-                  val reads: Reads[CurrencyCode] = CurrencyCode.reads(config)
+                (code, description) =>
+                  val guaranteeType               = GuaranteeType(code, description)
+                  val reads: Reads[GuaranteeType] = GuaranteeType.reads(config)
                   Json
                     .parse(s"""
                          |{
-                         |  "currency": "$currency",
+                         |  "code": "$code",
                          |  "description": "$description"
                          |}
                          |""".stripMargin)
-                    .as[CurrencyCode](reads) mustEqual currencyCode
+                    .as[GuaranteeType](reads) mustEqual guaranteeType
               }
           }
         }
@@ -70,8 +70,8 @@ class CurrencyCodeSpec extends SpecBase with ScalaCheckPropertyChecks {
               val config = app.injector.instanceOf[FrontendAppConfig]
               forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
                 (code, description) =>
-                  val currencyCode               = CurrencyCode(code, description)
-                  val reads: Reads[CurrencyCode] = CurrencyCode.reads(config)
+                  val guaranteeType               = GuaranteeType(code, description)
+                  val reads: Reads[GuaranteeType] = GuaranteeType.reads(config)
                   Json
                     .parse(s"""
                          |{
@@ -79,7 +79,7 @@ class CurrencyCodeSpec extends SpecBase with ScalaCheckPropertyChecks {
                          |  "value": "$description"
                          |}
                          |""".stripMargin)
-                    .as[CurrencyCode](reads) mustEqual currencyCode
+                    .as[GuaranteeType](reads) mustEqual guaranteeType
               }
           }
         }
@@ -87,52 +87,27 @@ class CurrencyCodeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
       "when reading from mongo" in {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (currency, description) =>
-            val currencyCode = CurrencyCode(currency, description)
+          (code, description) =>
+            val guaranteeType = GuaranteeType(code, description)
             Json
               .parse(s"""
                    |{
-                   |  "currency": "$currency",
+                   |  "code": "$code",
                    |  "description": "$description"
                    |}
                    |""".stripMargin)
-              .as[CurrencyCode] mustEqual currencyCode
+              .as[GuaranteeType] mustEqual guaranteeType
         }
-      }
-    }
-
-    "must convert to select item" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr, arbitrary[Boolean]) {
-        (currency, description, selected) =>
-          val currencyCode = CurrencyCode(currency, description)
-          currencyCode.toSelectItem(selected) mustEqual SelectItem(Some(currency), s"$currency - $description", selected)
       }
     }
 
     "must format as string" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-        (currency, description) =>
-          val currencyCode = CurrencyCode(currency, description)
-          currencyCode.toString mustEqual s"$currency - $description"
+        (code, description) =>
+          val guaranteeType = GuaranteeType(code, description)
+          guaranteeType.toString mustEqual s"($code) $description"
       }
     }
 
-    "must convert currency code to a symbol" - {
-      "when EUR must return €" in {
-        val currencyCode = CurrencyCode("EUR", "Euro")
-        currencyCode.symbol mustEqual "€"
-      }
-
-      "when GBP must return £" in {
-        val currencyCode = CurrencyCode("GBP", "Pound Sterling")
-        currencyCode.symbol mustEqual "£"
-      }
-
-      "when unknown must return code" in {
-        val currencyCode = CurrencyCode("blah", "blah")
-        currencyCode.symbol mustEqual "blah"
-      }
-    }
   }
-
 }

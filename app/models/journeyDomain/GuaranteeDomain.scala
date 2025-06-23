@@ -19,9 +19,10 @@ package models.journeyDomain
 import cats.implicits._
 import config.Constants.DeclarationType._
 import config.Constants.GuaranteeType._
-import models.GuaranteeType._
+import models.reference.GuaranteeType._
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.{CheckMode, GuaranteeType, Index, Mode, UserAnswers}
+import models.reference.GuaranteeType
+import models.{CheckMode, Index, Mode, UserAnswers}
 import pages.external.DeclarationTypePage
 import pages.guarantee._
 import pages.sections.{GuaranteeSection, Section}

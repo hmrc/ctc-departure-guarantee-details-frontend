@@ -19,7 +19,8 @@ package services
 import config.Constants.CountryCode._
 import config.Constants.GuaranteeType._
 import connectors.ReferenceDataConnector
-import models.{GuaranteeType, UserAnswers}
+import models.UserAnswers
+import models.reference.GuaranteeType
 import pages.external.OfficeOfDeparturePage
 import uk.gov.hmrc.http.HeaderCarrier
 

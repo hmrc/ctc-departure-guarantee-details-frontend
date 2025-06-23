@@ -20,9 +20,10 @@ import config.Constants.GuaranteeType._
 import controllers.actions.{Actions, SpecificDataRequiredActionProvider}
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.OtherReferenceFormProvider
-import models.GuaranteeType._
+import models.reference.GuaranteeType
+import models.reference.GuaranteeType._
 import models.requests.SpecificDataRequestProvider1
-import models.{GuaranteeType, Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{GuaranteeNavigatorProvider, UserAnswersNavigator}
 import pages.guarantee.{GuaranteeTypePage, OtherReferencePage}
 import play.api.data.Form

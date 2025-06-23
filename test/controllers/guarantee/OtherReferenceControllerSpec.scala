@@ -19,8 +19,9 @@ package controllers.guarantee
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.OtherReferenceFormProvider
 import generators.Generators
-import models.GuaranteeType._
-import models.{GuaranteeType, NormalMode}
+import models.reference.GuaranteeType._
+import models.NormalMode
+import models.reference.GuaranteeType
 import navigation.GuaranteeNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

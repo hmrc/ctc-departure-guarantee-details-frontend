@@ -20,8 +20,8 @@ import base.SpecBase
 import config.Constants.DeclarationType.*
 import config.Constants.GuaranteeType.*
 import generators.Generators
-import models.GuaranteeType
-import models.GuaranteeType.*
+import models.reference.GuaranteeType.*
+import models.reference.GuaranteeType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.DeclarationTypePage

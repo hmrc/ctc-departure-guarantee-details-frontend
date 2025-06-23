@@ -17,8 +17,9 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import models.GuaranteeType._
-import models.{GuaranteeType, Index, UserAnswers}
+import models.reference.GuaranteeType
+import models.reference.GuaranteeType._
+import models.{Index, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}

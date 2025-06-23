@@ -19,8 +19,9 @@ package navigation
 import base.SpecBase
 import config.Constants.GuaranteeType.WaiverByAgreementGuarantee
 import generators.Generators
-import models.GuaranteeType._
-import models._
+import models.reference.GuaranteeType.*
+import models.*
+import models.reference.GuaranteeType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.DeclarationTypePage
