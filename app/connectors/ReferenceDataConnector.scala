@@ -60,7 +60,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
 
   def getGuaranteeType(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[GuaranteeType]] = {
     implicit val reads: Reads[GuaranteeType] = GuaranteeType.reads(config)
-    val queryParameters                      = Seq("data.code" -> code)
+    val queryParameters                      = GuaranteeType.queryParams(code)(config)
     val url                                  = url"${config.referenceDataUrl}/lists/GuaranteeType?$queryParameters"
     getOne[GuaranteeType](url)
   }

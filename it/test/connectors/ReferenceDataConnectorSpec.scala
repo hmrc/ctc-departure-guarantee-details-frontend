@@ -328,9 +328,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
     "getGuaranteeType" - {
 
-      val url = s"/$baseUrl/lists/GuaranteeType?data.code=0"
-
       "when phase 5" - {
+        val url = s"/$baseUrl/lists/GuaranteeType?data.code=0"
 
         val responseJson: String =
           s"""
@@ -393,6 +392,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       }
 
       "when phase 6" - {
+        val url = s"/$baseUrl/lists/GuaranteeType?keys=0"
 
         val responseJson: String =
           s"""

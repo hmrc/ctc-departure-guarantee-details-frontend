@@ -43,4 +43,9 @@ object GuaranteeType extends DynamicEnumerableType[GuaranteeType] {
   implicit val format: Format[GuaranteeType] = Json.format[GuaranteeType]
 
   implicit val order: Order[GuaranteeType] = (x: GuaranteeType, y: GuaranteeType) => x.code.compareToIgnoreCase(y.code)
+
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+    val key = if (config.isPhase6Enabled) "keys" else "data.code"
+    Seq(key -> code)
+  }
 }
