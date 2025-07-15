@@ -38,11 +38,11 @@ class AddAnotherGuaranteeViewModelSpec extends SpecBase with Generators with Sca
 
       val result = new AddAnotherGuaranteeViewModelProvider()(userAnswers)
 
-      result.listItems.length mustBe 1
-      result.title mustBe "You have added 1 guarantee"
-      result.heading mustBe "You have added 1 guarantee"
-      result.legend mustBe "Do you want to add another guarantee?"
-      result.maxLimitLabel mustBe "You cannot add any more guarantees. To add another guarantee, you need to remove one first."
+      result.listItems.length mustEqual 1
+      result.title mustEqual "You have added 1 guarantee"
+      result.heading mustEqual "You have added 1 guarantee"
+      result.legend mustEqual "Do you want to add another guarantee?"
+      result.maxLimitLabel mustEqual "You cannot add any more guarantees. To add another guarantee, you need to remove one first."
     }
 
     "when there are multiple guarantees" in {
@@ -62,11 +62,11 @@ class AddAnotherGuaranteeViewModelSpec extends SpecBase with Generators with Sca
 
           val result = new AddAnotherGuaranteeViewModelProvider()(userAnswers)
 
-          result.listItems.length mustBe count
-          result.title mustBe s"You have added ${formatter.format(count)} guarantees"
-          result.heading mustBe s"You have added ${formatter.format(count)} guarantees"
-          result.legend mustBe "Do you want to add another guarantee?"
-          result.maxLimitLabel mustBe "You cannot add any more guarantees. To add another guarantee, you need to remove one first."
+          result.listItems.length mustEqual count
+          result.title mustEqual s"You have added ${formatter.format(count)} guarantees"
+          result.heading mustEqual s"You have added ${formatter.format(count)} guarantees"
+          result.legend mustEqual "Do you want to add another guarantee?"
+          result.maxLimitLabel mustEqual "You cannot add any more guarantees. To add another guarantee, you need to remove one first."
 
       }
 

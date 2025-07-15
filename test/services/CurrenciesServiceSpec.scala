@@ -51,7 +51,7 @@ class CurrenciesServiceSpec extends SpecBase with BeforeAndAfterEach with Genera
         when(mockRefDataConnector.getCurrencyCodes()(any(), any()))
           .thenReturn(Future.successful(Right(currencyCodes)))
 
-        service.getCurrencyCodes().futureValue mustBe
+        service.getCurrencyCodes().futureValue mustEqual
           SelectableList(Seq(currencyCode1, currencyCode2))
 
         verify(mockRefDataConnector).getCurrencyCodes()(any(), any())

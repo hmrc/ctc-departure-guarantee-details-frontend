@@ -45,7 +45,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
             mode =>
               val helper = new GuaranteeCheckYourAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.guaranteeType
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -62,13 +62,12 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
                 val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
                 val result = helper.guaranteeType
 
-                result mustBe Some(
+                result.value mustEqual
                   SummaryListRow(
                     key = Key("Guarantee type".toText),
                     value = Value(guaranteeType.asString.toText),
                     actions = None
                   )
-                )
             }
           }
 
@@ -86,7 +85,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
                 val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
                 val result = helper.guaranteeType
 
-                result mustBe Some(
+                result.value mustEqual
                   SummaryListRow(
                     key = Key("Guarantee type".toText),
                     value = Value(guaranteeType.asString.toText),
@@ -103,7 +102,6 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
                       )
                     )
                   )
-                )
             }
           }
         }
@@ -117,7 +115,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
             mode =>
               val helper = new GuaranteeCheckYourAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.guaranteeReferenceNumber
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -131,7 +129,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
               val result = helper.guaranteeReferenceNumber
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Guarantee Reference Number (GRN)".toText),
                   value = Value(referenceNumber.toText),
@@ -148,7 +146,6 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -161,7 +158,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
             mode =>
               val helper = new GuaranteeCheckYourAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.otherReferenceYesNo
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -175,7 +172,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
               val result = helper.otherReferenceYesNo
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Add reference for the guarantee".toText),
                   value = Value("Yes".toText),
@@ -192,7 +189,6 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -205,7 +201,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
             mode =>
               val helper = new GuaranteeCheckYourAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.otherReference
-              result mustBe None
+              result must not be defined
           }
         }
 
@@ -218,7 +214,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
 
               val helper = new GuaranteeCheckYourAnswersHelper(userAnswers, mode, index)
               val result = helper.otherReference
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -235,7 +231,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
                 val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
                 val result = helper.otherReference
 
-                result mustBe Some(
+                result.value mustEqual
                   SummaryListRow(
                     key = Key("Reference for the guarantee".toText),
                     value = Value(referenceNumber.toText),
@@ -252,7 +248,6 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
                       )
                     )
                   )
-                )
             }
           }
 
@@ -266,7 +261,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
                 val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
                 val result = helper.otherReference
 
-                result mustBe Some(
+                result.value mustEqual
                   SummaryListRow(
                     key = Key("Reference".toText),
                     value = Value(referenceNumber.toText),
@@ -283,7 +278,6 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
                       )
                     )
                   )
-                )
             }
           }
         }
@@ -297,7 +291,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
             mode =>
               val helper = new GuaranteeCheckYourAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.accessCode
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -311,7 +305,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
               val result = helper.accessCode
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Access code".toText),
                   value = Value("••••".toText),
@@ -328,7 +322,6 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -341,7 +334,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
             mode =>
               val helper = new GuaranteeCheckYourAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.addLiabilityYesNo
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -355,7 +348,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
               val result = helper.addLiabilityYesNo
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Do you want to add a liability for the guarantee?".toText),
                   value = Value("Yes".toText),
@@ -372,7 +365,6 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -385,7 +377,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
             mode =>
               val helper = new GuaranteeCheckYourAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.liabilityAmount
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -401,7 +393,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
               val result = helper.liabilityAmount
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Liability amount".toText),
                   value = Value("€1,000.00".toText),
@@ -418,7 +410,6 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -431,7 +422,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
             mode =>
               val helper = new GuaranteeCheckYourAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.liabilityCurrency
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -445,7 +436,7 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val helper = new GuaranteeCheckYourAnswersHelper(answers, mode, index)
               val result = helper.liabilityCurrency
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Liability currency".toText),
                   value = Value(currencyCode.toString.toText),
@@ -462,7 +453,6 @@ class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckProper
                     )
                   )
                 )
-              )
           }
         }
       }

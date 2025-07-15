@@ -40,7 +40,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
               navigator
                 .nextPage(answers)
-                .mustBe(routes.GuaranteeAddedTIRController.onPageLoad(answers.lrn))
+                .mustEqual(routes.GuaranteeAddedTIRController.onPageLoad(answers.lrn))
           }
         }
       }
@@ -57,7 +57,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
                   navigator
                     .nextPage(answers)
-                    .mustBe(routes.AddAnotherGuaranteeController.onPageLoad(answers.lrn))
+                    .mustEqual(routes.AddAnotherGuaranteeController.onPageLoad(answers.lrn))
               }
           }
         }

@@ -85,9 +85,9 @@ class AddDefaultLiabilityAmountControllerTest extends SpecBase with AppWithDefau
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-      userAnswersCaptor.getValue.get(CurrencyPage(index)).value mustBe CurrencyCode("EUR", "Euro")
-      userAnswersCaptor.getValue.get(LiabilityAmountPage(index)).value mustBe BigDecimal(10000)
-      userAnswersCaptor.getValue.tasks.get(".guaranteeDetails").value mustBe TaskStatus.InProgress
+      userAnswersCaptor.getValue.get(CurrencyPage(index)).value mustEqual CurrencyCode("EUR", "Euro")
+      userAnswersCaptor.getValue.get(LiabilityAmountPage(index)).value mustEqual BigDecimal(10000)
+      userAnswersCaptor.getValue.tasks.get(".guaranteeDetails").value mustEqual TaskStatus.InProgress
     }
 
     "must redirect to the liability amount page when valid data and a false is submitted" in {

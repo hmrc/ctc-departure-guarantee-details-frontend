@@ -57,7 +57,7 @@ class UserAnswersSpec extends SpecBase {
           testPagePath -> testPageAnswer
         )
 
-        result.data mustBe expectedData
+        result.data mustEqual expectedData
       }
 
       "must run cleanup when given a different answer" in {
@@ -71,7 +71,7 @@ class UserAnswersSpec extends SpecBase {
           testPagePath -> testPageAnswer2
         )
 
-        result.data mustBe expectedData
+        result.data mustEqual expectedData
       }
 
       "must not run cleanup when given the same answer" in {
@@ -86,7 +86,7 @@ class UserAnswersSpec extends SpecBase {
           testPagePath        -> testPageAnswer
         )
 
-        result.data mustBe expectedData
+        result.data mustEqual expectedData
       }
     }
 
@@ -96,13 +96,13 @@ class UserAnswersSpec extends SpecBase {
       "must set task status" - {
         "when task has not previously been set" in {
           val result = emptyUserAnswers.updateTask(section, TaskStatus.InProgress)
-          result.tasks mustBe Map(section -> TaskStatus.InProgress)
+          result.tasks mustEqual Map(section -> TaskStatus.InProgress)
         }
 
         "when task has previously been set" in {
           val tasks  = Map(section -> TaskStatus.InProgress)
           val result = emptyUserAnswers.copy(tasks = tasks).updateTask(section, TaskStatus.Completed)
-          result.tasks mustBe Map(section -> TaskStatus.Completed)
+          result.tasks mustEqual Map(section -> TaskStatus.Completed)
         }
 
         "when there are other tasks" in {
@@ -112,7 +112,7 @@ class UserAnswersSpec extends SpecBase {
             ".transportDetails" -> TaskStatus.CannotStartYet
           )
           val result = emptyUserAnswers.copy(tasks = tasks).updateTask(section, TaskStatus.Completed)
-          result.tasks mustBe Map(
+          result.tasks mustEqual Map(
             section             -> TaskStatus.Completed,
             ".routeDetails"     -> TaskStatus.NotStarted,
             ".transportDetails" -> TaskStatus.CannotStartYet

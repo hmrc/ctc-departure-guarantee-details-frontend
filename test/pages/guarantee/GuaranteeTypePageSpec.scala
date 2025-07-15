@@ -98,7 +98,7 @@ class GuaranteeTypePageSpec extends PageBehaviours {
           forAll(arbitrary[Index], arbitrary[Mode]) {
             (index, mode) =>
               val userAnswers = emptyUserAnswers.setValue(DeclarationTypePage, TIR)
-              GuaranteeTypePage(index).route(userAnswers, mode).get.url mustBe
+              GuaranteeTypePage(index).route(userAnswers, mode).get.url mustEqual
                 controllers.routes.GuaranteeAddedTIRController.onPageLoad(userAnswers.lrn).url
           }
         }
@@ -109,7 +109,7 @@ class GuaranteeTypePageSpec extends PageBehaviours {
           forAll(arbitrary[String](arbitraryNonTIRDeclarationType), arbitrary[Index], arbitrary[Mode]) {
             (declarationType, index, mode) =>
               val userAnswers = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
-              GuaranteeTypePage(index).route(userAnswers, mode).get.url mustBe
+              GuaranteeTypePage(index).route(userAnswers, mode).get.url mustEqual
                 controllers.guarantee.routes.GuaranteeTypeController.onPageLoad(userAnswers.lrn, mode, index).url
           }
         }

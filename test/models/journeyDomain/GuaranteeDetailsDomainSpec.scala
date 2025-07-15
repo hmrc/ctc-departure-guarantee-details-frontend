@@ -50,8 +50,8 @@ class GuaranteeDetailsDomainSpec extends SpecBase with Generators {
 
         val result = UserAnswersReader[GuaranteeDetailsDomain].run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           GuaranteeTypePage(Index(0))
         )
       }
@@ -74,8 +74,8 @@ class GuaranteeDetailsDomainSpec extends SpecBase with Generators {
 
         val result = UserAnswersReader[GuaranteeDetailsDomain].run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           GuaranteeTypePage(Index(0)),
           AddAnotherGuaranteePage
         )
@@ -91,8 +91,8 @@ class GuaranteeDetailsDomainSpec extends SpecBase with Generators {
 
         val result = UserAnswersReader[GuaranteeDetailsDomain].run(userAnswers)
 
-        result.left.value.page mustBe GuaranteeTypePage(Index(0))
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual GuaranteeTypePage(Index(0))
+        result.left.value.pages mustEqual Seq(
           GuaranteeTypePage(Index(0))
         )
       }
