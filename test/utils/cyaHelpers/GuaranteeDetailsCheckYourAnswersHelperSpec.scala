@@ -34,7 +34,7 @@ class GuaranteeDetailsCheckYourAnswersHelperSpec extends SpecBase with Generator
       val userAnswers = emptyUserAnswers
 
       val helper = new GuaranteeDetailsCheckYourAnswersHelper(userAnswers, NormalMode)
-      helper.listItems mustBe Nil
+      helper.listItems mustEqual Nil
     }
   }
 
@@ -48,7 +48,7 @@ class GuaranteeDetailsCheckYourAnswersHelperSpec extends SpecBase with Generator
         .setValue(OtherReferenceYesNoPage(Index(0)), false)
 
       val helper = new GuaranteeDetailsCheckYourAnswersHelper(userAnswers, NormalMode)
-      helper.listItems mustBe Seq(
+      helper.listItems mustEqual Seq(
         Right(
           ListItem(
             name = guaranteeType.asString,
@@ -75,7 +75,7 @@ class GuaranteeDetailsCheckYourAnswersHelperSpec extends SpecBase with Generator
         .setValue(GuaranteeTypePage(Index(2)), guaranteeTypeA)
 
       val helper = new GuaranteeDetailsCheckYourAnswersHelper(userAnswers, NormalMode)
-      helper.listItems mustBe Seq(
+      helper.listItems mustEqual Seq(
         Right(
           ListItem(
             name = guaranteeType3.asString,

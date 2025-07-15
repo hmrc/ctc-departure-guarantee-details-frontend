@@ -47,7 +47,7 @@ class GuaranteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
               navigator
                 .nextPage(answers)
-                .mustBe(controllers.guarantee.routes.CheckYourAnswersController.onPageLoad(answers.lrn, index))
+                .mustEqual(controllers.guarantee.routes.CheckYourAnswersController.onPageLoad(answers.lrn, index))
           }
         }
       }
@@ -67,7 +67,7 @@ class GuaranteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
               navigator
                 .nextPage(answers)
-                .mustBe(controllers.routes.AddAnotherGuaranteeController.onPageLoad(answers.lrn))
+                .mustEqual(controllers.routes.AddAnotherGuaranteeController.onPageLoad(answers.lrn))
           }
         }
       }

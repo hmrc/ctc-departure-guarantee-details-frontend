@@ -55,8 +55,8 @@ class JsArrayGettableAsReaderOpsSpec extends SpecBase {
 
         val userAnswers = emptyUserAnswers.copy(data = json)
         val result      = FakeSection.fieldReader(FakePage.apply).apply(Nil).run(userAnswers)
-        result.value.value mustBe Seq("1", "3")
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual Seq("1", "3")
+        result.value.pages mustEqual Seq(
           FakePage(Index(0)),
           FakePage(Index(1)),
           FakePage(Index(2))

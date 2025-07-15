@@ -60,7 +60,7 @@ class GuaranteeTypesServiceSpec extends SpecBase with BeforeAndAfterEach with Ge
 
         val result = service.getGuaranteeTypes(userAnswers).futureValue
 
-        result mustBe Seq(guaranteeType0, guaranteeType1, guaranteeType9)
+        result mustEqual Seq(guaranteeType0, guaranteeType1, guaranteeType9)
       }
     }
 
@@ -73,7 +73,7 @@ class GuaranteeTypesServiceSpec extends SpecBase with BeforeAndAfterEach with Ge
 
         val result = service.getGuaranteeTypes(userAnswers).futureValue
 
-        result mustBe Seq(guaranteeType0, guaranteeType1)
+        result mustEqual Seq(guaranteeType0, guaranteeType1)
       }
     }
   }
@@ -88,7 +88,7 @@ class GuaranteeTypesServiceSpec extends SpecBase with BeforeAndAfterEach with Ge
 
         val result = service.getGuaranteeType(code).futureValue
 
-        result mustBe guaranteeType0
+        result mustEqual guaranteeType0
 
         verify(mockConnector).getGuaranteeType(eqTo(code))(any(), any())
       }

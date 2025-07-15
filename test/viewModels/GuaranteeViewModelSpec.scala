@@ -41,7 +41,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
               val result  = GuaranteeViewModel(answers, index)
               val section = result.section
               section.sectionTitle mustNot be(defined)
-              section.rows.length mustBe 1
+              section.rows.length mustEqual 1
           }
         }
       }
@@ -62,7 +62,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
                 val result  = GuaranteeViewModel(answers, index)
                 val section = result.section
                 section.sectionTitle mustNot be(defined)
-                section.rows.length mustBe 5
+                section.rows.length mustEqual 5
             }
           }
         }
@@ -80,7 +80,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
                 val result  = GuaranteeViewModel(answers, index)
                 val section = result.section
                 section.sectionTitle mustNot be(defined)
-                section.rows.length mustBe 3
+                section.rows.length mustEqual 3
             }
           }
         }
@@ -98,7 +98,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
                 val result  = GuaranteeViewModel(answers, index)
                 val section = result.section
                 section.sectionTitle mustNot be(defined)
-                section.rows.length mustBe 1
+                section.rows.length mustEqual 1
             }
           }
         }
@@ -116,7 +116,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
                 val result  = GuaranteeViewModel(answers, index)
                 val section = result.section
                 section.sectionTitle mustNot be(defined)
-                section.rows.length mustBe 4
+                section.rows.length mustEqual 4
             }
           }
         }
@@ -136,7 +136,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
                   val result  = GuaranteeViewModel(answers, index)
                   val section = result.section
                   section.sectionTitle mustNot be(defined)
-                  section.rows.length mustBe 5
+                  section.rows.length mustEqual 5
               }
             }
           }
@@ -153,7 +153,7 @@ class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
                   val result  = GuaranteeViewModel(answers, index)
                   val section = result.section
                   section.sectionTitle mustNot be(defined)
-                  section.rows.length mustBe 2
+                  section.rows.length mustEqual 2
               }
             }
           }

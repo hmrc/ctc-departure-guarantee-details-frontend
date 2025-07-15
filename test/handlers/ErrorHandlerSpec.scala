@@ -33,7 +33,7 @@ class ErrorHandlerSpec extends SpecBase with AppWithDefaultMockFixtures {
       "must redirect to not found page" in {
         val result = handler.onClientError(fakeRequest, NOT_FOUND)
 
-        redirectLocation(result).value `mustBe` frontendAppConfig.notFoundUrl
+        redirectLocation(result).value `mustEqual` frontendAppConfig.notFoundUrl
       }
     }
 
@@ -43,7 +43,7 @@ class ErrorHandlerSpec extends SpecBase with AppWithDefaultMockFixtures {
           status =>
             val result = handler.onClientError(fakeRequest, status)
 
-            redirectLocation(result).value `mustBe` s"${frontendAppConfig.departureHubUrl}/bad-request"
+            redirectLocation(result).value `mustEqual` s"${frontendAppConfig.departureHubUrl}/bad-request"
         }
       }
     }
@@ -54,7 +54,7 @@ class ErrorHandlerSpec extends SpecBase with AppWithDefaultMockFixtures {
           status =>
             val result = handler.onClientError(fakeRequest, status)
 
-            redirectLocation(result).value `mustBe` frontendAppConfig.technicalDifficultiesUrl
+            redirectLocation(result).value `mustEqual` frontendAppConfig.technicalDifficultiesUrl
         }
       }
     }
@@ -68,7 +68,7 @@ class ErrorHandlerSpec extends SpecBase with AppWithDefaultMockFixtures {
             val redirect  = Redirect(url)
             val exception = ApplicationException(redirect, message)
             val result    = handler.onServerError(fakeRequest, exception)
-            redirectLocation(result).value `mustBe` url
+            redirectLocation(result).value `mustEqual` url
         }
       }
     }
@@ -79,7 +79,7 @@ class ErrorHandlerSpec extends SpecBase with AppWithDefaultMockFixtures {
           message =>
             val exception = Exception(message)
             val result    = handler.onServerError(fakeRequest, exception)
-            redirectLocation(result).value `mustBe` s"${frontendAppConfig.departureHubUrl}/internal-server-error"
+            redirectLocation(result).value `mustEqual` s"${frontendAppConfig.departureHubUrl}/internal-server-error"
         }
       }
     }

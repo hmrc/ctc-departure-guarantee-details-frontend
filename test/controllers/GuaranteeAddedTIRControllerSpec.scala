@@ -87,7 +87,7 @@ class GuaranteeAddedTIRControllerSpec extends SpecBase with AppWithDefaultMockFi
           verify(mockService).getGuaranteeType(eqTo("B"))(any())
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-          userAnswersCaptor.getValue.get(GuaranteeTypePage(Index(0))).get mustBe guaranteeType
+          userAnswersCaptor.getValue.get(GuaranteeTypePage(Index(0))).get mustEqual guaranteeType
         }
       }
     }

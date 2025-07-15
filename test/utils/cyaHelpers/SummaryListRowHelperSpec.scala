@@ -28,7 +28,7 @@ class SummaryListRowHelperSpec extends SpecBase {
     "must format value properly" in new FakeHelper {
       val result: Content = formatAsCurrency(BigDecimal(1234.56), CurrencyCode("GBP", "Pounds"))
 
-      result.value mustBe "£1,234.56"
+      result.value mustEqual "£1,234.56"
     }
   }
 
@@ -36,7 +36,7 @@ class SummaryListRowHelperSpec extends SpecBase {
     "must format value properly" in new FakeHelper {
       val result: Content = formatAsCurrency(BigDecimal(1234.56), CurrencyCode("Invalid", "Invalid"))
 
-      result.value mustBe "1234.56 Invalid"
+      result.value mustEqual "1234.56 Invalid"
     }
   }
 }

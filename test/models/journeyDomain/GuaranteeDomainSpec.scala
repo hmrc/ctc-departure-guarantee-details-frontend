@@ -72,8 +72,8 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           GuaranteeDomain.userAnswersReader(index).apply(Nil)
         ).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           GuaranteeTypePage(index),
           ReferenceNumberPage(index),
           CurrencyPage(index),
@@ -108,8 +108,8 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           GuaranteeDomain.userAnswersReader(index).apply(Nil)
         ).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           GuaranteeTypePage(index),
           CurrencyPage(index),
           LiabilityAmountPage(index),
@@ -133,8 +133,8 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           GuaranteeDomain.userAnswersReader(index).apply(Nil)
         ).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           GuaranteeTypePage(index)
         )
       }
@@ -154,8 +154,8 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           GuaranteeDomain.userAnswersReader(index).apply(Nil)
         ).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           GuaranteeTypePage(index)
         )
       }
@@ -187,8 +187,8 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
           GuaranteeDomain.userAnswersReader(index).apply(Nil)
         ).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           GuaranteeTypePage(index),
           OtherReferencePage(index),
           CurrencyPage(index),
@@ -226,8 +226,8 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             GuaranteeDomain.userAnswersReader(index).apply(Nil)
           ).run(userAnswers)
 
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Seq(
+          result.value.value mustEqual expectedResult
+          result.value.pages mustEqual Seq(
             GuaranteeTypePage(index),
             OtherReferenceYesNoPage(index),
             OtherReferencePage(index),
@@ -251,8 +251,8 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             GuaranteeDomain.userAnswersReader(index).apply(Nil)
           ).run(userAnswers)
 
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Seq(
+          result.value.value mustEqual expectedResult
+          result.value.pages mustEqual Seq(
             GuaranteeTypePage(index),
             OtherReferenceYesNoPage(index),
             GuaranteeSection(index)
@@ -277,7 +277,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
               GuaranteeDomain.userAnswersReader(index).apply(Nil)
             ).run(userAnswers)
 
-            result.left.value.page mustBe ReferenceNumberPage(index)
+            result.left.value.page mustEqual ReferenceNumberPage(index)
           }
 
           "when currency code missing" in {
@@ -292,7 +292,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
               GuaranteeDomain.userAnswersReader(index).apply(Nil)
             ).run(userAnswers)
 
-            result.left.value.page mustBe CurrencyPage(index)
+            result.left.value.page mustEqual CurrencyPage(index)
           }
 
           "when liability amount missing" in {
@@ -309,7 +309,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
               GuaranteeDomain.userAnswersReader(index).apply(Nil)
             ).run(userAnswers)
 
-            result.left.value.page mustBe LiabilityAmountPage(index)
+            result.left.value.page mustEqual LiabilityAmountPage(index)
           }
 
           "when access code missing" in {
@@ -328,7 +328,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
               GuaranteeDomain.userAnswersReader(index).apply(Nil)
             ).run(userAnswers)
 
-            result.left.value.page mustBe AccessCodePage(index)
+            result.left.value.page mustEqual AccessCodePage(index)
           }
         }
 
@@ -343,7 +343,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             GuaranteeDomain.userAnswersReader(index).apply(Nil)
           ).run(userAnswers)
 
-          result.left.value.page mustBe GuaranteeTypePage(index)
+          result.left.value.page mustEqual GuaranteeTypePage(index)
         }
 
         "when 8 guarantee type" in {
@@ -357,7 +357,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
             GuaranteeDomain.userAnswersReader(index).apply(Nil)
           ).run(userAnswers)
 
-          result.left.value.page mustBe OtherReferencePage(index)
+          result.left.value.page mustEqual OtherReferencePage(index)
         }
 
         "when 3 guarantee type" - {
@@ -373,7 +373,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
               GuaranteeDomain.userAnswersReader(index).apply(Nil)
             ).run(userAnswers)
 
-            result.left.value.page mustBe OtherReferenceYesNoPage(index)
+            result.left.value.page mustEqual OtherReferenceYesNoPage(index)
           }
 
           "when otherReferenceYesNoPage is true and otherReference is unanswered" in {
@@ -386,7 +386,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
               GuaranteeDomain.userAnswersReader(index).apply(Nil)
             ).run(userAnswers)
 
-            result.left.value.page mustBe OtherReferencePage(index)
+            result.left.value.page mustEqual OtherReferencePage(index)
           }
         }
 
@@ -402,7 +402,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
               GuaranteeDomain.userAnswersReader(index).apply(Nil)
             ).run(userAnswers)
 
-            result.left.value.page mustBe CurrencyPage(index)
+            result.left.value.page mustEqual CurrencyPage(index)
           }
 
           "when liability amount is unanswered" in {
@@ -417,7 +417,7 @@ class GuaranteeDomainSpec extends SpecBase with Generators {
               GuaranteeDomain.userAnswersReader(index).apply(Nil)
             ).run(userAnswers)
 
-            result.left.value.page mustBe LiabilityAmountPage(index)
+            result.left.value.page mustEqual LiabilityAmountPage(index)
           }
         }
       }
