@@ -4,13 +4,13 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 lazy val appName: String = "ctc-departure-guarantee-details-frontend"
 
-ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "3.5.0"
+ThisBuild / majorVersion      := 0
+ThisBuild / scalaVersion      := "3.5.0"
 ThisBuild / scalafmtOnCompile := true
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
-  .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
+  .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .configs(A11yTest)
   .settings(inConfig(A11yTest)(org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings) *)
   .settings(headerSettings(A11yTest) *)
@@ -38,9 +38,10 @@ lazy val microservice = Project(appName, file("."))
       "-feature",
       "-language:implicitConversions",
       "-Wconf:src=routes/.*:s",
-      "-Wconf:src=html/.*:s",
+      "-Wconf:src=html/.*&msg=unused import:s",
+      "-Wconf:msg=Flag .* set repeatedly:s"
     ),
-    Assets / pipelineStages := Seq(digest),
+    Assets / pipelineStages   := Seq(digest),
     ThisBuild / useSuperShell := false
   )
   .settings(CodeCoverageSettings.settings *)
