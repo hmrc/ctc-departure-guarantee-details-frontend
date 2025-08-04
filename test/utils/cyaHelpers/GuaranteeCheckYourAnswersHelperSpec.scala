@@ -16,25 +16,25 @@
 
 package utils.cyaHelpers
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.Constants.DeclarationType.TIR
 import config.Constants.GuaranteeType.TIRGuarantee
 import controllers.guarantee.routes
 import forms.Constants.accessCodeLength
 import generators.Generators
-import models.reference.GuaranteeType._
+import models.reference.GuaranteeType.*
 import models.reference.{CurrencyCode, GuaranteeType}
 import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.DeclarationTypePage
-import pages.guarantee._
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import pages.guarantee.*
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import uk.gov.hmrc.govukfrontend.views.html.components.{ActionItem, Actions}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.*
 
-class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class GuaranteeCheckYourAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "GuaranteeCheckYourAnswersHelper" - {
 

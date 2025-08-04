@@ -16,11 +16,11 @@
 
 package utils.cyaHelpers
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import models.reference.CurrencyCode
-import uk.gov.hmrc.govukfrontend.views.html.components._
+import uk.gov.hmrc.govukfrontend.views.html.components.*
 
-class SummaryListRowHelperSpec extends SpecBase {
+class SummaryListRowHelperSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   class FakeHelper extends SummaryListRowHelper
 
