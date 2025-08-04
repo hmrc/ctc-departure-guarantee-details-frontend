@@ -16,18 +16,18 @@
 
 package utils.cyaHelpers
 
-import base.SpecBase
-import config.Constants.GuaranteeType._
+import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.Constants.GuaranteeType.*
 import controllers.guarantee.routes
 import generators.Generators
-import models.reference.GuaranteeType._
+import models.reference.GuaranteeType.*
 import models.{CheckMode, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.external.DeclarationTypePage
-import pages.guarantee._
+import pages.guarantee.*
 import viewModels.ListItem
 
-class GuaranteeDetailsCheckYourAnswersHelperSpec extends SpecBase with Generators {
+class GuaranteeDetailsCheckYourAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "when empty user answers" - {
     "must return empty list of list items" in {
