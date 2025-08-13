@@ -29,8 +29,7 @@ import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{bind, Injector}
-import play.api.mvc.{AnyContent, Call}
-import play.api.test.FakeRequest
+import play.api.mvc.Call
 import repositories.SessionRepository
 
 import scala.concurrent.Future
@@ -41,8 +40,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   def injector: Injector = app.injector
 
   def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
-
-  def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
 

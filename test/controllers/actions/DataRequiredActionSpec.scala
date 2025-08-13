@@ -16,13 +16,16 @@
 
 package controllers.actions
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
+import config.FrontendAppConfig
 import generators.Generators
 import models.UserAnswersResponse.{Answers, NoAnswers}
 import models.requests.{DataRequest, OptionalDataRequest}
 import models.{LocalReferenceNumber, SubmissionState, UserAnswers}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.Assertion
+import org.scalatest.{Assertion, BeforeAndAfterEach}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.mvc.Result
 import play.api.test.Helpers.*
@@ -30,10 +33,18 @@ import play.api.test.Helpers.*
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DataRequiredActionSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+class DataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChecks with BeforeAndAfterEach with Generators {
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
-  private class Harness(lrn: LocalReferenceNumber) extends DataRequiredAction(lrn, frontendAppConfig) {
+  private class Harness(lrn: LocalReferenceNumber) extends DataRequiredAction(lrn, mockFrontendAppConfig) {
     def callRefine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] = refine(request)
+  }
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockFrontendAppConfig.sessionExpiredUrl(any()))
+      .thenReturn("http://localhost:10120/manage-transit-movements/departures/this-service-has-been-reset/lrn")
   }
 
   "Data Required Action" - {
@@ -47,7 +58,7 @@ class DataRequiredActionSpec extends SpecBase with AppWithDefaultMockFixtures wi
         val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, NoAnswers)).map(_.left.value)
 
         status(result) mustEqual 303
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
+        redirectLocation(result).value mustEqual "http://localhost:10120/manage-transit-movements/departures/this-service-has-been-reset/lrn"
       }
     }
 
@@ -62,7 +73,7 @@ class DataRequiredActionSpec extends SpecBase with AppWithDefaultMockFixtures wi
           val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, Answers(userAnswers))).map(_.left.value)
 
           status(result) mustEqual 303
-          redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
+          redirectLocation(result).value mustEqual "http://localhost:10120/manage-transit-movements/departures/this-service-has-been-reset/lrn"
         }
       }
 
