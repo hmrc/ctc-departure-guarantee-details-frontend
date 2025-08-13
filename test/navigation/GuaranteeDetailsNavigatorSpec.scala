@@ -18,14 +18,17 @@ package navigation
 
 import base.SpecBase
 import config.Constants.DeclarationType.TIR
+import config.FrontendAppConfig
 import controllers.routes
 import generators.Generators
-import models._
+import models.*
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.DeclarationTypePage
 
 class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val mockFrontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
 
   "Guarantee Details Navigator" - {
 
@@ -35,7 +38,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           val initialAnswers = emptyUserAnswers.setValue(DeclarationTypePage, TIR)
           forAll(arbitraryGuaranteeDetailsAnswers(initialAnswers), arbitrary[Mode]) {
             (answers, mode) =>
-              val navigatorProvider = new GuaranteeDetailsNavigatorProviderImpl()
+              val navigatorProvider = new GuaranteeDetailsNavigatorProviderImpl()(mockFrontendAppConfig)
               val navigator         = navigatorProvider.apply(mode)
 
               navigator
@@ -52,7 +55,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
               val initialAnswers = emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
               forAll(arbitraryGuaranteeDetailsAnswers(initialAnswers), arbitrary[Mode]) {
                 (answers, mode) =>
-                  val navigatorProvider = new GuaranteeDetailsNavigatorProviderImpl()
+                  val navigatorProvider = new GuaranteeDetailsNavigatorProviderImpl()(mockFrontendAppConfig)
                   val navigator         = navigatorProvider.apply(mode)
 
                   navigator

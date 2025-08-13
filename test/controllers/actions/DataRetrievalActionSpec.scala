@@ -23,14 +23,17 @@ import models.{LocalReferenceNumber, SubmissionState, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.*
 import play.api.mvc.{AnyContent, Results}
+import repositories.SessionRepository
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures {
+  private val mockSessionRepository = mock[SessionRepository]
 
   def harness(lrn: LocalReferenceNumber)(f: OptionalDataRequest[AnyContent] => Unit): Unit = {
 
-    lazy val actionProvider = app.injector.instanceOf[DataRetrievalActionProviderImpl]
+    lazy val actionProvider = new DataRetrievalActionProviderImpl(mockSessionRepository)
 
     actionProvider(lrn)
       .invokeBlock(

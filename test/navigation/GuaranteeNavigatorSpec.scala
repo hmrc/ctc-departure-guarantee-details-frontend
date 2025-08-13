@@ -17,6 +17,7 @@
 package navigation
 
 import base.SpecBase
+import config.FrontendAppConfig
 import config.Constants.GuaranteeType.WaiverByAgreementGuarantee
 import generators.Generators
 import models.reference.GuaranteeType.*
@@ -28,6 +29,8 @@ import pages.external.DeclarationTypePage
 import pages.guarantee.GuaranteeTypePage
 
 class GuaranteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val mockFrontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
 
   "Guarantee Navigator" - {
 
@@ -42,7 +45,7 @@ class GuaranteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
           forAll(arbitraryGuaranteeAnswers(initialAnswers, index), arbitrary[Mode]) {
             (answers, mode) =>
-              val navigatorProvider = new GuaranteeNavigatorProviderImpl()
+              val navigatorProvider = new GuaranteeNavigatorProviderImpl()(mockFrontendAppConfig)
               val navigator         = navigatorProvider.apply(mode, index)
 
               navigator
@@ -62,7 +65,7 @@ class GuaranteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
           forAll(arbitraryGuaranteeAnswers(initialAnswers, index), arbitrary[Mode]) {
             (answers, mode) =>
-              val navigatorProvider = new GuaranteeNavigatorProviderImpl()
+              val navigatorProvider = new GuaranteeNavigatorProviderImpl()(mockFrontendAppConfig)
               val navigator         = navigatorProvider.apply(mode, index)
 
               navigator

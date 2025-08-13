@@ -16,7 +16,7 @@
 
 package viewModels
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.Constants.DeclarationType.*
 import config.Constants.GuaranteeType.*
 import generators.Generators
@@ -27,7 +27,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.DeclarationTypePage
 import pages.guarantee.*
 
-class GuaranteeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class GuaranteeViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "apply" - {
 

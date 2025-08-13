@@ -30,7 +30,7 @@ object GuaranteeViewModel {
   def apply(userAnswers: UserAnswers, index: Index)(implicit messages: Messages, config: FrontendAppConfig): GuaranteeViewModel =
     new GuaranteeViewModelProvider()(userAnswers, index)
 
-  class GuaranteeViewModelProvider @Inject() () {
+  class GuaranteeViewModelProvider @Inject() {
 
     def apply(userAnswers: UserAnswers, index: Index)(implicit messages: Messages, config: FrontendAppConfig): GuaranteeViewModel = {
       val helper = new GuaranteeCheckYourAnswersHelper(userAnswers, CheckMode, index)

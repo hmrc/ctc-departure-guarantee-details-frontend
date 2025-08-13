@@ -38,7 +38,7 @@ object AddAnotherGuaranteeViewModel {
   def apply(userAnswers: UserAnswers)(implicit messages: Messages, config: FrontendAppConfig): AddAnotherGuaranteeViewModel =
     new AddAnotherGuaranteeViewModelProvider()(userAnswers)
 
-  class AddAnotherGuaranteeViewModelProvider @Inject() () {
+  class AddAnotherGuaranteeViewModelProvider @Inject() {
 
     def apply(userAnswers: UserAnswers)(implicit messages: Messages, config: FrontendAppConfig): AddAnotherGuaranteeViewModel = {
       val helper = new GuaranteeDetailsCheckYourAnswersHelper(userAnswers, NormalMode)
