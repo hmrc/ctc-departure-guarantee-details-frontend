@@ -37,14 +37,10 @@ case class CurrencyCode(currency: String, description: String) extends Selectabl
 object CurrencyCode {
 
   def reads(config: FrontendAppConfig): Reads[CurrencyCode] =
-    if (config.isPhase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(CurrencyCode.apply)
-    } else {
-      Json.reads[CurrencyCode]
-    }
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(CurrencyCode.apply)
 
   implicit val format: Format[CurrencyCode] = Json.format[CurrencyCode]
 

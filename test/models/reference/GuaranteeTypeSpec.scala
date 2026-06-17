@@ -46,25 +46,7 @@ class GuaranteeTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
     "must deserialise" - {
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val guaranteeType               = GuaranteeType(code, description)
-              val reads: Reads[GuaranteeType] = GuaranteeType.reads(mockFrontendAppConfig)
-              Json
-                .parse(s"""
-                     |{
-                     |  "code": "$code",
-                     |  "description": "$description"
-                     |}
-                     |""".stripMargin)
-                .as[GuaranteeType](reads) mustEqual guaranteeType
-          }
-        }
-
         "when phase 6" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
           forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
             (code, description) =>
               val guaranteeType               = GuaranteeType(code, description)

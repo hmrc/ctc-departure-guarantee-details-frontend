@@ -47,25 +47,7 @@ class CurrencyCodeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
     "must deserialise" - {
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (currency, description) =>
-              val currencyCode               = CurrencyCode(currency, description)
-              val reads: Reads[CurrencyCode] = CurrencyCode.reads(mockFrontendAppConfig)
-              Json
-                .parse(s"""
-                     |{
-                     |  "currency": "$currency",
-                     |  "description": "$description"
-                     |}
-                     |""".stripMargin)
-                .as[CurrencyCode](reads) mustEqual currencyCode
-          }
-        }
-
         "when phase 6" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
           forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
             (code, description) =>
               val currencyCode               = CurrencyCode(code, description)
