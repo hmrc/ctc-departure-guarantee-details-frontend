@@ -17,7 +17,6 @@
 package models.reference
 
 import cats.Order
-import config.FrontendAppConfig
 import models.Selectable
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.{__, Format, Json, Reads}
@@ -36,15 +35,11 @@ case class CurrencyCode(currency: String, description: String) extends Selectabl
 
 object CurrencyCode {
 
-  def reads(config: FrontendAppConfig): Reads[CurrencyCode] =
-    if (config.isPhase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(CurrencyCode.apply)
-    } else {
-      Json.reads[CurrencyCode]
-    }
+  val reads: Reads[CurrencyCode] =
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(CurrencyCode.apply)
 
   implicit val format: Format[CurrencyCode] = Json.format[CurrencyCode]
 

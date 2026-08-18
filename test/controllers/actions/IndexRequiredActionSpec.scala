@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import models.UserAnswers
 import models.requests.DataRequest
 import pages.sections.Section

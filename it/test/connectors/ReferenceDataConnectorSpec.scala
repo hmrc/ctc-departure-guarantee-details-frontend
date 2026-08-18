@@ -25,7 +25,6 @@ import org.scalacheck.Gen
 import org.scalatest.{Assertion, EitherValues}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.Helpers.running
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -40,20 +39,9 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       conf = "microservice.services.customs-reference-data.port" -> server.port()
     )
 
-  private val phase5App: GuiceApplicationBuilder => GuiceApplicationBuilder =
-    _ => guiceApplicationBuilder().configure("feature-flags.phase-6-enabled" -> false)
+  private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
 
-  private val phase6App: GuiceApplicationBuilder => GuiceApplicationBuilder =
-    _ => guiceApplicationBuilder().configure("feature-flags.phase-6-enabled" -> true)
-
-  private val emptyPhase5ResponseJson: String =
-    """
-      |{
-      |  "data": []
-      |}
-      |""".stripMargin
-
-  private val emptyPhase6ResponseJson: String =
+  private val emptyResponseJson: String =
     """
       |[]
       |""".stripMargin
@@ -64,80 +52,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
       val url = s"/$baseUrl/lists/CurrencyCodes"
 
-      "when phase 5" - {
-
-        val responseJson: String =
-          s"""
-            |{
-            |  "_links": {
-            |    "self": {
-            |      "href": "$url"
-            |    }
-            |  },
-            |  "meta": {
-            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-            |    "snapshotDate": "2023-01-01"
-            |  },
-            |  "id": "CurrencyCodes",
-            |  "data": [
-            |    {
-            |      "currency": "GBP",
-            |      "description": "Sterling"
-            |    },
-            |    {
-            |      "currency": "CHF",
-            |      "description": "Swiss Franc"
-            |    }
-            |  ]
-            |}
-            |""".stripMargin
-
-        "must return a successful future response with a sequence of currency codes" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(responseJson))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                CurrencyCode("GBP", "Sterling"),
-                CurrencyCode("CHF", "Swiss Franc")
-              )
-
-              connector.getCurrencyCodes().futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .willReturn(okJson(emptyPhase5ResponseJson))
-              )
-
-              connector.getCurrencyCodes().futureValue.left.value mustBe a[NoReferenceDataFoundException]
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getCurrencyCodes())
-          }
-        }
-      }
-
-      "when phase 6" - {
-
-        val responseJson: String =
-          s"""
+      val responseJson: String =
+        s"""
             |[
             |  {
             |    "key": "GBP",
@@ -150,46 +66,28 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
             |]
             |""".stripMargin
 
-        "must return a successful future response with a sequence of currency codes" in {
-          running(phase6App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
+      "must return a successful future response with a sequence of currency codes" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+            .willReturn(okJson(responseJson))
+        )
 
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
-                  .willReturn(okJson(responseJson))
-              )
+        val expectedResult = NonEmptySet.of(
+          CurrencyCode("GBP", "Sterling"),
+          CurrencyCode("CHF", "Swiss Franc")
+        )
 
-              val expectedResult = NonEmptySet.of(
-                CurrencyCode("GBP", "Sterling"),
-                CurrencyCode("CHF", "Swiss Franc")
-              )
+        connector.getCurrencyCodes().futureValue.value mustEqual expectedResult
+      }
 
-              connector.getCurrencyCodes().futureValue.value mustEqual expectedResult
-          }
-        }
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getCurrencyCodes())
 
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase6App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .willReturn(okJson(emptyPhase6ResponseJson))
-              )
+      }
 
-              connector.getCurrencyCodes().futureValue.left.value mustBe a[NoReferenceDataFoundException]
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase6App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getCurrencyCodes())
-          }
-        }
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getCurrencyCodes())
       }
     }
 
@@ -197,80 +95,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
       val url = s"/$baseUrl/lists/GuaranteeType"
 
-      "when phase 5" - {
-
-        val responseJson: String =
-          s"""
-             |{
-             |  "_links": {
-             |    "self": {
-             |      "href": "$url"
-             |    }
-             |  },
-             |  "meta": {
-             |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-             |    "snapshotDate": "2023-01-01"
-             |  },
-             |  "id": "GuaranteeType",
-             |  "data": [
-             |    {
-             |      "code": "0",
-             |      "description": "Description 0"
-             |    },
-             |    {
-             |      "code": "1",
-             |      "description": "Description 1"
-             |    }
-             |  ]
-             |}
-             |""".stripMargin
-
-        "must return a successful future response with a sequence of guarantee types" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(responseJson))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                GuaranteeType("0", "Description 0"),
-                GuaranteeType("1", "Description 1")
-              )
-
-              connector.getGuaranteeTypes().futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .willReturn(okJson(emptyPhase5ResponseJson))
-              )
-
-              connector.getGuaranteeTypes().futureValue.left.value mustBe a[NoReferenceDataFoundException]
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getGuaranteeTypes())
-          }
-        }
-      }
-
-      "when phase 6" - {
-
-        val responseJson: String =
-          s"""
+      val responseJson: String =
+        s"""
              |[
              |  {
              |    "key": "0",
@@ -283,119 +109,37 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
              |]
              |""".stripMargin
 
-        "must return a successful future response with a sequence of guarantee types" in {
-          running(phase6App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
+      "must return a successful future response with a sequence of guarantee types" in {
 
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
-                  .willReturn(okJson(responseJson))
-              )
+        server.stubFor(
+          get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+            .willReturn(okJson(responseJson))
+        )
 
-              val expectedResult = NonEmptySet.of(
-                GuaranteeType("0", "Description 0"),
-                GuaranteeType("1", "Description 1")
-              )
+        val expectedResult = NonEmptySet.of(
+          GuaranteeType("0", "Description 0"),
+          GuaranteeType("1", "Description 1")
+        )
 
-              connector.getGuaranteeTypes().futureValue.value mustEqual expectedResult
-          }
-        }
+        connector.getGuaranteeTypes().futureValue.value mustEqual expectedResult
 
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase6App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .willReturn(okJson(emptyPhase6ResponseJson))
-              )
+      }
 
-              connector.getGuaranteeTypes().futureValue.left.value mustBe a[NoReferenceDataFoundException]
-          }
-        }
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getGuaranteeTypes())
+      }
 
-        "must return an exception when an error response is returned" in {
-          running(phase6App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getGuaranteeTypes())
-          }
-        }
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getGuaranteeTypes())
       }
     }
 
     "getGuaranteeType" - {
+      val url = s"/$baseUrl/lists/GuaranteeType?keys=0"
 
-      "when phase 5" - {
-        val url = s"/$baseUrl/lists/GuaranteeType?data.code=0"
-
-        val responseJson: String =
-          s"""
-            |{
-            |  "_links": {
-            |    "self": {
-            |      "href": "$url"
-            |    }
-            |  },
-            |  "meta": {
-            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-            |    "snapshotDate": "2023-01-01"
-            |  },
-            |  "id": "GuaranteeType",
-            |  "data": [
-            |    {
-            |      "code": "0",
-            |      "description": "Description 0"
-            |    }
-            |  ]
-            |}
-            |""".stripMargin
-
-        "must return a successful future response with a sequence of guarantee types" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(responseJson))
-              )
-
-              val expectedResult = GuaranteeType("0", "Description 0")
-
-              connector.getGuaranteeType("0").futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .willReturn(okJson(emptyPhase5ResponseJson))
-              )
-
-              connector.getGuaranteeType("0").futureValue.left.value mustBe a[NoReferenceDataFoundException]
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getGuaranteeType("0"))
-          }
-        }
-      }
-
-      "when phase 6" - {
-        val url = s"/$baseUrl/lists/GuaranteeType?keys=0"
-
-        val responseJson: String =
-          s"""
+      val responseJson: String =
+        s"""
             |[
             |  {
             |    "key": "0",
@@ -404,44 +148,38 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
             |]
             |""".stripMargin
 
-        "must return a successful future response with a sequence of guarantee types" in {
-          running(phase6App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
-                  .willReturn(okJson(responseJson))
-              )
+      "must return a successful future response with a sequence of guarantee types" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+            .willReturn(okJson(responseJson))
+        )
 
-              val expectedResult = GuaranteeType("0", "Description 0")
+        val expectedResult = GuaranteeType("0", "Description 0")
 
-              connector.getGuaranteeType("0").futureValue.value mustEqual expectedResult
-          }
-        }
+        connector.getGuaranteeType("0").futureValue.value mustEqual expectedResult
 
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase6App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .willReturn(okJson(emptyPhase6ResponseJson))
-              )
-
-              connector.getGuaranteeType("0").futureValue.left.value mustBe a[NoReferenceDataFoundException]
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase6App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getGuaranteeType("0"))
-          }
-        }
       }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getGuaranteeType("0"))
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getGuaranteeType("0"))
+      }
+
     }
+  }
+
+  private def checkNoReferenceDataFoundResponse(url: String, result: => Future[Either[Exception, ?]]): Assertion = {
+    server.stubFor(
+      get(urlEqualTo(url))
+        .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+        .willReturn(okJson(emptyResponseJson))
+    )
+
+    result.futureValue.left.value mustBe a[NoReferenceDataFoundException]
   }
 
   private def checkErrorResponse(url: String, result: => Future[Either[Exception, ?]]): Assertion = {
@@ -451,6 +189,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       errorResponse =>
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(
               aResponse()
                 .withStatus(errorResponse)
@@ -460,5 +199,4 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         result.futureValue.left.value mustBe an[Exception]
     }
   }
-
 }

@@ -17,7 +17,6 @@
 package models.reference
 
 import cats.Order
-import config.FrontendAppConfig
 import models.{DynamicEnumerableType, Radioable}
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.{__, Format, Json, Reads}
@@ -30,22 +29,15 @@ case class GuaranteeType(code: String, description: String) extends Radioable[Gu
 
 object GuaranteeType extends DynamicEnumerableType[GuaranteeType] {
 
-  def reads(config: FrontendAppConfig): Reads[GuaranteeType] =
-    if (config.isPhase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(GuaranteeType.apply)
-    } else {
-      Json.reads[GuaranteeType]
-    }
+  val reads: Reads[GuaranteeType] =
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(GuaranteeType.apply)
 
   implicit val format: Format[GuaranteeType] = Json.format[GuaranteeType]
 
   implicit val order: Order[GuaranteeType] = (x: GuaranteeType, y: GuaranteeType) => x.code.compareToIgnoreCase(y.code)
 
-  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
-    val key = if (config.isPhase6Enabled) "keys" else "data.code"
-    Seq(key -> code)
-  }
+  def queryParams(code: String): Seq[(String, String)] = Seq("keys" -> code)
 }
