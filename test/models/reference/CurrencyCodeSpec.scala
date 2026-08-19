@@ -17,18 +17,13 @@
 package models.reference
 
 import base.SpecBase
-import config.FrontendAppConfig
-import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{Json, Reads}
-import play.api.test.Helpers.running
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 class CurrencyCodeSpec extends SpecBase with ScalaCheckPropertyChecks {
-
-  private val mockFrontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
 
   "CurrencyCode" - {
 
@@ -46,40 +41,21 @@ class CurrencyCodeSpec extends SpecBase with ScalaCheckPropertyChecks {
     }
 
     "must deserialise" - {
-      "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (currency, description) =>
-              val currencyCode               = CurrencyCode(currency, description)
-              val reads: Reads[CurrencyCode] = CurrencyCode.reads(mockFrontendAppConfig)
-              Json
-                .parse(s"""
-                     |{
-                     |  "currency": "$currency",
-                     |  "description": "$description"
-                     |}
-                     |""".stripMargin)
-                .as[CurrencyCode](reads) mustEqual currencyCode
-          }
-        }
-
-        "when phase 6" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val currencyCode               = CurrencyCode(code, description)
-              val reads: Reads[CurrencyCode] = CurrencyCode.reads(mockFrontendAppConfig)
-              Json
-                .parse(s"""
+      "when reading from reference data" in {
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (code, description) =>
+            val currencyCode               = CurrencyCode(code, description)
+            val reads: Reads[CurrencyCode] = CurrencyCode.reads
+            Json
+              .parse(s"""
                      |{
                      |  "key": "$code",
                      |  "value": "$description"
                      |}
                      |""".stripMargin)
-                .as[CurrencyCode](reads) mustEqual currencyCode
-          }
+              .as[CurrencyCode](reads) mustEqual currencyCode
         }
+
       }
 
       "when reading from mongo" in {
